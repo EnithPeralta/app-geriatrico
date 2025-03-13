@@ -2,7 +2,7 @@
     display: flex;
   }
 
-  .sidebar {
+  /* .sidebar {
     background-color: #d9d9d9;
     width: 16rem;
     height: 120vh;
@@ -10,7 +10,6 @@
     flex-direction: column;
     align-items: center;
     padding: 1rem;
-   
   }
   
   .sidebar .logo {
@@ -42,7 +41,7 @@
     height: 30px;
     
     
-}
+} */
 
 .sidebar .icon:hover {
     background-color: #00000023;
@@ -55,7 +54,7 @@
 }
 
 .sidebar .icon {
-    background-color: #d9d9d900;
+    background-color: #bb191900;
     border-left: 5px solid #3d3d3d00; /* Color de selección */
     font-weight: 600;
     width: 14rem;
@@ -166,7 +165,7 @@
   .grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
+    gap: 0.5rem;
     min-height: 200px;
   }
 
@@ -197,7 +196,8 @@
     position: relative;
     overflow: hidden;
     background-color: rgb(238, 238, 238);
-    padding: 10px;
+    padding: 20px;
+    padding-bottom: 20px;
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     display: flex;
@@ -208,6 +208,9 @@
     0 0 0 2px rgba(255, 255, 255, 0),
     0.3em 0.3em 1em rgba(37, 37, 37, 0.242);
     transition: .3s;
+    max-width: 400px; /* Ajusta el ancho máximo */
+    width: 90%; /* Para que ocupe el ancho disponible en la columna */
+    margin-left: 30px;
   }
 
   .grid-item img {
@@ -218,12 +221,13 @@
     color: #374151;
     font-weight: 600;
     text-align: center;
+    margin-bottom: 10px;
   }
   .grid-item:hover {
     opacity: 1;  /* Hace que los botones sean visibles al pasar el mouse */
     transform: translateY(-10px);
     box-shadow:
-    inset 0 -3em 3em rgba(127, 154, 178, 0.169),
+    inset 0 -3em 3em rgba(134, 161, 184, 0.122),
     0 0 0 2px rgba(255, 255, 255, 0),
     0.3em 0.3em 1em rgba(37, 37, 37, 0.137);
 }
@@ -324,8 +328,9 @@
 .color-boxes {
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 15px;
   margin-bottom: 15px;
+  margin-top: 15px;
 }
 
 .color-box {
@@ -340,6 +345,8 @@
   padding:10px;
   background-color: #0090BC;
   border: none;
+  color: #ffffff;
+  font-weight: 400;
   
 }
 

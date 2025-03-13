@@ -22,7 +22,6 @@
   border-right: 1px solid var(--line-clr);
   position: sticky;
   top: 0;
-
   align-self: start;
   transition: 300ms ease-in-out;
   overflow: hidden;
@@ -72,7 +71,7 @@
   border-radius: 0.5em;
   padding: 0.85em;
   text-decoration: none;
-  color: var(--text-clr);
+  color: #3d3d3d;
   display: flex;
   align-items: center;
   gap: 1em;
@@ -102,13 +101,13 @@
 
 #sidebar a:hover ,
 #sidebar .dropdown-btn:hover {
-  background-color: var(--hoveracent-clr);
+  background-color:#0090bc20;
   transition: .3s;
 }
 
-#sidebar a:hover svg.svg-inline--fa,
-#sidebar .dropdown-btn:hover svg.svg-inline--fa {
-  color: var(--accent-clr); /* Usa tu variable de color de acento */
+#sidebar a:hover .icon,
+#sidebar .dropdown-btn .icon:hover {
+  color: #0090bc; /* Usa tu variable de color de acento */
 }
 #sidebar .sub-menu {
   display: grid;
@@ -125,11 +124,11 @@
   grid-template-rows: 1fr;
 }
 
-.dropdown-btn svg.svg-inline--fa{
+.dropdown-btn  .icon{
   transition: 200ms ease;
 }
 
-.rotate svg.svg-inline--fa:last-child {
+.rotate .icon:last-child {
   rotate: 180deg;
 }
 

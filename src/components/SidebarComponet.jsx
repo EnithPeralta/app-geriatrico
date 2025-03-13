@@ -87,38 +87,38 @@ export const SideBarComponent = () => {
                             </li>
                             <li>
                                 <Link to={'/geriatrico/superAdmin'}>
-                                    <FaHome />
+                                    <FaHome className='icon'/>
                                     <span>Inicio</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link to={'/geriatrico/geriatrico'}>
-                                    <FaHotel />
+                                    <FaHotel className='icon'/>
                                     <span>Geriatricos</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link to={'/geriatrico/asignar'}>
-                                    <FaUsers />
+                                    <FaUsers className='icon'/>
                                     <span>Ver Personas</span>
                                 </Link>
                             </li>
                             
                             <li>
                                 <Link to={'/geriatrico/profile'}>
-                                    <FaUser />
+                                    <FaUser className='icon'/>
                                     <span>Perfil</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link to={'/geriatrico/roles'}>
-                                    <FaUsersCog />
+                                    <FaUsersCog className='icon'/>
                                     <span>Roles</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link onClick={startLogout}>
-                                    <FaArrowCircleRight />
+                                    <FaArrowCircleRight className='icon' />
                                     <span>Salir</span>
                                 </Link>
                             </li>
@@ -127,9 +127,9 @@ export const SideBarComponent = () => {
                                     onClick={() => toggleSubMenu('informes')}
                                     className={`dropdown-btn ${subMenuOpen['informes'] ? 'rotate' : ''}`}
                                 >
-                                    <FaNotesMedical />
+                                    <FaNotesMedical className='icon'/>
                                     <span>Informes de Enfermería</span>
-                                    <FaChevronDown />
+                                    <FaChevronDown className='icon'/>
                                 </button>
                                 <ul className={`sub-menu ${subMenuOpen['informes'] ? 'show' : ''}`}>
                                     <div>
@@ -143,7 +143,7 @@ export const SideBarComponent = () => {
                                     onClick={() => toggleSubMenu('medicamentos')}
                                     className={`dropdown-btn ${subMenuOpen['medicamentos'] ? 'rotate' : ''}`}
                                 >
-                                    <FaPills />
+                                    <FaPills className='icon' />
                                     <span>Medicamentos y horarios</span>
                                     <FaChevronDown />
                                 </button>

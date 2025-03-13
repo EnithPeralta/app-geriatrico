@@ -1,4 +1,4 @@
-/* From Uiverse.io by alexruix */ 
+/* From Uiverse.io by alexruix */
 .loader {
     width: 48px;
     height: 48px;
@@ -34,14 +34,17 @@
 
 .loader h3 {
     position: absolute;
-    top: 100%;
-    left: -10px;
-    transform: translate(-50%, -50%);
-    padding: 0px;
+    top: 100%; /* Mueve el h3 debajo del loader */
+    left: 50%; /* Centra horizontalmente */
+    transform: translateX(-50%); /* Ajusta el centrado */
+    margin-top: 20px; /* Espacio adicional debajo del loader */
+    padding: 0;
     color: #0090bc;
     text-align: center;
     width: 100%;
+    left: 10px;
 }
+
 @keyframes jump7456 {
     15% {
         border-bottom-right-radius: 3px;
@@ -62,9 +65,11 @@
 
     100% {
         transform: translateY(0) rotate(90deg);
-    }  
+    }
 }
+
 @keyframes shadow324 {
+
     0%,
     100% {
         transform: scale(1, 1);
@@ -72,5 +77,5 @@
 
     50% {
         transform: scale(1.2, 1);
-    } 
+    }
 }

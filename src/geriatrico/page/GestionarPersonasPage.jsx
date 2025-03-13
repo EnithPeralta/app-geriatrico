@@ -223,7 +223,7 @@ export const GestionarPersonasPage = () => {
             <div className="bodyAsignar">
                 <div className="container-asignar">
                     <div className="content-asignar">
-                        <h2 className="title-asignar">Gestión de usuarios</h2>
+                        {/* <h2 className="title-asignar">Gestión de usuarios</h2> */}
                         <div className="search-bar">
                             <input
                                 type="text"
