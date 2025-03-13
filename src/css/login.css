@@ -1,0 +1,291 @@
+:root {
+    --primary-color: #33B0D7;
+    --secondary-color: #D9D9D9;
+    --light-color: #ECECEC;
+    --text-dark: #3D3D3D;
+    --text-gray: #888;
+    --text-light: #666;
+    --bg-light: #CFCFCF;
+    --bg-input: #E9E9E9;
+    --shadow-main: rgba(0, 0, 0, 0.2);
+    --shadow-subtle: rgba(0, 0, 0, 0.1);
+    --gradient-primary: linear-gradient(to right, #2C93B3, var(--primary-color));
+  }
+  
+  .BodyLogin {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-light);
+  }
+  
+  /* Estilo del contenedor principal */
+  .cuadrado {
+    background: linear-gradient(var(--light-color), #D9D9D9);
+  width: 40vw;
+  height: 92vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  position: relative;
+  }
+  
+  /* Círculos decorativos */
+  .circlebottom,
+  .circletop {
+    z-index: 1;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    position: absolute;
+    box-shadow:
+      -30px -15px 30px 5px rgba(255, 255, 255, 0.527),
+      30px 15px 30px 15px #0000004c,
+      inset 15px 15px 25px 10px #0000003a,
+      inset -15px -15px 45px 15px #ffffff68;
+  }
+  
+  .circlebottom {
+    width: 28rem;
+    height: 28rem;
+    bottom: -12rem;
+    left: -12rem;
+  }
+  
+  .circletop {
+    width: 33rem;
+    height: 33rem;
+    top: 0;
+    right: 0;
+    transform: translate(200px, -50%);
+  }
+  
+  .img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18%;
+    height: auto;
+    transform: translate(-20%, -50%);
+    display: block; /* Visible por defecto */
+    z-index: 10;
+  }
+  /* Sección del encabezado */
+  .web {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1.25rem;
+    padding: 10px;
+    font-weight: 600;
+  }
+  
+  .circle {
+    color: var(--primary-color);
+  }
+  
+  .title {
+    color: #BDBDBD;
+  }
+  
+  /* Estilos de los títulos */
+  .h3,
+  .h2 {
+    position: absolute;
+    left: 60px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 10px;
+    margin-top: 110px;
+  }
+  
+  .h3 {
+    top: 50px;
+    font-size: 1.8rem;
+    color: #919191;
+    margin-bottom: 20px; /* Ajusta este valor para mayor separación */
+  }
+  
+  .h2 {
+    top: 75px;
+    font-size: 3.2rem;
+    color: var(--text-dark);
+    top: 90px; /* Ajusta para que se mantenga debajo de h3 */
+  }
+  
+  /* Enlaces y párrafos */
+  .p {
+    display: flex;
+    justify-content: end;
+    gap: 5px;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    padding: 10px;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.3s;
+    margin-top: -19px;
+    transform: translateX(75px);
+  }
+  
+  .p:hover {
+    color: #1f91b4;
+  }
+  
+  .link {
+    text-decoration: none;
+    color: var(--primary-color);
+  }
+  
+  /* Estilos del formulario */
+  .form {
+    position: absolute;
+    width: 300px;
+    margin: 0 auto;
+    padding: 10px;
+    top: 170px;
+    left: 60px;
+    margin-top: 120px;
+    z-index: 2; /* Asegurar que el formulario esté en medio */
+  }
+  
+  /* Contenedor de los campos de entrada */
+  .input-container {
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 10px;
+    width: 350px;
+    height: 30px;
+  }
+  
+  .input-container i {
+    color: var(--text-dark);
+    margin-left: 10px;
+    font-size: 1.125rem;
+  }
+  
+  .input-container input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 1rem;
+  }
+  
+  /* Botón de envío */
+  .button {
+    width: 90%;
+    padding: 8px 10px;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 15px;
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin: 20px 40px;
+    transition: background-color 0.3s ease;
+    z-index: 3; /* Asegurar que el botón esté al frente */
+    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2); /* Sombra suave */
+  }
+  
+  button:hover {
+    background-color: #0090bc;
+  }
+  
+  /* Responsividad para dispositivos medianos */
+  @media (max-width: 768px) {
+    .cuadrado {
+      width: 80vw;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  
+    .circlebottom,
+    .circletop {
+      width: 18rem;
+      height: 18rem;
+    }
+  
+    .web {
+      margin: 30px;
+      font-size: 1.125rem;
+    }
+  
+    h3,
+    h2 {
+      font-size: 2.1rem;
+    }
+  
+    .form {
+      width: 80%;
+      top: 190px;
+      left: 10px;
+    }
+  
+    button {
+      width: 80%;
+    }
+  
+    .img {
+      visibility: hidden;
+    }
+  
+    .p {
+      transform: translateX(0); /* Eliminar el desplazamiento */
+      justify-content: center; /* Centrar el texto */
+    }
+  }
+  
+  /* Ajustes para dispositivos pequeños (teléfonos móviles) */
+  @media (max-width: 400px) {
+    .cuadrado {
+      width: 70vw;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  
+    .circlebottom,
+    .circletop {
+      width: 15rem;
+      height: 15rem;
+    }
+  
+    .web {
+      font-size: 16px;
+    }
+  
+    h3,
+    h2,
+    p {
+      font-size: 26px;
+    }
+  
+    .form {
+      width: 90%;
+      top: 160px;
+      left: 5%;
+    }
+  
+    button {
+      width: 90%;
+    }
+    
+    .p {
+      transform: translateX(0); /* Eliminar el desplazamiento */
+      justify-content: center; /* Centrar el texto */
+    }
+  }
+  

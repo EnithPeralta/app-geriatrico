@@ -1,0 +1,26 @@
+.btn-x {
+    position: absolute;
+    left: 4%;
+    top: 5%;
+    background: #009ee2;
+    color: white;
+    padding: 4px 4px;
+    font-weight: 600;  
+    font-size: 15px;  
+    border-radius: 8px; 
+    text-decoration: none;
+    cursor: pointer;
+    width: 2%;
+    height:4%;
+  }
+  
+  .btn-x:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+  
+  .btn-x:active {
+    background-color: #004494;
+    transform: scale(0.95);
+  }
+  

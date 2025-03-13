@@ -1,0 +1,685 @@
+.flex {
+    display: flex;
+  }
+
+  .sidebar {
+    background-color: #d9d9d9;
+    width: 16rem;
+    height: 120vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+   
+  }
+  
+  .sidebar .logo {
+    color: white;
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .sidebar .icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    color: #3d3d3d;
+}
+
+
+
+.sidebar .icon {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: .3s;
+    font-weight: 400;
+    height: 30px;
+    
+    
+}
+
+.sidebar .icon:hover {
+    background-color: #00000023;
+    transform: translateY(-2px);
+}
+
+.sidebar .icon i {
+    color: #3d3d3d;
+    font-size: 1.3rem;
+}
+
+.sidebar .icon {
+    background-color: #d9d9d900;
+    border-left: 5px solid #3d3d3d00; /* Color de selección */
+    font-weight: 600;
+    width: 14rem;
+}
+
+  .main-content {
+    flex: 1;
+    padding: 2rem;
+  }
+
+  .card {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+
+  .search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 1478px; /* Mantiene el mismo ancho que el input */
+    width: 102%;
+}
+
+.search-container i {
+    position: relative;
+    top: -12px;
+    left: -45px; /* Ajusta la posición del icono */
+    color: #888; /* Color del icono */
+    font-size: 25px;
+}
+
+.search-input {
+    padding: 20px;
+    padding-left: 25px; /* Ajusta para dejar espacio al icono */
+    width: 97%;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+    margin-bottom: 2rem;
+}
+
+/* Cambios al enfocar el input */
+.search-input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Cambia el placeholder cuando está enfocado */
+.search-input:focus::placeholder {
+  color: #007bff;
+  font-weight: 600;
+  transition: color 0.3s ease-in-out;
+}
+
+/* Cambia el color del icono cuando el input está enfocado */
+.search-container:has(.search-input:focus) i {
+  color: #007bff;
+}
+
+  .card .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .card .header i {
+    color: #6b7280;
+    font-size: 3rem;
+    margin-right: 0.5rem;
+  }
+
+  .card .header span {
+    color: #374151;
+    font-weight: 600;
+  }
+
+  .card .description, .card .comments {
+    color: #6b7280;
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .buttons button {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+  }
+
+  .buttons input {
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    min-height: 200px;
+  }
+
+  .grid-item-add{  
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    font-size: 20px;
+    padding: 30px 20px;
+    cursor: pointer;
+  }
+
+  .grid-item-geriatrico{
+    position: relative;
+    top: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 15px;
+  }
+
+  .grid-item {
+    position: relative;
+    overflow: hidden;
+    background-color: rgb(238, 238, 238);
+    padding: 10px;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow:
+    inset 0 -3em 3em rgba(255, 255, 255, 0.828),
+    0 0 0 2px rgba(255, 255, 255, 0),
+    0.3em 0.3em 1em rgba(37, 37, 37, 0.242);
+    transition: .3s;
+  }
+
+  .grid-item img {
+    margin-bottom: 2.5rem;
+  }
+
+  .grid-item span {
+    color: #374151;
+    font-weight: 600;
+    text-align: center;
+  }
+  .grid-item:hover {
+    opacity: 1;  /* Hace que los botones sean visibles al pasar el mouse */
+    transform: translateY(-10px);
+    box-shadow:
+    inset 0 -3em 3em rgba(127, 154, 178, 0.169),
+    0 0 0 2px rgba(255, 255, 255, 0),
+    0.3em 0.3em 1em rgba(37, 37, 37, 0.137);
+}
+
+  .grid-item:hover .actions {
+    opacity: 1;  /* Hace que los botones sean visibles al pasar el mouse */
+}
+
+.grid-add{
+    cursor: pointer;
+}
+
+.actions {
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    display: flex;
+    gap: 8px;
+    opacity: 0;  /* Ocultamos por defecto */
+    transition: opacity 0.3s ease;
+}
+
+.actions .toggle-button, .edit-button, .edit-button-sedes {
+    border: none;
+    padding: 5px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    color: white;
+    background-color: #374151;
+    margin:0px ;
+
+}
+
+  img{
+  border-radius: 10px;
+  }
+
+.actions .toggle-button .edit-button-sedes{
+    background: rgba(0, 0, 0, 1);
+}
+
+.edit-button-sedes {
+  border: none;
+  padding: 5px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  color: white;
+  background-color: #374151;
+  margin:0px ;
+}
+
+.toggle-button:hover {
+    background-color: #0090BC;
+    transform: scale(1.1);
+}
+
+.edit-button:hover , .edit-button-sedes:hover {
+    background-color: #0090bc;
+    transform: scale(1.1);
+}
+
+.fas {
+    font-size: 25px;
+}
+.grid-item-geriatrico i {
+  font-size: 30px;
+  margin-top: 40px; 
+  color: #0090BC;
+  margin-right: 10px;
+}
+
+
+.grid-item-geriatrico p {
+  font-size: 20px;
+  color: #0090BC;
+  font-weight: 600;
+  margin-top: 60px; 
+}
+
+.status-icon {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  top: -14rem;
+  right: 8rem;
+}
+.status-icon .activo {
+  color: #0090BC;
+  font-size: 20px;
+}
+.status-icon .inactivo {
+  color: rgb(114, 114, 114);
+  font-size: 20px;
+}
+
+.color-boxes {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.color-box {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 2px solid #717171;
+}
+
+.details-button{
+  border-radius: 5px;
+  padding:10px;
+  background-color: #0090BC;
+  border: none;
+  
+}
+
+.details-button:hover{
+  background-color: #006f91;
+  cursor: pointer;
+}
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 400px; /* Aumentado un poco para mejorar el espaciado */
+}
+
+.modal-geriatrico{
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 80%;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 900px; /* Ajusta el ancho máximo */
+  max-height: 80vh; /* No ocupar más del 80% de la altura de la pantalla */
+  overflow-y: auto; /* Habilita el scroll si hay mucho contenido */
+}
+
+
+.geriatrico-logo{
+  padding: 1rem;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  left: 8rem;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column; /* Coloca la etiqueta encima del input */
+  margin: 8px;
+}
+
+.modal-field label {
+  color: #4a5568;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 4px; /* Espaciado más uniforme */
+}
+
+.modal-field input[type="text"],
+.modal-field input[type="email"],
+.modal-field input[type="password"],
+.modal-field input[type="file"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #cbd5e0;
+  border-radius: 4px;
+  color: #4a5568;
+  font-size: 14px;
+}
+
+.modal-field input[type="color"] {
+  width: 100%;
+  height: 40px;
+  margin: 0px;
+  border: 1px solid #cbd5e0;
+  border-radius: 4px;
+  color: #4a5568;
+  font-size: 14px;
+}
+
+.color-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px; /* Más espacio entre los colores */
+  margin-bottom: 16px;
+}
+
+.color-group label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #4a5568;
+}
+
+.color-input{
+  width: 40px; /* Tamaño más grande para mejor interacción */
+  height: 40px;
+  border-radius: 50%; /* Más cuadrado pero con bordes redondeados */
+  outline: none;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  gap: 16px; /* Más espacio entre los botones */
+  width: unset;
+}
+
+.modal-buttons, .create, .cancel {
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.modal-buttons .create {
+  background-color: #007bff;
+  color: white;
+}
+
+.modal-buttons .cancel {
+  background-color: #505050;
+  color: white;
+}
+
+.modal-buttons .create:hover{
+  background-color: #034081;
+  color: white;
+}
+
+.modal-buttons .cancel:hover{
+  background-color: #636363;
+  color: white;
+}
+
+.modal-content-details{
+  background-color: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 84%;
+}
+
+.modal-name{
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 16px;
+  color: #4a5568;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #374151;
+}
+
+.modal-name-sede{
+  font-size: 14px;
+  font-weight:300;
+  margin-bottom: 1px;
+  color: #4a5568;
+}
+
+.rol-buttons{
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.rol-buttons .create{
+  background-color: #0090BC;
+  color: white;
+}
+
+.rol-buttons .create:hover{
+  background-color: #006f91;
+  color: white;
+}
+.rol-buttons .cancel{
+  background-color: #4d4d4d;
+  color: white;
+}
+
+.rol-buttons .cancel:hover{
+  background-color: #5c5c5c;
+  color: white;
+}
+
+/* Sedes */
+.status-icon-active-sede{
+  padding: 5px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  top: -1rem;
+  right: 7rem;
+  font-size: 18px;
+}
+
+.status-icon-active-sede .activo {
+  color: #0090BC;
+}
+
+.status-icon-active-sede .inactivo {
+  color: red;
+}
+
+
+.status-icon-sedes{
+  padding: 5px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  top: -10rem;
+  right: 7rem;
+  font-size: 18px;
+}
+
+.status-icon-sedes .activo {
+  color:  #0090BC;
+}
+
+.status-icon-sedes .inactivo {
+  color: rgb(107, 101, 101);
+}
+
+.status-icon-modal{
+  padding: 10px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  top: -13.5rem;
+  right: 7.6rem;
+  font-size: 18px;
+}
+
+.status-icon-modal .activo {
+  color: green;
+}
+
+.status-icon-modal .inactivo {
+  color: red;
+}
+
+.icon-edit-user{
+  position: relative;
+  top: -1rem;
+  right: 1rem;
+  font-size: 4rem;
+  color: #007bff;
+  display: flex;
+  justify-content: center;
+}
+
+.modal-name-sedetalles{
+  color: #6b7280;
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 16px;
+  text-align: center;
+  display: flex;
+  justify-content: baseline;
+}
+
+.modal-image{
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+  position: relative;
+  left: 9rem;
+  font-size: 4rem;
+  color: #007bff;
+  display: flex;
+  justify-content: center;
+}
+
+
+/* Media Query para pantallas más pequeñas */
+@media (max-width: 768px) {
+  .flex {
+      flex-direction: column; /* Apilar sidebar y contenido principal verticalmente */
+  }
+
+  .sidebar {
+      width: 100%; /* El sidebar ocupa todo el ancho */
+      height: auto; /* Ajustar la altura al contenido */
+      position: static; /* Remover el posicionamiento fijo */
+      overflow-y: visible; /* Deshabilitar el scroll vertical */
+      padding: 0.5rem;
+  }
+
+  .sidebar .icons {
+      flex-direction: row;
+      justify-content: space-around;
+      width: 100%;
+      align-items: center;
+      gap: 0;
+  }
+
+  .sidebar .icon {
+      width: auto;
+      font-size: 0.8rem;
+      padding: 5px;
+      gap: 0.2rem;
+  }
+
+  .sidebar .icon i {
+      font-size: 1rem;
+  }
+
+  .main-content {
+      padding: 1rem; /* Reducir el padding en pantallas pequeñas */
+  }
+
+  .grid {
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Ajustar los items del grid en pantallas pequeñas */
+  }
+
+  .search-container i {
+      left: 10px; /* Ajustar la posición del icono */
+  }
+
+  .search-input {
+      padding-left: 40px; /* Ajustar el padding para el input de búsqueda */
+  }
+
+  .grid-item-geriatrico {
+      font-size: 14px;
+      padding: 20px 10px;
+  }
+}
+
+

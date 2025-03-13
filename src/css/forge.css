@@ -1,0 +1,94 @@
+.bodyForget {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url('/bg-blur.png') no-repeat center center/cover;
+    backdrop-filter: blur(50px);
+    background-size: cover;
+}
+
+.container-forget {
+    display: flex;
+    background: #d3d3d398;
+    padding-right: 40px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 1000px;
+    overflow: hidden;
+    height: 500px;
+    border-radius: 20px;
+}
+
+.left-forget, .right-forget {
+    flex: 1;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.left-forget {
+    background: linear-gradient(#ECECEC,#D3D3D3);
+}
+
+.right-forget {
+    background-image: url('/Ilustration-email.png');
+    color: white;
+    align-items: center;
+    background-size: cover;
+
+}
+
+.left-forget h2 {
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+    left: 200px;
+    position: sticky;
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+}
+
+.left-forget p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+    left: 200px;
+    display: flex;
+    align-items: center;
+}
+
+.input-container-forget {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: white;
+}
+
+.input-container-forget input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 14px;
+    background: none;
+}
+
+.btn-forget {
+    display: block;
+    width: 100%;
+    background: #33B0D7;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.right-forget img {
+    max-width: 80%;
+}
