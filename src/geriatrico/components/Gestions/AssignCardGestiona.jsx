@@ -4,8 +4,7 @@ import { SelectGeriatrico } from '../../../components/SelectGeriatrico/SelectGer
 
 export const AssignCardGestion = ({ selectedGeriatrico, setSelectedGeriatrico, selectedRoles, setSelectedRoles, fechaInicio, setFechaInicio, fechaFin, setFechaFin, assigning, handleAssignRole }) => {
     return (
-        <div className="sede-card-asignar">
-
+        <div>
             <SelectGeriatrico
                 name="ge_id"
                 value={selectedGeriatrico}
@@ -36,7 +35,7 @@ export const AssignCardGestion = ({ selectedGeriatrico, setSelectedGeriatrico, s
                 />
             </div>
             <button
-                className="asignar-button"
+                className="user-icon-container"
                 onClick={handleAssignRole}
                 disabled={assigning}
             >

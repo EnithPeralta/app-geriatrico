@@ -1,6 +1,5 @@
 import React from 'react';
-import { SelectSede } from '../SelectSede/SelectSede';
-import { SelectField } from '../../../components/SelectField/SelectField';
+import { CheckboxField, SelectSede } from '../../../components';
 
 export const AssignCard = ({
     selectedRoles,
@@ -25,7 +24,7 @@ export const AssignCard = ({
         <div className='modal-overlay'>
             <div className='modal'>
                 <div className="modal-content">
-                    <SelectField
+                    <CheckboxField
                         name="rol_id"
                         value={selectedRoles}
                         onChange={(roles) => setSelectedRoles(roles.map(Number))}
@@ -55,14 +54,19 @@ export const AssignCard = ({
                             onChange={(e) => setFechaFin(e.target.value)}
                         />
                     </div>
-                    <button
-                        className="asignar-button"
-                        onClick={() => selectedRoles.includes(3) ? handleAssignRole() : handleAssignSedes()}
-                        disabled={assigning}
-                    >
-                        {assigning ? "Asignando..." : "Asignar"}
-                    </button>
-                    <button className="cancel-button" onClick={cerrarModal}>Cancelar</button>
+                    <div className="modal-buttons">
+                        <button
+                        className='create'
+                            type="submit"
+                            onClick={() => selectedRoles.includes(3) ? handleAssignRole() : handleAssignSedes()}
+                            disabled={assigning}
+                        >
+                            {assigning ? "Asignando..." : "Asignar"}
+                        </button>
+                        <button type="button" className="cancel" onClick={onClose}>
+                            Cancelar
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

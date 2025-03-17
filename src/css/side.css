@@ -8,7 +8,7 @@
 .logo-fundacion{
     display: flex;
     align-items: center;
-    width: 200px;
+    width: 100px;
 }
 
 /* Estilos del Sidebar */
@@ -16,13 +16,14 @@
   font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
   height: 100vh;
-  width: 360px;
-  padding: 5px 1em;
+  width: 200px;
+  padding: 5px 1rem;
   background-color: var(--base-clr);
   border-right: 1px solid var(--line-clr);
   position: sticky;
   top: 0;
   align-self: start;
+  z-index: 1000; 
   transition: 300ms ease-in-out;
   overflow: hidden;
   text-wrap: nowrap;
@@ -30,11 +31,58 @@
   -20px -20px 60px #ffffff;
   transition:  .5s ease; /* Transición suave */
 }
+#sidebar:not(.close) ul li span {
+  display: inline; /* Mostrar nombres cuando el sidebar está abierto */
+  position: static;
+  opacity: 1;
+}
+
+
+#sidebar ul li span {
+  display: none; /* Ocultar nombres por defecto */
+  position: absolute;
+  color: black;
+  padding: 5px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+  transition: opacity 0.3s;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#sidebar ul li:hover span {
+  display: inline-block;
+  opacity: 1;
+  z-index: 1;
+}
+
+/* Estilos cuando el sidebar está cerrado */
+#sidebar.close a span {
+  display: none; /* Ocultar los nombres */
+}
+
+/* Mostrar nombres al pasar el mouse cuando el sidebar está cerrado */
+#sidebar.close a:hover span {
+  display: inline;
+  position: absolute;
+  left: 60px; /* Ajustar la posición */
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+  transition: opacity 0.3s;
+  opacity: 1;
+  z-index: 1000; 
+}
+
+
 
 /* Estilos del contenido */
 .content {
   flex-grow: 1; /* El contenido principal ocupa el resto del espacio */
   padding: 20px; /* Espacio alrededor del contenido */
+  z-index: 1;
 }
 
 /* Otros estilos del Sidebar (sin cambios significativos) */
@@ -74,7 +122,7 @@
   color: #3d3d3d;
   display: flex;
   align-items: center;
-  gap: 1em;
+  gap: 0em;
   margin-left: 8px;
   font-size: 17px;
 
@@ -97,6 +145,7 @@
 #sidebar a span,
 #sidebar .dropdown-btn span {
   flex-grow: 1;
+  color: #3d3d3d;
 }
 
 #sidebar a:hover ,

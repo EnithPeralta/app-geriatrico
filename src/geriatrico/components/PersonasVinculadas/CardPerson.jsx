@@ -3,23 +3,21 @@ import React from 'react';
 export const CardPerson = ({ persona, onClick, onEdit, onAssign, onInactivate }) => {
     return (
         <div
-            className={`sede-card-asignar`}
+            className={`user-card-container`}
             onClick={onClick}>
-            <div className="sede-info">
-                <div className="full-name">{persona.per_nombre}</div>
-                <div className="CC">{persona.per_usuario}</div>
-                <div className="CC">{persona.per_documento}</div>
-                <div className="CC">{persona.gp_fecha_vinculacion}</div>
+            <div className="user-details">
+                <div className="user-role">{persona.per_nombre}</div>
+                <div className="user-id">{persona.per_usuario}</div>
+                <div className="user-name">{persona.per_documento}</div>
+                <div className="user-name">{persona.gp_fecha_vinculacion}</div>
             </div>
-
-            <div className="status-icon-active">
+            <div className="status-icon-person">
                 {persona.gp_activo ? (
                     <i className="fa-solid fa-circle-check activo"></i>
                 ) : (
                     <i className="fa-solid fa-circle-xmark inactivo"></i>
                 )}
             </div>
-
             <div className="buttons-asignar">
                 <button className={persona.gp_activo ? 'active' : 'inactive'} onClick={onInactivate}>
                     <i className={`fa-solid ${persona.gp_activo ? "fa-user-gear active" : "fa-user-slash inactive"}`} />

@@ -1,24 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import "../css/side.css";
-import {
-    FaAngleDoubleLeft, FaArrowCircleRight, FaChevronDown,
-    FaHome, FaHotel, FaUser, FaUsersCog, FaNotesMedical, FaPills,
-    FaUsers
-} from 'react-icons/fa';
+import { FaAngleDoubleLeft, FaArrowCircleRight, FaHome, FaHotel, FaUser, FaUsersCog, FaUsers, FaHandshake, FaHospitalUser, FaUserNurse } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { useAuthStore, useGeriatrico, useSession } from '../hooks';
+import { useAuthStore, useGeriatrico, useSede, useSession } from '../hooks';
 
 
 export const SideBarComponent = () => {
     const { startLogout } = useAuthStore();
     const { obtenerSesion } = useSession();
     const { homeMiGeriatrico } = useGeriatrico();
+    const {obtenerSedesHome} = useSede()
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [subMenuOpen, setSubMenuOpen] = useState({});
     const [esSuperAdmin, setEsSuperAdmin] = useState(false);
     const [adminGeriatrico, setAdminGeriatrico] = useState(false);
     const [adminSede, setAdminSede] = useState(false);
+    const [enfermera, setEnfermera] = useState(false);
     const [geriatrico, setGeriatrico] = useState(null);
+    const [sede, setSede] = useState([]);
     const [error, setError] = useState(null);
     const fetchedRef = useRef(false);
 
@@ -30,15 +29,16 @@ export const SideBarComponent = () => {
                 setEsSuperAdmin(sesion?.esSuperAdmin || false);
                 setAdminGeriatrico(sesion?.rol_id === 2);
                 setAdminSede(sesion?.rol_id === 3);
+                setEnfermera(sesion?.rol_id === 5);
             };
             fetchSesion();
             fetchedRef.current = true;
         }
-    }, [obtenerSesion]);
+    }, []);
 
     useEffect(() => {
         if (esSuperAdmin) return;
-    
+
         const fetchSede = async () => {
             try {
                 const result = await homeMiGeriatrico();
@@ -53,7 +53,26 @@ export const SideBarComponent = () => {
         };
         fetchSede();
     }, []);
-    
+
+    useEffect(() => {
+        const fetchSedeEspecifica = async () => {
+            try {
+                const result = await obtenerSedesHome();
+                if (result.success && result.sede && result.geriatrico) {
+                    setSede(result.sede);  // Aseguramos que `sede` es un objeto válido
+                    setGeriatrico(result.geriatrico);
+                } else {
+                    setError("No se encontraron datos de la sede.");
+                }
+            } catch (err) {
+                setError("Error al obtener los datos.");
+            }
+        };
+
+        fetchSedeEspecifica();
+    }, []);
+
+
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
     };
@@ -87,71 +106,42 @@ export const SideBarComponent = () => {
                             </li>
                             <li>
                                 <Link to={'/geriatrico/superAdmin'}>
-                                    <FaHome className='icon'/>
+                                    <FaHome className='icon' />
                                     <span>Inicio</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link to={'/geriatrico/geriatrico'}>
-                                    <FaHotel className='icon'/>
+                                    <FaHotel className='icon' />
                                     <span>Geriatricos</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link to={'/geriatrico/asignar'}>
-                                    <FaUsers className='icon'/>
-                                    <span>Ver Personas</span>
+                                    <FaUsers className='icon' />
+                                    <span>Personas</span>
                                 </Link>
                             </li>
-                            
+
                             <li>
                                 <Link to={'/geriatrico/profile'}>
-                                    <FaUser className='icon'/>
+                                    <FaUser className='icon' />
                                     <span>Perfil</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link to={'/geriatrico/roles'}>
-                                    <FaUsersCog className='icon'/>
+                                    <FaUsersCog className='icon' />
                                     <span>Roles</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link onClick={startLogout}>
-                                    <FaArrowCircleRight className='icon' />
-                                    <span>Salir</span>
-                                </Link>
-                            </li>
-                            <li>
-                                <button
-                                    onClick={() => toggleSubMenu('informes')}
-                                    className={`dropdown-btn ${subMenuOpen['informes'] ? 'rotate' : ''}`}
-                                >
-                                    <FaNotesMedical className='icon'/>
-                                    <span>Informes de Enfermería</span>
-                                    <FaChevronDown className='icon'/>
-                                </button>
-                                <ul className={`sub-menu ${subMenuOpen['informes'] ? 'show' : ''}`}>
-                                    <div>
-                                        <li><a href="#">Informes de Psicología</a></li>
-                                        <li><a href="#">Informe de médico</a></li>
-                                    </div>
-                                </ul>
-                            </li>
-                            <li>
-                                <button
-                                    onClick={() => toggleSubMenu('medicamentos')}
-                                    className={`dropdown-btn ${subMenuOpen['medicamentos'] ? 'rotate' : ''}`}
-                                >
-                                    <FaPills className='icon' />
-                                    <span>Medicamentos y horarios</span>
-                                    <FaChevronDown />
-                                </button>
-                                <ul className={`sub-menu ${subMenuOpen['medicamentos'] ? 'show' : ''}`}>
-                                    <div>
-                                        <li><a href="#">Medicamentos Suministrados</a></li>
-                                    </div>
-                                </ul>
+                                <div onClick={startLogout}>
+                                    <a>
+                                        <FaArrowCircleRight className='icon' />
+                                        <span>Salir</span>
+                                    </a>
+                                </div>
                             </li>
                         </ul>
                     </nav>
@@ -173,7 +163,7 @@ export const SideBarComponent = () => {
                     <nav id="sidebar" className={sidebarOpen ? '' : 'close'} >
                         <ul>
                             <li>
-                                <img src={geriatrico?.ge_logo} alt="Logo" style={{ width: "100px", height: "100px", padding: "10px" }} className="logo-fundacion" />
+                                <img src={geriatrico?.ge_logo} alt="Logo" style={{ width: "90px", height: "90px", padding: "10px" }} className="logo-fundacion" />
                                 <button onClick={toggleSidebar} id="toggle-btn" className={sidebarOpen ? '' : 'rotate'}>
                                     <FaAngleDoubleLeft />
                                 </button>
@@ -209,10 +199,12 @@ export const SideBarComponent = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link onClick={startLogout}>
-                                    <FaArrowCircleRight />
-                                    <span>Salir</span>
-                                </Link>
+                                <div onClick={startLogout}>
+                                    <a>
+                                        <FaArrowCircleRight />
+                                        <span>Salir</span>
+                                    </a>
+                                </div>
                             </li>
                         </ul>
                     </nav>
@@ -226,6 +218,128 @@ export const SideBarComponent = () => {
         );
     }
 
+    if (adminSede) {
+        return (
+            <div className="main-container">
+                <div className="animate__animated animate__fadeInLeft">
+                    <nav id="sidebar" className={sidebarOpen ? '' : 'close'} >
+                        <ul>
+                            <li>
+                                <img src={sede?.se_foto} alt="Logo" style={{ width: "100px", height: "100px", padding: "10px" }} className="logo-fundacion" />
+                                <button onClick={toggleSidebar} id="toggle-btn" className={sidebarOpen ? '' : 'rotate'}>
+                                    <FaAngleDoubleLeft />
+                                </button>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/home'}>
+                                    <FaHome className='icon'/>
+                                    <span>Inicio</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/profile'}>
+                                    <FaUser className='icon'/>
+                                    <span>Perfil</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/pacientes'}>
+                                    <FaHospitalUser className='icon' />
+                                    <span>Pacientes</span>
+                                </Link>
+                            </li><li>
+                                <Link to={'/register'}>
+                                    <FaUserNurse className='icon'/>
+                                    <span>Enfermeras</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/register'}>
+                                    <FaHandshake className='icon'/>
+                                    <span>Colaborador</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/register'}>
+                                    <FaUsers className='icon'/>
+                                    <span>Registrar</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/gestionarPersonas'}>
+                                    <FaUsersCog className='icon'/>
+                                    <span>Ver Persona</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <div onClick={startLogout}>
+                                    <a>
+                                        <FaArrowCircleRight className='icon' />
+                                        <span>Salir</span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    {/* Contenedor del contenido principal */}
+                    <div className="content">
+                        {/* Aquí se carga el contenido principal para Super Admin */}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (enfermera) {
+        return (
+            <div className="main-container">
+                <div className="animate__animated animate__fadeInLeft">
+                    <nav id="sidebar" className={sidebarOpen ? '' : 'close'} >
+                        <ul>
+                            <li>
+                                <img src={sede?.se_foto} alt="Logo" style={{ width: "100px", height: "100px", padding: "10px" }} className="logo-fundacion" />
+                                <button onClick={toggleSidebar} id="toggle-btn" className={sidebarOpen ? '' : 'rotate'}>
+                                    <FaAngleDoubleLeft />
+                                </button>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/home'}>
+                                    <FaHome className='icon'/>
+                                    <span>Inicio</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/profile'}>
+                                    <FaUser className='icon'/>
+                                    <span>Perfil</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/pacientes'}>
+                                    <FaHospitalUser className='icon' />
+                                    <span>Pacientes</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <div onClick={startLogout}>
+                                    <a>
+                                        <FaArrowCircleRight className='icon' />
+                                        <span>Salir</span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    {/* Contenedor del contenido principal */}
+                    <div className="content">
+                        {/* Aquí se carga el contenido principal para Super Admin */}
+                    </div>
+                </div>
+            </div>
+        );
+    }
     // Fallback o menú para otros roles (opcional)
     return null;
 };

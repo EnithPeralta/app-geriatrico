@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import geriatricoApi from "../api/geriatricoApi";
 import { clearErrorMessage, onChecking, onLogin, onLogout } from "../store/auth/authSlice";
 import { persistor } from '../store/store';
+import { getToken } from "../helpers";
 
 
 export const useAuthStore = () => {

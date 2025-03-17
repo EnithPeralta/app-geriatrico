@@ -3,17 +3,19 @@ import React from 'react';
 export const PersonCardGestion = ({ persona, onClick, onEdit, onAssign }) => {
     return (
         <div
-            className={`sede-card-asignar`}
+            className={`user-card-container`}
             onClick={onClick}>
-            {persona.foto ? (
-                <img src={persona.foto} alt="Foto de perfil" className="asignar-img" />
-            ) : (
-                <i className="fas fa-user-circle "></i>
-            )}
-            <div className="sede-info">
-                <div className="full-name">{persona.nombre}</div>
-                <div className="CC">{persona.documento}</div>
-                <div className="CC">{persona.fechaRegistro}</div>
+            <div>
+                {persona.foto ? (
+                    <img src={persona.foto} alt="Foto de perfil" className="asignar-img" />
+                ) : (
+                    <i className="fas fa-user-circle "></i>
+                )}
+            </div>
+            <div className="user-details">
+                <div className="user-role">{persona.nombre}</div>
+                <div className="user-id">{persona.documento}</div>
+                <div className="user-name">{persona.correo}</div>
             </div>
 
             <div className="buttons-asignar">

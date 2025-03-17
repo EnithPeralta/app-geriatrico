@@ -122,6 +122,7 @@ export const usePaciente = () => {
     };
 
     const obtenerDetallePacienteSede = async (per_id) => {
+        console.log("📤 Enviando ID del paciente:", per_id);
         if (!per_id) {
             return {
                 success: false,
@@ -149,7 +150,7 @@ export const usePaciente = () => {
             if (!data?.paciente) {
                 return {
                     success: false,
-                    message: "Paciente no encontrado en el geriátrico al que perteneces.",
+                    message: data.message || "Paciente no encontrado en el geriátrico al que perteneces.",
                     paciente: null
                 };
             }
@@ -172,6 +173,7 @@ export const usePaciente = () => {
     };
 
     const actualizarDetallePaciente = async (per_id, datosPaciente) => {
+        console.log("📤 Enviando datos para actualizar paciente:", datosPaciente);
         const token = getToken();
 
         if (!token) {

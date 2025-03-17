@@ -281,7 +281,6 @@ export const useSede = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
     
-            console.log("✅ Respuesta del servidor:", data);
     
             // Desestructurar la respuesta del servidor
             const { sede, usuario, rol , geriatrico } = data;

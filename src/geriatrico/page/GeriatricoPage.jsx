@@ -7,7 +7,6 @@ import 'animate.css';
 import { LoadingComponet, ModalCrearGeriatrico, ModalGeriatrico, SideBarComponent, ModalEditarGeriatrico } from "../../components";
 
 export const GeriatricosPage = () => {
-    const navigate = useNavigate();
     const { obtenerGeriatricos, crearGeriatrico, actualizarGeriatrico, inactivarGeriatrico, reactivarGeriatrico } = useGeriatrico();
     const [geriatricos, setGeriatricos] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -212,8 +211,8 @@ export const GeriatricosPage = () => {
                     ) : (
                         <p className="no-results">No se encontraron resultados</p>
                     )}
-                    <div className="grid-add">
-                        <div className="grid-item" onClick={() => setIsCreateModalOpen(true)}>
+                    <div className="grid-item">
+                        <div className="grid-item-add" onClick={() => setIsCreateModalOpen(true)}>
                             <i className="fas fa-circle-plus" />
                             <p>Crear Geriatrico</p>
                         </div>

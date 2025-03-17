@@ -1,0 +1,128 @@
+.segimiento-item{
+    margin-bottom: 20px;
+}
+
+.h2 {
+  font-size: 24px;
+  color: #009ee2;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+.subtitle{
+  margin-bottom: 10px;
+}
+
+.options-seg {
+    margin-top: 10px;
+  }
+  
+  .field-group {
+    margin-bottom: 15px;
+  }
+  
+  .field-group label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input[type="text"],
+  input[type="file"]{
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 99%;
+  }
+
+  .history-button {
+    background-color: #009ee2;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .history-button:hover {
+    background-color: #007acc;
+  }
+  
+  
+  .save-button {
+    background-color: #009ee2;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .save-button:hover {
+    background-color: #007acc;
+  }
+  
+  .history-card{
+    background-color: #efefef;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 20px 20px 60px #bebebe,
+    -20px -20px 60px #ffffff;
+    position: relative;
+}
+
+.history-day{
+  margin-bottom: 50px;
+}
+.history-date{
+  font-size: 18px;
+  font-weight: 600;
+  color: #3d3d3d;
+  margin-bottom: 10px;
+}
+/* Estilos de cada elemento de medicación */
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 3px dashed #c8c8c8;
+}
+
+
+
+/* Estilos del nombre del medicamento */
+.history-name {
+  font-size: 16px;
+  color: #333;
+}
+
+/* Estilos de la hora del medicamento */
+.history-time {
+  font-size: 16px;
+  color: #777;
+}
+
+.search-input-seguimiento {
+  padding: 20px;
+  width: 38% !important;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: all 0.3s ease-in-out;
+  margin-bottom: 2rem;
+  position: relative;
+  left: 60%;
+  align-content: center;
+}
+
+/* Cambios al enfocar el input */
+.search-input-seguimiento:focus {
+border-color: #007bff;
+outline: none;
+}
+
+/* Cambia el placeholder cuando está enfocado */
+.search-input-seguimiento:focus::placeholder {
+color: #007bff;
+font-weight: 600;
+transition: color 0.3s ease-in-out;
+}

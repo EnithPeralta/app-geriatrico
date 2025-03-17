@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FaUser } from 'react-icons/fa';
 import '../../css/pinformation.css';
+import { useLocation } from 'react-router-dom';
 export const PInformation = ({ persona, onEdit }) => {
-    
+    const location = useLocation();
+    const title = location.pathname.includes('profile') ? 'Editar' : 'Acudiente';
+
     return (
         <div className="animate__animated animate__fadeInDown">
             <div className="profilee-card">
-                <div className="">
+                <div>
                     {persona && persona.foto ? (
                         <img src={persona.foto} alt="Foto de usuario" className="profile-icon" />
                     ) : (
-                        <div className="">
+                        <div className="profile-icon">
                             <FaUser size={40} />
                         </div>
                     )}
@@ -20,7 +23,7 @@ export const PInformation = ({ persona, onEdit }) => {
                     <div className="profile-id">{persona && persona.documento}</div>
                 </div>
                 <div className="button-container">
-                    <button className="acudiente-button" onClick={onEdit}>Editar</button>
+                    <button className="acudiente-button" onClick={onEdit}>{title}</button>
                 </div>
             </div>
         </div>

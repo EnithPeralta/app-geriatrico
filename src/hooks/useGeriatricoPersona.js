@@ -2,74 +2,44 @@ import geriatricoApi from "../api/geriatricoApi";
 import { getToken } from "../helpers/getToken";
 
 export const useGeriatricoPersona = () => {
-    // const vincularPersonaAGeriatrico = async (per_id) => {
-    //     const token = getToken();
-
-    //     if (!token) {
-    //         return {
-    //             success: false,
-    //             message: "Token de autenticación no encontrado.",
-    //         };
-    //     }
-
-    //     try {
-    //         const response = await geriatricoApi.post("/geriatricopersona/vincular",
-    //             { per_id },
-    //             {
-    //                 headers: {
-    //                     Authorization: `Bearer ${token}`,
-    //                     "Content-Type": "application/json",
-    //                 },
-    //             }
-    //         );
-
-    //         return {
-    //             success: true,
-    //             message: response.data.message || "Persona vinculada con éxito a la geriatría.",
-    //         };
-
-    //     } catch (error) {
-    //         console.error("Error al vincular persona a geriatría:", error.response || error.message);
-    //         return {
-    //             success: false,
-    //             message: error.response?.data?.message || "Error al vincular la persona a la geriatría.",
-    //             error: error.response?.data || error.message,
-    //         };
-    //     }
-    // };
-
+   
     const obtenerPersonaRolesMiGeriatricoSede = async (per_id) => {
+        if (!per_id) {
+            return {
+                success: false,
+                message: "ID de persona no proporcionado.",
+            };
+        }
+    
         const token = getToken();
-
         if (!token) {
             return {
                 success: false,
                 message: "Token de autenticación no encontrado.",
             };
         }
-
+    
         try {
             const response = await geriatricoApi.get(`/geriatricopersona/rolesGeriatrico/${per_id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                headers: { Authorization: `Bearer ${token}` },
             });
-
+    
             return {
                 success: true,
-                message: response.data.message || "Persona y roles obtenidos con éxito.",
-                persona: response.data.persona || null,
+                message: response.data?.message || "Persona y roles obtenidos con éxito.",
+                persona: response.data?.persona ?? {},  // Devuelve un objeto vacío si no hay datos
             };
-
         } catch (error) {
-            console.error("Error al obtener persona y roles:", error.response?.data || error.message);
-
+            console.error("Error al obtener persona y roles:", error);
+    
             return {
                 success: false,
                 message: error.response?.data?.message || "Error al obtener la información.",
+                errorCode: error.response?.status || null, // Agrega código de error HTTP si está disponible
             };
         }
     };
+    
 
     const personasVinculadasMiGeriatrico = async () => {
         const token = getToken();

@@ -14,3 +14,11 @@ export * from './Modal-Pacientes/ModalRegistrarPaciente';
 // ModalRegistrarPaciente.jsx
 export * from './Modal-Enfermera/ModalEnfermera';
 // ModalEnfermera.jsx
+export * from './InputField/InputField';
+// InputField.jsx
+export * from './SelectField/SelectField';
+ // SelectField.jsx
+export * from './CheckboxField/CheckboxField';
+// CheckboxField.jsx
+export * from './SelectSede/SelectSede';
+ // SelectSede.jsx

@@ -64,6 +64,11 @@ export const LoginPage = () => {
       // ✅ Guardamos el rol si hay uno solo
       seleccionarRol(rolAsignado);
 
+      if (rolAsignado.rol_id === 5) {
+        navigate("/geriatrico/pacientes");
+        return;
+    }
+
       // 🚀 Redirección basada en el tipo de rol
       switch (rolAsignado.tipo) {
         case "geriatrico":

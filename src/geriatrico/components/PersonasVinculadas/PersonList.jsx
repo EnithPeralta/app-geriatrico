@@ -1,6 +1,6 @@
 import React from 'react';
 import { CardPerson } from './CardPerson';
-import { RolesDisplayComponet } from '../../../components/RolesDisplayComponet';
+import { RolesDisplay } from './RolesDisplay';
 
 export const PersonList = ({
     personasFiltradas,
@@ -36,7 +36,7 @@ export const PersonList = ({
                     {/* Mostrar RolesDisplay solo si la tarjeta está activa */}
                     {activeCard === persona.per_id && (
                         <div style={{ marginTop: "10px" }}>
-                            <RolesDisplayComponet roles={roles} />
+                            <RolesDisplay roles={roles} />
                         </div>
                     )}
                 </div>

@@ -5,8 +5,8 @@ import { AssignCardGestion } from '../components/Gestions/AssignCardGestiona';
 import { ModalEditPersonComponent } from '../components/ModalEditPersonComponent';
 import '../../css/asignar.css'
 import Swal from 'sweetalert2';
-import { SideBarComponent } from '../../components';
-import { GoBackComponet } from '../../components/GoBackComponent';
+import { LoadingComponet, SideBarComponent } from '../../components';
+import { FaSearch } from 'react-icons/fa';
 
 export const GestionarPersonasPage = () => {
     const { obtenerPersonasRegistradas, obtenerPersonaRoles, updatePerson } = usePersona();
@@ -165,7 +165,8 @@ export const GestionarPersonasPage = () => {
         setShowEditModal(true);
     };
 
-    const handleEditSubmit = async (personaEditada) => {
+    const handleEditSubmit = async (event, personaEditada) => {
+        event.preventDefault();
         if (!personaEditada || !personaEditada.id) return;
 
         const personaActualizada = {
@@ -219,67 +220,64 @@ export const GestionarPersonasPage = () => {
 
     return (
         <>
-            <GoBackComponet />
-            <div className="bodyAsignar">
-                <div className="container-asignar">
-                    <div className="content-asignar">
-                        {/* <h2 className="title-asignar">Gestión de usuarios</h2> */}
-                        <div className="search-bar">
-                            <input
-                                type="text"
-                                className="search-input-asignar"
-                                placeholder="Buscar por Cédula..."
-                                value={searchCedula}
-                                onChange={(e) => setSearchCedula(e.target.value)}
-                            />
-                            <button className="search-button-asignar" onClick={buscarPersonaPorCedula}>
-                                <i className="fas fa-search" /> <span className="">Buscar</span>
-                            </button>
-                        </div>
-
-                        {loading ? (
-                            <p>Cargando personas...</p>
-                        ) : error ? (
-                            <p className="error">{error}</p>
-
-                        ) : (
-                            <div>
-                                <PersonListGestion
-                                    personasFiltradas={[filteredPersona]}
-                                    activeCard={activeCard}
-                                    handleCardClick={handleCardClick}
-                                    openEditModal={openEditModal}
-                                    openAssignCard={openAssignCard}
-                                    roles={roles}
-                                />
-                                {showAssignCard && selectedPersona?.id === filteredPersona.id && (
-                                    <AssignCardGestion
-                                        selectedGeriatrico={selectedGeriatrico}
-                                        setSelectedGeriatrico={setSelectedGeriatrico}
-                                        selectedRoles={selectedRoles}
-                                        setSelectedRoles={setSelectedRoles}
-                                        fechaInicio={fechaInicio}
-                                        setFechaInicio={setFechaInicio}
-                                        fechaFin={fechaFin}
-                                        setFechaFin={setFechaFin}
-                                        assigning={assigning}
-                                        handleAssignRole={handleAssignRole}
-                                    />
-                                )}
-                            </div>
-                        )}
-
-                        {showEditModal && editedPersona && (
-                            <ModalEditPersonComponent
-                                editedPersona={editedPersona}
-                                onSubmit={handleEditSubmit}
-                                onClose={() => setShowEditModal(false)}
-                            />
-                        )}
+            <div className="main-container">
+                <SideBarComponent />
+                <div className="content-area">
+                    <h2 className="gestionar-title">Gestionar Usuarios</h2>
+                    <div className="search-container">
+                        <input
+                            type="text"
+                            className="search-input-field"
+                            placeholder="Buscar por Cédula..."
+                            value={searchCedula}
+                            onChange={(e) => setSearchCedula(e.target.value)}
+                        />
+                        <button className="search-btn" onClick={buscarPersonaPorCedula}>
+                            <FaSearch />
+                        </button>
                     </div>
+
+                    {loading ? (
+                        <LoadingComponet />
+                    ) : error ? (
+                        <p className="error">{error}</p>
+
+                    ) : (
+                        <div>
+                            <PersonListGestion
+                                personasFiltradas={[filteredPersona]}
+                                activeCard={activeCard}
+                                handleCardClick={handleCardClick}
+                                openEditModal={openEditModal}
+                                openAssignCard={openAssignCard}
+                                roles={roles}
+                            />
+                            {showAssignCard && selectedPersona?.id === filteredPersona.id && (
+                                <AssignCardGestion
+                                    selectedGeriatrico={selectedGeriatrico}
+                                    setSelectedGeriatrico={setSelectedGeriatrico}
+                                    selectedRoles={selectedRoles}
+                                    setSelectedRoles={setSelectedRoles}
+                                    fechaInicio={fechaInicio}
+                                    setFechaInicio={setFechaInicio}
+                                    fechaFin={fechaFin}
+                                    setFechaFin={setFechaFin}
+                                    assigning={assigning}
+                                    handleAssignRole={handleAssignRole}
+                                />
+                            )}
+                        </div>
+                    )}
+
+                    {showEditModal && editedPersona && (
+                        <ModalEditPersonComponent
+                            editedPersona={editedPersona}
+                            onSubmit={handleEditSubmit}
+                            onClose={() => setShowEditModal(false)}
+                        />
+                    )}
                 </div>
             </div>
-
         </>
     );
 

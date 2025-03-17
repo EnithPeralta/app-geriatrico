@@ -2,64 +2,6 @@
     display: flex;
   }
 
-  /* .sidebar {
-    background-color: #d9d9d9;
-    width: 16rem;
-    height: 120vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem;
-  }
-  
-  .sidebar .logo {
-    color: white;
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-  }
-  
-  .sidebar .icons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-    color: #3d3d3d;
-}
-
-
-
-.sidebar .icon {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: .3s;
-    font-weight: 400;
-    height: 30px;
-    
-    
-} */
-
-.sidebar .icon:hover {
-    background-color: #00000023;
-    transform: translateY(-2px);
-}
-
-.sidebar .icon i {
-    color: #3d3d3d;
-    font-size: 1.3rem;
-}
-
-.sidebar .icon {
-    background-color: #bb191900;
-    border-left: 5px solid #3d3d3d00; /* Color de selección */
-    font-weight: 600;
-    width: 14rem;
-}
-
   .main-content {
     flex: 1;
     padding: 2rem;
@@ -418,7 +360,8 @@
 .modal-field input[type="text"],
 .modal-field input[type="email"],
 .modal-field input[type="password"],
-.modal-field input[type="file"] {
+.modal-field input[type="file"],
+.modal-field input[type="select"] {
   width: 100%;
   padding: 8px;
   border: 1px solid #cbd5e0;
@@ -633,6 +576,12 @@
   justify-content: center;
 }
 
+.fa-circle-plus{
+  font-size: 30px;
+  color: #0090BC;
+  display: flex;
+  justify-content: center;
+}
 
 /* Media Query para pantallas más pequeñas */
 @media (max-width: 768px) {
@@ -640,33 +589,7 @@
       flex-direction: column; /* Apilar sidebar y contenido principal verticalmente */
   }
 
-  .sidebar {
-      width: 100%; /* El sidebar ocupa todo el ancho */
-      height: auto; /* Ajustar la altura al contenido */
-      position: static; /* Remover el posicionamiento fijo */
-      overflow-y: visible; /* Deshabilitar el scroll vertical */
-      padding: 0.5rem;
-  }
-
-  .sidebar .icons {
-      flex-direction: row;
-      justify-content: space-around;
-      width: 100%;
-      align-items: center;
-      gap: 0;
-  }
-
-  .sidebar .icon {
-      width: auto;
-      font-size: 0.8rem;
-      padding: 5px;
-      gap: 0.2rem;
-  }
-
-  .sidebar .icon i {
-      font-size: 1rem;
-  }
-
+  
   .main-content {
       padding: 1rem; /* Reducir el padding en pantallas pequeñas */
   }

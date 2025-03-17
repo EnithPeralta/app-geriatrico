@@ -2,8 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AuthRoutes } from "../auth/routes/AuthRoutes";
 import { useEffect } from "react";
 import { LoadingComponet } from "../components";
-import { ForgotPasswordPage, ResetPasswordPage } from "../auth/page";
-import { RegisterPage } from "../auth/page/RegisterPage";
+import { ForgotPasswordPage, RegisterPage, ResetPasswordPage } from "../auth/page";
 import { useAuthStore } from "../hooks";
 import { GeriatricoRoutes } from "../geriatrico/routes/GeriatricoRoutes";
 

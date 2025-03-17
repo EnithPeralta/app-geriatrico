@@ -80,17 +80,6 @@ export const ModalEditPersonComponent = ({ editedPersona, onSubmit, onClose }) =
                             />
                         </div>
                         <div className="modal-field">
-                            <label>Documento:</label>
-                            <input
-                                className="modal-input"
-                                type="text"
-                                name="documento"
-                                value={personaEditada.documento || ""}
-                                onChange={handleEditChange}
-                                required
-                            />
-                        </div>
-                        <div className="modal-field">
                             <label>Correo:</label>
                             <input
                                 className="modal-input"

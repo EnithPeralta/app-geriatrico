@@ -6,18 +6,18 @@ export const RolesDisplayComponet = ({ roles }) => {
     return (
         <>
             {roles.rolesGeriatrico.length > 0 && (
-                <div className="sede-card-asignar">
+                <div className="user-card-container">
                     {roles.rolesGeriatrico.map((rol, index) => (
-                        <div key={index} className="sede-info">
-                            <div className="status-icon-active-sede">
+                        <div key={index} className="user-details">
+                            <div className="status-icon-active-rol">
                                 {rol.rol_activo ? (
                                     <i className="fa-solid fa-circle-check activo"></i>
                                 ) : (
                                     <i className="fa-solid fa-circle-xmark inactivo"></i>
                                 )}
                             </div>
-                            <span className="full-name">{rol.rol_nombre}</span>
-                            <span className="CC">{rol.fechaInicio} - {rol.fechaFin}</span>
+                            <span className="user-name">{rol.rol_nombre}</span>
+                            <span className="user-id">{rol.fechaInicio} - {rol.fechaFin ? rol.fechaFin : "Indefinido"}</span>
                         </div>
                     ))}
                 </div>
@@ -27,17 +27,17 @@ export const RolesDisplayComponet = ({ roles }) => {
                 <div className="sede-card-asignar">
                     {roles.rolesSede.map((rol, index) => (
                         <div key={index} className="">
-                            <div className="status-icon-active-sede">
+                            <div className="status-icon-active-rol">
                                 {rol.rol_activo ? (
                                     <i className="fa-solid fa-circle-check activo"></i>
                                 ) : (
                                     <i className="fa-solid fa-circle-xmark inactivo"></i>
                                 )}
                             </div>
-                            <div className="sede-info">
-                                <span className="full-name">{rol.rol_nombre}</span>
-                                <span className="CC">{rol.se_nombre}</span>
-                                <span className="CC">{rol.fechaInicio} - {rol.fechaFin ? rol.fechaFin : "Indefinido"}</span>
+                            <div className="user-details">
+                                <span className="user-name">{rol.rol_nombre}</span>
+                                <span className="user-id">{rol.sede.se_nombre}</span>
+                                <span className="user-id">{rol.fechaInicio} - {rol.fechaFin ? rol.fechaFin : "Indefinido"}</span>
                             </div>
                         </div>
                     ))}

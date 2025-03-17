@@ -1,0 +1,241 @@
+:root {
+    --primary-color: #33B0D7;
+    --secondary-color: #D0D0D0;
+    --light-color: #ECECEC;
+    --text-dark: #3D3D3D;
+    --text-gray: #888;
+    --text-light: #666;
+    --bg-light: #D9D9D9;
+    --bg-input: #E9E9E9;
+    --shadow-main: rgba(0, 0, 0, 0.2);
+    --shadow-subtle: rgba(0, 0, 0, 0.1);
+}
+.cuadrado-register {
+    background: linear-gradient(var(--light-color), var(--secondary-color));
+    width: 40vw;
+    height: 100vh;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+    z-index: 1;
+    overflow: hidden;
+}
+.circle-1, 
+.circle-2 {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    z-index: 1;
+    box-shadow: 
+        -30px -15px 30px 5px rgba(255, 255, 255, 0.527),
+        30px 15px 30px 15px #0000004c,
+        inset 15px 15px 25px 10px #0000003a,
+        inset -15px -15px 45px 15px #ffffff68;
+}
+
+.circle-1 {
+    right: -200px;
+    top: -200px;
+}
+
+.circle-2 {
+    left: -100px;
+    bottom: -100px;
+}
+
+.content-wrapper {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+}
+
+.seccion-titulo {
+    margin-bottom: 0px;
+    padding-left: 20px;
+    padding-bottom: 20px;
+    padding: 1rem;
+}
+
+.seccion-titulo h1 {
+    font-size: 35px;
+    padding: 10px;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.seccion-titulo h1 span {
+    color: var(--primary-color);
+}
+
+.subtitulo, 
+.login-text {
+    color: var(--text-gray);
+    padding-left: 15px;
+}
+
+.login-text a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.form-container {
+    background: var(--bg-light);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px var(--shadow-main);
+}
+
+.input-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.input-grid-container{
+    padding-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.input-container-register {
+    background: var(--bg-input);
+    padding: 15px 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px var(--shadow-subtle);
+    display: flex;
+    flex-direction: column;
+}
+
+.input-container-register.span-2 {
+    grid-column: span 2;
+}
+
+.input-container-register label {
+    font-size: 0.9em;
+    color: var(--text-gray);
+    margin-bottom: 5px;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    color: var(--text-dark);
+    background: transparent;
+}
+
+.input-wrapper i {
+    color: var(--text-light);
+    font-size: 1.1em;
+}
+
+.register-button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    align-items: center;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 20px;
+    box-shadow: 0 4px 15px rgba(75, 181, 195, 0.3);
+    width: 35%;
+}
+
+.register{
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    font-size: 20px;
+    padding: 15px 20px;
+  }
+.custom-select-container{
+    width: 100%;
+    display: flex;
+    padding: 7px;
+    margin: 5px ;
+    font-size: 13px;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    color: #333;
+}
+.search-container-asignar {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 100rem;
+    gap: 10px;
+    margin-top: 0px;
+}
+.search-button-buscar{
+    background-color: #009ee2;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 150px;
+}
+/* Estilos específicos para pantallas móviles */
+@media (max-width: 768px) {
+    .BodyLogin {
+        padding: 20px;
+    }
+
+    .cuadrado-register {
+        width: 100%;
+        height: auto;
+        padding: 1rem;
+        position: static;
+    }
+
+    .circletop, 
+    .circlebottom {
+        display: none; 
+    }
+
+    .content-wrapper {
+        padding: 20px;
+    }
+
+    .seccion-titulo h1 {
+        font-size: 2em; 
+    }
+
+    .form-container {
+        padding: 20px;
+    }
+
+    .input-grid {
+        grid-template-columns: 1fr; 
+        gap: 20px; 
+    }
+
+    .register-button {
+        width: 100%;
+        margin-top: 15px;
+    }
+}

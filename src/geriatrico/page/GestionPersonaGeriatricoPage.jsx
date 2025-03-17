@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ModalEnfermera, ModalRegistrarPaciente } from "../../components";
+import { LoadingComponet, ModalEnfermera, ModalRegistrarPaciente, SideBarComponent } from "../../components";
 import { useEnfermera, useGeriatrico, useGeriatricoPersona, usePaciente, usePersona, useSedesRol } from "../../hooks";
 import { ModalEditPersonComponent } from "../components/ModalEditPersonComponent";
 import Swal from "sweetalert2";
@@ -470,8 +470,6 @@ export const GestionPersonaGeriatricoPage = () => {
         setShowEditModal(true);
     };
 
-
-
     const handleEditSubmit = async (event, datosPersona) => {
         event.preventDefault(); // Evita que el formulario recargue la página
 
@@ -517,83 +515,79 @@ export const GestionPersonaGeriatricoPage = () => {
     }
 
     return (
-        <div className="bodyAsignar" style={{ backgroundColor: geriatrico?.color_principal }}>
-            <GoBackComponet />
-            <div className="container-asignar">
-                <div className="layout-asignar">
-                    <div className="content-asignar">
-                        <h2 className="title-asignar">Personas Vinculadas</h2>
-                        <div className="search-bar-asignar">
-                            <input
-                                type="text"
-                                className="search-input-asignar"
-                                placeholder="Buscar por nombre o documento..."
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
-                        </div>
-                        {loading ? (
-                            <span className="loader" />
-                        ) : error ? (
-                            <div className="error">{error}</div>
-                        ) : (
-                            <div className="container-cards">
-                                <PersonList
-                                    personasFiltradas={personasFiltradas}
-                                    activeCard={activeCard}
-                                    handleCardClick={handleCardClick}
-                                    openEditModal={openEditModal}
-                                    openAssignCard={openAssignCard}
-                                    handleInactivarVinculacion={handleInactivarVinculacion}
-                                    handleReactivarVinculacion={handleReactivarVinculacion}
-                                    roles={roles}
-                                />
+        <div className="main-container" style={{ backgroundColor: geriatrico?.color_principal }}>
+            <SideBarComponent />
+            <div className="content-area">
+                <h2 className="gestionar-title">Personas Vinculadas</h2>
+                <div className="search-container">
+                    <input
+                        type="text"
+                        className="search-input-field"
+                        placeholder="Buscar por nombre o documento..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
+                {loading ? (
+                    <LoadingComponet />
+                ) : error ? (
+                    <div className="error">{error}</div>
+                ) : (
+                    <div>
+                        <PersonList
+                            personasFiltradas={personasFiltradas}
+                            activeCard={activeCard}
+                            handleCardClick={handleCardClick}
+                            openEditModal={openEditModal}
+                            openAssignCard={openAssignCard}
+                            handleInactivarVinculacion={handleInactivarVinculacion}
+                            handleReactivarVinculacion={handleReactivarVinculacion}
+                            roles={roles}
+                        />
 
-                                {showAssignCard && selectedPersona?.per_id && (
-                                    <AssignCard
-                                        selectedRoles={selectedRoles}
-                                        setSelectedRoles={setSelectedRoles}
-                                        selectedSedes={selectedSedes}
-                                        setSelectedSedes={setSelectedSedes}
-                                        fechaInicio={fechaInicio}
-                                        setFechaInicio={setFechaInicio}
-                                        fechaFin={fechaFin}
-                                        setFechaFin={setFechaFin}
-                                        assigning={assigning}
-                                        handleAssignRole={handleAssignRole}
-                                        handleAssignSedes={handleAssignSedes}
-                                        onClose={resetForm}
-                                    />
-                                )}
-                                {showEditModal && editedPersona && (
-                                    <ModalEditPersonComponent
-                                        editedPersona={editedPersona}
-                                        onSubmit={handleEditSubmit}
-                                        onClose={() => setShowEditModal(false)}
-                                    />
-                                )}
-                                {showModal && selectedPersona && (
-                                    <ModalRegistrarPaciente
-                                        datosIniciales={selectedPersona}
-                                        onRegister={handlePaciente}
-                                        onClose={() => setShowModal(false)}
-                                        selectedRoles={selectedRoles}
-                                        setSelectedRoles={setSelectedRoles}
-                                    />
-                                )}
-                                {showModalEnfermera && selectedPersona && (
-                                    <ModalEnfermera
-                                        datosInicial={selectedPersona}
-                                        onRegistrar={handleEnfermera}
-                                        onClose={() => setShowModalEnfermera(false)}
-                                        selectedRoles={selectedRoles}
-                                        setSelectedRoles={setSelectedRoles}
-                                    />
-                                )}
-                            </div>
+                        {showAssignCard && selectedPersona?.per_id && (
+                            <AssignCard
+                                selectedRoles={selectedRoles}
+                                setSelectedRoles={setSelectedRoles}
+                                selectedSedes={selectedSedes}
+                                setSelectedSedes={setSelectedSedes}
+                                fechaInicio={fechaInicio}
+                                setFechaInicio={setFechaInicio}
+                                fechaFin={fechaFin}
+                                setFechaFin={setFechaFin}
+                                assigning={assigning}
+                                handleAssignRole={handleAssignRole}
+                                handleAssignSedes={handleAssignSedes}
+                                onClose={resetForm}
+                            />
+                        )}
+                        {showEditModal && editedPersona && (
+                            <ModalEditPersonComponent
+                                editedPersona={editedPersona}
+                                onSubmit={handleEditSubmit}
+                                onClose={() => setShowEditModal(false)}
+                            />
+                        )}
+                        {showModal && selectedPersona && (
+                            <ModalRegistrarPaciente
+                                datosIniciales={selectedPersona}
+                                onRegister={handlePaciente}
+                                onClose={() => setShowModal(false)}
+                                selectedRoles={selectedRoles}
+                                setSelectedRoles={setSelectedRoles}
+                            />
+                        )}
+                        {showModalEnfermera && selectedPersona && (
+                            <ModalEnfermera
+                                datosInicial={selectedPersona}
+                                onRegistrar={handleEnfermera}
+                                onClose={() => setShowModalEnfermera(false)}
+                                selectedRoles={selectedRoles}
+                                setSelectedRoles={setSelectedRoles}
+                            />
                         )}
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );
