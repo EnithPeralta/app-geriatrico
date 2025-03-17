@@ -9,13 +9,14 @@ export const SideBarComponent = () => {
     const { startLogout } = useAuthStore();
     const { obtenerSesion } = useSession();
     const { homeMiGeriatrico } = useGeriatrico();
-    const {obtenerSedesHome} = useSede()
+    const { obtenerSedesHome } = useSede()
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [subMenuOpen, setSubMenuOpen] = useState({});
     const [esSuperAdmin, setEsSuperAdmin] = useState(false);
     const [adminGeriatrico, setAdminGeriatrico] = useState(false);
     const [adminSede, setAdminSede] = useState(false);
     const [enfermera, setEnfermera] = useState(false);
+    const [acudiente, setAcudiente] = useState(false);
     const [geriatrico, setGeriatrico] = useState(null);
     const [sede, setSede] = useState([]);
     const [error, setError] = useState(null);
@@ -30,6 +31,7 @@ export const SideBarComponent = () => {
                 setAdminGeriatrico(sesion?.rol_id === 2);
                 setAdminSede(sesion?.rol_id === 3);
                 setEnfermera(sesion?.rol_id === 5);
+                setAcudiente(sesion?.rol_id === 6);
             };
             fetchSesion();
             fetchedRef.current = true;
@@ -71,6 +73,7 @@ export const SideBarComponent = () => {
 
         fetchSedeEspecifica();
     }, []);
+
 
 
     const toggleSidebar = () => {
@@ -232,13 +235,13 @@ export const SideBarComponent = () => {
                             </li>
                             <li>
                                 <Link to={'/geriatrico/home'}>
-                                    <FaHome className='icon'/>
+                                    <FaHome className='icon' />
                                     <span>Inicio</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link to={'/geriatrico/profile'}>
-                                    <FaUser className='icon'/>
+                                    <FaUser className='icon' />
                                     <span>Perfil</span>
                                 </Link>
                             </li>
@@ -249,25 +252,25 @@ export const SideBarComponent = () => {
                                 </Link>
                             </li><li>
                                 <Link to={'/register'}>
-                                    <FaUserNurse className='icon'/>
+                                    <FaUserNurse className='icon' />
                                     <span>Enfermeras</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link to={'/register'}>
-                                    <FaHandshake className='icon'/>
+                                    <FaHandshake className='icon' />
                                     <span>Colaborador</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link to={'/register'}>
-                                    <FaUsers className='icon'/>
+                                    <FaUsers className='icon' />
                                     <span>Registrar</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link to={'/geriatrico/gestionarPersonas'}>
-                                    <FaUsersCog className='icon'/>
+                                    <FaUsersCog className='icon' />
                                     <span>Ver Persona</span>
                                 </Link>
                             </li>
@@ -305,13 +308,13 @@ export const SideBarComponent = () => {
                             </li>
                             <li>
                                 <Link to={'/geriatrico/home'}>
-                                    <FaHome className='icon'/>
+                                    <FaHome className='icon' />
                                     <span>Inicio</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link to={'/geriatrico/profile'}>
-                                    <FaUser className='icon'/>
+                                    <FaUser className='icon' />
                                     <span>Perfil</span>
                                 </Link>
                             </li>
@@ -321,6 +324,57 @@ export const SideBarComponent = () => {
                                     <span>Pacientes</span>
                                 </Link>
                             </li>
+                            <li>
+                                <div onClick={startLogout}>
+                                    <a>
+                                        <FaArrowCircleRight className='icon' />
+                                        <span>Salir</span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    {/* Contenedor del contenido principal */}
+                    <div className="content">
+                        {/* Aquí se carga el contenido principal para Super Admin */}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (acudiente) {
+        return (
+            <div className="main-container">
+                <div className="animate__animated animate__fadeInLeft">
+                    <nav id="sidebar" className={sidebarOpen ? '' : 'close'} >
+                        <ul>
+                            <li>
+                                <img src={sede?.se_foto} alt="Logo" style={{ width: "100px", height: "100px", padding: "10px" }} className="logo-fundacion" />
+                                <button onClick={toggleSidebar} id="toggle-btn" className={sidebarOpen ? '' : 'rotate'}>
+                                    <FaAngleDoubleLeft />
+                                </button>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/home'}>
+                                    <FaHome className='icon' />
+                                    <span>Inicio</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/misPacientes'}>
+                                    <FaHospitalUser className='icon' />
+                                    <span>Pacientes</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/profile'}>
+                                    <FaUser className='icon' />
+                                    <span>Perfil</span>
+                                </Link>
+                            </li>
+
                             <li>
                                 <div onClick={startLogout}>
                                     <a>

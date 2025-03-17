@@ -13,11 +13,12 @@ export const HistorySeguimientoPage = () => {
     const { obtenerAcudientesDePaciente } = useAcudiente();
     const { obtenerHistorialSeguimientos } = useSeguimiento();
     const [paciente, setPaciente] = useState(null);
-    const [pacienteSeguimiento, setPacienteSeguimiento] = useState(null);
     const [error, setError] = useState(null);
     const [historialSeguimiento, setHistorialSeguimiento] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+    const [selectedId, setSelectedId] = useState(null);
+
 
     // Obtener datos del paciente
     useEffect(() => {
@@ -25,7 +26,7 @@ export const HistorySeguimientoPage = () => {
             try {
                 const response = await obtenerDetallePacienteSede(id);
                 console.log("📌 Respuesta de la API - Paciente:", response);
-    
+
                 if (response.success) {
                     setPaciente(response.paciente);
                     console.log("✅ Paciente guardado en estado:", response.paciente);
@@ -37,10 +38,10 @@ export const HistorySeguimientoPage = () => {
                 setError("Error al obtener los datos del paciente.");
             }
         };
-    
+
         fetchPaciente();
     }, []);
-    
+
 
     // Obtener historial de seguimientos cuando el paciente está disponible
     useEffect(() => {
@@ -100,6 +101,14 @@ export const HistorySeguimientoPage = () => {
             setError("Error al obtener el detalle del paciente.");
         }
     };
+
+
+    const handleEdit = (id) => {
+        setSelectedId(id);
+        setShowModal(true);
+    };
+
+
 
     return (
         <div className='animate__animated animate__fadeIn animate__faster'>
@@ -172,9 +181,11 @@ export const HistorySeguimientoPage = () => {
                                         />
                                     </div>
                                     <div className='button-container'>
-                                        <button className='save-button' onClick={() => setShowModal(true)}>
+                                        <button className='save-button' onClick={() => handleEdit(seguimiento.seg_id)}>
                                             <FaEdit />
                                         </button>
+
+
                                     </div>
                                 </div>
                             </div>
@@ -183,13 +194,11 @@ export const HistorySeguimientoPage = () => {
                         <LoadingComponet />
                     )}
                 </div>
-                {showModal && (
+                {showModal &&
                     <ModalActualizarSeguimiento
-                        pacienteSeguimiento={pacienteSeguimiento}
-                        onClose={() => setShowModal(false)}
+                        id={selectedId}
                         setShowModal={setShowModal}
-                    />
-                )}
+                    />}
             </div>
         </div>
     );

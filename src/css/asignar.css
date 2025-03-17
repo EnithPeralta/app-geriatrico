@@ -176,6 +176,7 @@
     margin-bottom: 20px;
     transition: .3S;
     position: relative;
+    cursor: pointer;
   }
   
   .user-card-container:hover {

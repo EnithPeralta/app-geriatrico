@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { usePaciente } from "../../../hooks";
-import { useParams } from "react-router-dom";
 
 export const ModalEditarPaciente = ({ paciente, cerrarModal }) => {
     const { actualizarDetallePaciente, obtenerDetallePacienteSede } = usePaciente();
-    const { id } = useParams();
 
     const [datosPaciente, setDatosPaciente] = useState({
         pac_id: "",
@@ -79,20 +77,20 @@ export const ModalEditarPaciente = ({ paciente, cerrarModal }) => {
         }
     };
 
-    // const handleFileChange = (e) => {
-    //     const file = e.target.files[0];
-    //     if (file) {
-    //         const reader = new FileReader();
-    //         reader.onloadend = () => {
-    //             setDatosPaciente(prev => ({
-    //                 ...prev,
-    //                 foto: file,  // Guardar el archivo
-    //                 previewFoto: reader.result  // Vista previa de la imagen
-    //             }));
-    //         };
-    //         reader.readAsDataURL(file);
-    //     }
-    // };
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setDatosPaciente(prev => ({
+                    ...prev,
+                    foto: file,  // Guardar el archivo
+                    previewFoto: reader.result  // Vista previa de la imagen
+                }));
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
 
     return (
@@ -101,7 +99,7 @@ export const ModalEditarPaciente = ({ paciente, cerrarModal }) => {
                 <div className="modal-content">
                     <h2>Editar Paciente</h2>
                     <form onSubmit={handleEditarPaciente}>
-                    {/* <div className="modal-img">
+                    <div className="modal-img">
                             {datosPaciente.previewFoto ? (
                                 <img
                                     src={datosPaciente.previewFoto}
@@ -128,7 +126,7 @@ export const ModalEditarPaciente = ({ paciente, cerrarModal }) => {
                                 accept="image/*"
                                 onChange={handleFileChange}
                             />
-                        </div> */}
+                        </div>
                         <div className="modal-field">
                             <label>Nombre EPS:</label>
                             <input

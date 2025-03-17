@@ -90,7 +90,6 @@ export const useSeguimiento = () => {
     };
     
     const obtenerSeguimientosPorId = async(seg_id) =>{
-        console.log("📌 Datos a enviar:", { seg_id });
         const token = getToken();
         if (!token) {
             return {
@@ -135,8 +134,21 @@ export const useSeguimiento = () => {
         }
     
         try {
-            const response = await geriatricoApi.put(`/seguimientos/actualizar/${segIdNum}`, datoSeguimiento, {
-                headers: { Authorization: `Bearer ${token}` },
+            // Convertir `datoSeguimiento` en FormData
+            const formData = new FormData();
+            Object.keys(datoSeguimiento).forEach((key) => {
+                if (key === "seg_foto" && datoSeguimiento.seg_foto instanceof File) {
+                    formData.append("seg_foto", datoSeguimiento.seg_foto); // Adjunta la imagen
+                } else {
+                    formData.append(key, datoSeguimiento[key]);
+                }
+            });
+    
+            const response = await geriatricoApi.put(`/seguimientos/actualizar/${segIdNum}`, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data", // Indicar que se envían archivos
+                },
             });
     
             console.log("✅ Respuesta del servidor:", response.data);
@@ -144,7 +156,7 @@ export const useSeguimiento = () => {
             return {
                 success: true,
                 message: response.data.message || "Seguimiento actualizado con éxito.",
-                data: response.datos ?? {},
+                data: response.data ?? {},
             };
     
         } catch (error) {

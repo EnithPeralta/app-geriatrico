@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { SideBarComponent } from '../../components';
 import { PInformation } from '../layout';
-import { useAcudiente, usePaciente } from '../../hooks';
+import { useAcudiente, usePaciente, useSession } from '../../hooks';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ModalEditarPaciente } from '../components/Paciente/ModalEditarPaciente';
 
@@ -13,8 +13,10 @@ export const PacienteEspecificoPage = () => {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [showEditarPersona, setShowEditarPersona] = useState(false);
+    const { session, obtenerSesion } = useSession();
 
     useEffect(() => {
+        obtenerSesion();
         const fetchPaciente = async () => {
             try {
                 const response = await obtenerDetallePacienteSede(id);
@@ -70,11 +72,17 @@ export const PacienteEspecificoPage = () => {
                         <div className="info-card">
                             <div className='gestionar'>
                                 <h2 className='gestionar-title'>Información Personal</h2>
-                                <button className='gestionar-btn' onClick={() => setShowEditarPersona(true)}>Editar</button>
+                                {session?.rol_id === 3 && (
+                                    <button className='gestionar-btn' onClick={() => setShowEditarPersona(true)}>Editar</button>
+                                )}                            </div>
+                            <div className='button-container'>
+                                {session?.rol_id === 5 && (
+                                    <>
+                                        <button className='gestionar-btn' onClick={() => handleCuidados(paciente?.per_id)}>Cuidados</button>
+                                        <button className='gestionar-btn' onClick={() => handleSeguimiento(paciente?.per_id)}>Seguimiento</button>
+                                    </>
+                                )}
                             </div>
-                            <button className='cuidados-btn' onClick={() => handleCuidados(paciente?.per_id)}>Cuidados</button>
-                            <button className='seguimiento-btn' onClick={() => handleSeguimiento(paciente?.per_id)}>Seguimiento</button>
-
                             <div className="grid-4-columns">
                                 {[
                                     { label: "Nombre Completo", value: paciente?.nombre },

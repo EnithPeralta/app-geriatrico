@@ -49,6 +49,12 @@ export const HomePage = () => {
         } else if (rolSeleccionado.rol_id === 2) {
             console.log("🔀 Redirigiendo a /geriatrico/sedes...");
             navigate(`/geriatrico/sedes`);
+        }else if (rolSeleccionado.rol_id ===5) {
+            console.log("🔀 Redirigiendo a /geriatrico/pacientes...");
+            navigate(`/geriatrico/pacientes`);
+        }else if (rolSeleccionado.rol_id ===6) {
+            console.log("🔀 Redirigiendo a /geriatrico/misPacientes...");
+            navigate(`/geriatrico/misPacientes`);
         }
     }, [rolSeleccionado, navigate]);
 

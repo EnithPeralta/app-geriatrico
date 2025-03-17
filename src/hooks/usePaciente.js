@@ -185,7 +185,15 @@ export const usePaciente = () => {
         }
 
         try {
-            const { data } = await geriatricoApi.put(`pacientes/${per_id}`, datosPaciente, {
+            const formData = new FormData();
+            Object.keys(datosPaciente).forEach((key) => {
+                if (key === "foto" && datosPaciente.foto instanceof File) {
+                    formData.append("foto", datosPaciente.foto); // Adjunta la imagen
+                } else {
+                    formData.append(key, datosPaciente[key]);
+                }
+            });
+            const { data } = await geriatricoApi.put(`pacientes/${per_id}`, formData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

@@ -67,7 +67,10 @@ export const LoginPage = () => {
       if (rolAsignado.rol_id === 5) {
         navigate("/geriatrico/pacientes");
         return;
-    }
+      }else if (rolAsignado.rol_id === 6) {
+        navigate("/geriatrico/misPacientes");
+        return;
+      }
 
       // 🚀 Redirección basada en el tipo de rol
       switch (rolAsignado.tipo) {
