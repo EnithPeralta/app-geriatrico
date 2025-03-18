@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import { AcudientePacientePage, AcudientePage, AdminSuperPage, CuidadosEnfermeriaPage, EnfermerasPage, GeriatricosPage, GestionarPersonasPage, GestionPersonaGeriatricoPage, HistorySeguimientoPage, HomePage, PacienteEspecificoPage, PacientesPage, ProfilePage, RolesPage, SedeEspecificaPage, SedesPage, SeguimientoPage } from '../page'
+import { AcudientePacientePage, AcudientePage, AdminSuperPage, CuidadosEnfermeriaPage, EnfermerasPage, GeriatricosPage, GestionarPersonasPage, GestionPersonaGeriatricoPage, HistorySeguimientoPage, HistoyGeriatricoPage, HomePage, PacienteEspecificoPage, PacientesPage, ProfilePage, RolesPage, SedeEspecificaPage, SedesPage, SeguimientoPage } from '../page'
 
 export const GeriatricoRoutes = () => {
     return (
@@ -22,7 +22,7 @@ export const GeriatricoRoutes = () => {
             <Route path="cuidadosEnfermeria/:id" element={<CuidadosEnfermeriaPage />} />
             <Route path="seguimientos/:id" element={<SeguimientoPage />} />
             <Route path="historial/:id" element={<HistorySeguimientoPage />} />
-
+            <Route path="historialGeriatrico/:id" element={<HistoyGeriatricoPage />} />
         </Routes>
     )
 }

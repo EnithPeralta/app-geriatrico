@@ -67,7 +67,7 @@ export const PacientesPage = () => {
                 <div className="search-container">
                     <input
                         type="text"
-                        className="search-input-field"
+                        className="search-input"
                         placeholder="Buscar por nombre o documento..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}

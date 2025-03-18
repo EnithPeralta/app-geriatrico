@@ -139,9 +139,7 @@
     overflow: hidden;
     background-color: rgb(238, 238, 238);
     padding: 20px;
-    padding-bottom: 20px;
     border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -151,7 +149,7 @@
     0.3em 0.3em 1em rgba(37, 37, 37, 0.242);
     transition: .3s;
     max-width: 400px; /* Ajusta el ancho máximo */
-    width: 90%; /* Para que ocupe el ancho disponible en la columna */
+    width: 70%; /* Para que ocupe el ancho disponible en la columna */
     margin-left: 30px;
   }
 
@@ -296,42 +294,6 @@
   background-color: #006f91;
   cursor: pointer;
 }
-/* Modal */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 400px; /* Aumentado un poco para mejorar el espaciado */
-}
-
-.modal-geriatrico{
-  background-color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 80%;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 900px; /* Ajusta el ancho máximo */
-  max-height: 80vh; /* No ocupar más del 80% de la altura de la pantalla */
-  overflow-y: auto; /* Habilita el scroll si hay mucho contenido */
-}
 
 
 .geriatrico-logo{
@@ -448,12 +410,22 @@
 .modal-name{
   font-size: 20px;
   font-weight: 400;
-  margin-bottom: 16px;
+  margin-bottom: 30px;
   color: #4a5568;
   text-align: center;
   display: flex;
   justify-content: center;
   border-bottom: 1px solid #374151;
+}
+
+.modal-nit{
+  font-size: 20px;
+  font-weight: 300;
+  margin-bottom: 30px;
+  color: #4a5568;
+  text-align: center;
+  display: flex;
+  justify-content: center;
 }
 
 .modal-name-sede{
@@ -554,26 +526,10 @@
   justify-content: center;
 }
 
-.modal-name-sedetalles{
-  color: #6b7280;
-  font-size: 20px;
-  font-weight: 400;
-  margin-bottom: 16px;
-  text-align: center;
+.details{
   display: flex;
-  justify-content: baseline;
-}
-
-.modal-image{
-  display: flex;
-  justify-content: center;
-  margin-bottom: 16px;
-  position: relative;
-  left: 9rem;
-  font-size: 4rem;
-  color: #007bff;
-  display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .fa-circle-plus{

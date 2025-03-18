@@ -115,7 +115,7 @@ export const ModalRegisterEnfermera = ({ onClose, enfermeraId }) => {
     return (
         <div className='modal-overlay'>
             <div className='modal'>
-                <div className='modal-content'>
+                <div className='modal-content-geriatrico'>
                     <h2>Registrar Enfermera</h2>
                     <form onSubmit={handleSubmit}>
                         <div className='modal-field'>
@@ -145,8 +145,8 @@ export const ModalRegisterEnfermera = ({ onClose, enfermeraId }) => {
                             </>
                         )}
                         <div className='modal-buttons'>
-                            <button type="submit">Registrar Enfermera</button>
-                            <button type="button" onClick={onClose}>Cancelar</button>
+                            <button type="submit" className='save-button'>Registrar</button>
+                            <button type="button" className='cancel-button' onClick={onClose}>Cancelar</button>
                         </div>
                     </form>
                 </div>

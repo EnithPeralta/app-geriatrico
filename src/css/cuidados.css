@@ -71,6 +71,24 @@ label input[type="checkbox"] {
     inset 0 3px 3px rgba(0, 0, 0, 0.181); /* Inner shadow */
 }
 
+.cancel-button{
+  background-color: #555;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  margin-top: 20px;
+  transition: .3s;
+  box-shadow: 0 0 1px #ffffff, inset 0 -2.5px 3px #3d3d3d,
+    inset 0 3px 3px rgba(0, 0, 0, 0.181); /* Inner shadow */
+}
+
+.cancel-button:hover {
+  background-color: #3d3d3d;
+}
+
 .save-button:hover {
   background-color: #007acc;
 }
@@ -89,16 +107,6 @@ label input[type="checkbox"] {
 
 }
 
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  width: 300px;
-  box-shadow: 20px 20px 60px #0000002f,
-  -20px -20px 60px #00000013;
-
-}
 
 .modal-buttons {
   display: flex;

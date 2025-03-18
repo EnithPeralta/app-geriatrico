@@ -126,3 +126,23 @@ color: #007bff;
 font-weight: 600;
 transition: color 0.3s ease-in-out;
 }
+
+.h4 {
+  font-size: 24px;
+  color: #009ee2;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.search-input-geriatrico {
+  padding: 20px;
+  width: 18% !important;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: all 0.3s ease-in-out;
+  margin-bottom: 2rem;
+  position: relative;
+  left: 60%;
+  align-content: center;
+}

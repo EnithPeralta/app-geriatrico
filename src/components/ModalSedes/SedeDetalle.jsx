@@ -5,15 +5,30 @@ export const SedeDetalle = ({ sedeDetalle, isOpens, onClose }) => {
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-content">
+                <div className="grid-item">
                     <div className="">
-                        <img src={sedeDetalle.se_foto} alt="" height={100} width={100} className="modal-image" />
+                        <img src={sedeDetalle.se_foto} alt="Logo" height={100} width={100} className="modal-img" />
                         <span className="modal-name">{sedeDetalle.se_nombre}</span>
-                        <div className='modal-name-sedetalles'>Telefono: {sedeDetalle.se_telefono}</div>
-                        <div className='modal-name-sedetalles'> Direccion: {sedeDetalle.se_direccion}</div>
-                        <div className='modal-name-sedetalles'>Cupos: {sedeDetalle.cupos_totales}</div>
+                        <label>Telefono:</label>
+                        <input
+                            type="text"
+                            value={sedeDetalle.se_telefono}
+                            readOnly
+                        />
+                        <label>Dirección:</label>
+                        <input
+                            type="text"
+                            value={sedeDetalle.se_direccion}
+                            readOnly
+                        />
+                        <label>Cupos:</label>
+                        <input
+                            type="text"
+                            value={sedeDetalle.cupos_totales}
+                            readOnly
+                        />
                     </div>
-                    <button onClick={onClose} className="details-button">Cerrar</button>
+                    <button onClick={onClose} className="save-button">Cerrar</button>
                 </div>
 
             </div>

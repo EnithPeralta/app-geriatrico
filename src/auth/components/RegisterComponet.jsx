@@ -346,10 +346,10 @@ export const RegisterComponent = () => {
                     per_id: idPersona,
                     ge_id,
                     rol_id: rolId,
-                    gp_fecha_inicio:fechaInicio,
-                    gp_fecha_fin:fechaFin,
-                    sp_fecha_inicio:fechaInicio,
-                    sp_fecha_fin:fechaFin
+                    gp_fecha_inicio: fechaInicio,
+                    gp_fecha_fin: fechaFin,
+                    sp_fecha_inicio: fechaInicio,
+                    sp_fecha_fin: fechaFin
                 };
 
                 console.log("📤 Enviando datos del admin geriátrico:", datosAdminGeriatrico);
@@ -481,8 +481,9 @@ export const RegisterComponent = () => {
                 )}
 
             </div>
-            <button type="submit" className="register-button">Registrarme</button>
-
+            <div className="button-container">
+                <button type="submit" className="save-button">Registrarme</button>
+            </div>
             {showSelectRoles && selectedPersona && (
                 <CheckboxField
                     name="rol_id"

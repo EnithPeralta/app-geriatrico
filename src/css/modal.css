@@ -26,13 +26,30 @@
   
   .modal-content {
     background-color: white;
-    padding: 25px;
+    padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
+    width: 100% !important;
     max-width: 900px; /* Ajusta el ancho máximo */
     max-height: 80vh; /* No ocupar más del 80% de la altura de la pantalla */
     overflow-y: auto; /* Habilita el scroll si hay mucho contenido */
+  text-align: center;
+  }
+
+  .modal-content-geriatrico{
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 300% !important;
+    max-width: 300px; /* Ajusta el ancho máximo */
+    max-height: 80vh; /* No ocupar más del 80% de la altura de la pantalla */
+    overflow-y: auto; /* Habilita el scroll si hay mucho contenido */
+    text-align: left;
   }
   
+  .modal-img{
+    display: flex;
+    justify-content: center;
+  }
   

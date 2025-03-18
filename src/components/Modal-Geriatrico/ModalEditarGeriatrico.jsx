@@ -57,7 +57,7 @@ export const ModalEditarGeriatrico = ({ geriatrico, isOpen, onClose, onUpdate, u
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-content" >
+                <div className="modal-content-geriatrico" >
                     <form onSubmit={handleSubmit} >
                         <div className="modal-field">
                             <label>Nombre</label>
@@ -79,6 +79,14 @@ export const ModalEditarGeriatrico = ({ geriatrico, isOpen, onClose, onUpdate, u
                                 className="geriatrico-input"
                             />
                         </div>
+                        <div className="modal-img">
+                            {formData.ge_logo &&
+                                <img
+                                    src={formData.ge_logo}
+                                    alt="Logo"
+                                    height={100} width={100}
+                                />}
+                        </div>
                         <div className="modal-field">
                             <label>Logo</label>
                             <input
@@ -88,7 +96,6 @@ export const ModalEditarGeriatrico = ({ geriatrico, isOpen, onClose, onUpdate, u
                                 onChange={handleFileChange}
                                 height={100} width={100}
                             />
-                            {formData.ge_logo && <img src={formData.ge_logo} alt="Logo" className="geriatrico-logo" height={100} width={100}/>}
                         </div>
                         <div className="color-options">
                             {[
@@ -96,15 +103,14 @@ export const ModalEditarGeriatrico = ({ geriatrico, isOpen, onClose, onUpdate, u
                                 { key: "ge_color_secundario", label: "Color Secundario" },
                                 { key: "ge_color_terciario", label: "Color Terciario" }
                             ].map(({ key, label }) => (
-                                <div key={key} className="color-option">
-                                    <label htmlFor={key} className="color-label">{label}</label>
+                                <div key={key} className="">
+                                    <label htmlFor={key} className="modal-field">{label}</label>
                                     <input
                                         id={key}
                                         type="color"
                                         name={key}
                                         value={formData[key]}
                                         onChange={handleChange}
-                                        className="color-input"
                                         style={{ backgroundColor: formData[key] }}
                                     />
                                 </div>

@@ -251,13 +251,13 @@ export const SideBarComponent = () => {
                                     <span>Pacientes</span>
                                 </Link>
                             </li><li>
-                                <Link to={'/register'}>
+                                <Link to={'/geriatrico/enfermeras'}>
                                     <FaUserNurse className='icon' />
                                     <span>Enfermeras</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={'/register'}>
+                                <Link to={'/geriatico/colaboradores'}>
                                     <FaHandshake className='icon' />
                                     <span>Colaborador</span>
                                 </Link>

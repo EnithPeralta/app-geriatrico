@@ -69,7 +69,7 @@ export const ModalUpdateProfile = ({ persona, updatePersona, setPersona, showMod
     return showModal ? (
         <div className="modal-overlay">
             <div className="modal">
-                <div className="modal-content">
+                <div className="modal-content-geriatrico">
                     <form onSubmit={handleSubmit}>
                         <div className="profile-img">
                             {editedPersona.foto ? (

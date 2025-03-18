@@ -32,7 +32,7 @@ export const SelectGeriatrico = ({ label, ...props }: SelectGeriatricoProps) => 
         <div className="dropdown-button-geriatrico">
             <label>{label}</label>
             <select
-                className="select-geriatrico"
+                className="form-group"
                 name={props.name}
                 value={props.value || ""}
                 onChange={props.onChange}

@@ -11,7 +11,7 @@ const loginFormFields = {
 };
 
 export const LoginPage = () => {
-  const { startLogin } = useAuthStore();
+  const { startLogin, startLogout } = useAuthStore();
   const navigate = useNavigate();
   const {
     per_password,
@@ -42,8 +42,10 @@ export const LoginPage = () => {
         Swal.fire({
           icon: "warning",
           text: "No tienes roles asignados. Contacta a un administrador.",
+        }).then(() => {
+          startLogout(); // Llama la función que limpia la sesión
+          navigate("/login");  // Redirige al login
         });
-        navigate("/logout");
         return;
       }
 
@@ -67,7 +69,10 @@ export const LoginPage = () => {
       if (rolAsignado.rol_id === 5) {
         navigate("/geriatrico/pacientes");
         return;
-      }else if (rolAsignado.rol_id === 6) {
+      } else if (rolAsignado.rol_id === 3) {
+        navigate("/geriatrico/sedeEspecifica");
+        return;
+      } else if (rolAsignado.rol_id === 6) {
         navigate("/geriatrico/misPacientes");
         return;
       }
@@ -118,48 +123,48 @@ export const LoginPage = () => {
 
   return (
     <div className="animate__animated animate__fadeIn">
-    <div className="BodyLogin">
-      <img src="/enf.png" className="img" alt="enfermera"/>
-      <div className="circletop"></div>
-      <div className="cuadrado">
-        <div className="web">
-          <FaCircle className="circle" />
-          <span className="title">Geriátrico Web</span>
+      <div className="BodyLogin">
+        <img src="/enf.png" className="img" alt="enfermera" />
+        <div className="circletop"></div>
+        <div className="cuadrado">
+          <div className="web">
+            <FaCircle className="circle" />
+            <span className="title">Geriátrico Web</span>
+          </div>
+          <h3 className="h3">Comienza ahora</h3>
+          <h2 className="h2">Iniciar sesión<span className="link">.</span></h2>
+          <form className="form" onSubmit={loginSubmit}>
+            <div className="input-container">
+              <i className="fas fa-user"></i>
+              <input
+                type="text"
+                placeholder="Usuario"
+                value={per_usuario}
+                onChange={onInputChange}
+                name="per_usuario"
+                required
+              />
+            </div>
+            <div className="input-container">
+              <i className={`fa-solid ${isPasswordVisible ? "fa-eye-slash" : "fa-eye"}`} onClick={togglePasswordVisibility}></i>
+              <input
+                type={isPasswordVisible ? "text" : "password"}
+                placeholder="Contraseña"
+                value={per_password}
+                onChange={onInputChange}
+                name="per_password"
+                required
+              />
+            </div>
+            <Link className="link" to="/forgotPassword">
+              <p className="p">¿Se te ha olvidado la contraseña?</p>
+            </Link>
+            <button className="login-button" type="submit">Entrar</button>
+
+          </form>
+          <div className="circlebottom"></div>
         </div>
-        <h3 className="h3">Comienza ahora</h3>
-        <h2 className="h2">Iniciar sesión<span className="link">.</span></h2>
-        <form className="form" onSubmit={loginSubmit}>
-          <div className="input-container">
-            <i className="fas fa-user"></i>
-            <input
-              type="text"
-              placeholder="Usuario"
-              value={per_usuario}
-              onChange={onInputChange}
-              name="per_usuario"
-              required
-            />
-          </div>
-          <div className="input-container">
-            <i className={`fa-solid ${isPasswordVisible ? "fa-eye-slash" : "fa-eye"}`} onClick={togglePasswordVisibility}></i>
-            <input
-              type={isPasswordVisible ? "text" : "password"}
-              placeholder="Contraseña"
-              value={per_password}
-              onChange={onInputChange}
-              name="per_password"
-              required
-            />
-          </div>
-          <Link className="link" to="/forgotPassword">
-            <p className="p">¿Se te ha olvidado la contraseña?</p>
-          </Link>
-          <button className="button" type="submit">Entrar</button>
-          
-        </form>
-        <div className="circlebottom"></div>
       </div>
-    </div>
     </div>
   );
 };

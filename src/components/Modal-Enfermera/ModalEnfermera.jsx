@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { useSedesRol } from "../../hooks";
 
 export const ModalEnfermera = ({ datosInicial, onRegistrar, onClose, selectedRoles }) => {
     const { asignarRolesSede } = useSedesRol();
@@ -83,7 +84,7 @@ export const ModalEnfermera = ({ datosInicial, onRegistrar, onClose, selectedRol
     return (
         <div className="modal-overlay" onClick={(e) => e.stopPropagation()}>
             <div className="modal">
-                <div className="modal-content">
+                <div className="modal-content-geriatrico">
                     <div className="modal-field">
                         <label>Código</label>
                         <input
@@ -118,7 +119,7 @@ export const ModalEnfermera = ({ datosInicial, onRegistrar, onClose, selectedRol
                             required
                         />
                     </div>
-                    <button type="button" className="create" onClick={handleSubmit}>
+                    <button type="button" className="save-button" onClick={handleSubmit}>
                         Registrar Enfermera
                     </button>
                     <button type="button" className="cancel" onClick={onClose}>

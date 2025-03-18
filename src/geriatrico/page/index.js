@@ -32,3 +32,5 @@ export * from './HistorySeguimientoPage';
 //HistorySeguimientoPage.jsx
  export * from './AcudientePacientePage';
  //AcudientePacientePage.jsx
+export * from './HistoryGeriatricoPage';
+ //HistoryGeriatricoPage.jsx

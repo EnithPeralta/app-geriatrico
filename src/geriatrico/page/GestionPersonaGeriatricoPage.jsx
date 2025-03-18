@@ -515,14 +515,14 @@ export const GestionPersonaGeriatricoPage = () => {
     }
 
     return (
-        <div className="main-container" style={{ backgroundColor: geriatrico?.color_principal }}>
+        <div className="main-container">
             <SideBarComponent />
-            <div className="content-area">
+            <div className="content-area" style={{ backgroundColor: geriatrico?.color_principal }}>
                 <h2 className="gestionar-title">Personas Vinculadas</h2>
                 <div className="search-container">
                     <input
                         type="text"
-                        className="search-input-field"
+                        className="search-input"
                         placeholder="Buscar por nombre o documento..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}

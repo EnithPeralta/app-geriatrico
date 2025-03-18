@@ -227,7 +227,7 @@ export const GestionarPersonasPage = () => {
                     <div className="search-container">
                         <input
                             type="text"
-                            className="search-input-field"
+                            className="search-input"
                             placeholder="Buscar por Cédula..."
                             value={searchCedula}
                             onChange={(e) => setSearchCedula(e.target.value)}
@@ -264,6 +264,7 @@ export const GestionarPersonasPage = () => {
                                     setFechaFin={setFechaFin}
                                     assigning={assigning}
                                     handleAssignRole={handleAssignRole}
+                                    onClose={() => setShowAssignCard(false)}
                                 />
                             )}
                         </div>

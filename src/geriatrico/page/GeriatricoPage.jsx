@@ -5,6 +5,7 @@ import '../../css/geriatrico.css';
 import { useNavigate } from "react-router-dom";
 import 'animate.css';
 import { LoadingComponet, ModalCrearGeriatrico, ModalGeriatrico, SideBarComponent, ModalEditarGeriatrico } from "../../components";
+import { FaEye, FaFile, FaPencilAlt } from "react-icons/fa";
 
 export const GeriatricosPage = () => {
     const { obtenerGeriatricos, crearGeriatrico, actualizarGeriatrico, inactivarGeriatrico, reactivarGeriatrico } = useGeriatrico();
@@ -16,6 +17,7 @@ export const GeriatricosPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchGeriatricos = async () => {
@@ -128,6 +130,13 @@ export const GeriatricosPage = () => {
         }
     };
 
+    const handleHistorialGeriatrico = (geriatrico) => {
+        console.log("Historial del geriátrico:", geriatrico);
+        if (!geriatrico || !geriatrico.ge_id) return;
+        navigate(`/geriatrico/historialGeriatrico/${geriatrico.ge_id}`);
+        console.log("Historial del geriátrico:", geriatrico);
+    };
+
     if (loading) return <LoadingComponet />;
     if (error) return <p className="error">{error}</p>;
 
@@ -186,7 +195,14 @@ export const GeriatricosPage = () => {
                                             <i className="fa-solid fa-circle-xmark inactivo"></i>
                                         )}
                                     </div>
-                                    <button className="details-button" onClick={() => handleViewDetails(geriatrico)}>Ver Sedes</button>
+                                    <div className="details">
+                                        <button className="details-button" onClick={() => handleViewDetails(geriatrico)}>
+                                            <FaEye /> Ver Sedes
+                                        </button>
+                                        <button className="details-button" onClick={() => handleHistorialGeriatrico(geriatrico)}>
+                                            <FaFile /> Historial Geriatrico
+                                        </button>
+                                    </div>
                                     <div className="actions">
                                         <button
                                             className={`toggle-button ${geriatrico.ge_activo ? 'active' : 'inactive'}`}

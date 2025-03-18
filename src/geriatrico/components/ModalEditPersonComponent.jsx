@@ -38,7 +38,7 @@ export const ModalEditPersonComponent = ({ editedPersona, onSubmit, onClose }) =
     return (
         <div className="modal-overlay">
             <div className="modal">
-                <div className="modal-content">
+                <div className="modal-content-geriatrico">
                     <form onSubmit={handleSubmit}>
                         <div className="modal-img">
                             {personaEditada.previewFoto ? (

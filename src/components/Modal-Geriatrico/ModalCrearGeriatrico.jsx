@@ -54,7 +54,7 @@ export const ModalCrearGeriatrico = ({ isOpen, onClose, onSave }) => {
     return (
         <div className="modal-overlay" onClick={(e) => e.stopPropagation()}>
             <div className="modal">
-                <div className="modal-content">
+                <div className="modal-content-geriatrico">
                     <form onSubmit={handleSubmit}>
                         <div className="modal-field">
                             <label>Nombre</label>
