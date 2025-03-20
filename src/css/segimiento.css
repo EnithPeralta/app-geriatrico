@@ -8,10 +8,43 @@
   font-weight: 600;
   margin-bottom: 20px;
 }
+.h1{
+  font-size: 1.8rem;
+  color: #0090bc;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.crear-turno-content{ padding: 2rem;
+background-color: #f8f9fa;
+min-height: 100vh;}
 .subtitle{
   margin-bottom: 10px;
 }
-
+.crear-turno-form-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+.form-group{
+  margin-bottom: 20px;
+  width: 100%;
+  gap: 1rem;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.crear-turno-form {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+}
 .options-seg {
     margin-top: 10px;
   }

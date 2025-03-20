@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { useEnfermera, useGeriatricoPersona, usePersona, useSedesRol } from '../../../hooks';
 import Swal from 'sweetalert2';
-import { SelectField } from '../../../components';
+import { ModalRegistrarPersonas, SelectField } from '../../../components';
+import { ModalEnfermeraPersona } from '../../../components/Modal-Enfermera/ModalEnfermeraPersona';
 
-export const ModalRegisterEnfermera = ({ onClose, enfermeraId }) => {
+export const ModalRegisterEnfermera = ({ onClose }) => {
     const { startRegisterEnfermera } = useEnfermera();
     const { asignarRolesSede } = useSedesRol();
     const { obtenerPersonaRolesMiGeriatricoSede } = useGeriatricoPersona();
     const { buscarVincularPersona } = usePersona();
-    
+
     const [enfermeraDocumento, setEnfermeraDocumento] = useState('');
     const [enfCodigo, setEnfCodigo] = useState('');
-    const [selectedRoles, setSelectedRoles] = useState('');
+    const [selectedRoles, setSelectedRoles] = useState(null);
     const [showSelectRoles, setShowSelectRoles] = useState(false);
+    const [showModalEnfermera, setShowModalEnfermera] = useState(null);
     const [datosEnfermera, setDatosEnfermera] = useState({
         rol_id: null,
         sp_fecha_inicio: '',
@@ -29,33 +31,73 @@ export const ModalRegisterEnfermera = ({ onClose, enfermeraId }) => {
         setDatosEnfermera((prev => ({ ...prev, rol_id: rolId })));
     };
 
-    const handleAssignSedes = async (per_id) => {
-        if (!datosEnfermera.rol_id || !datosEnfermera.sp_fecha_inicio || !datosEnfermera.sp_fecha_fin) {
-            await Swal.fire({
-                icon: "warning",
-                text: "Por favor, complete todos los campos antes de asignar el rol."
-            });
-            return false;
-        }
-
+    const handleAssignSedes = async (per_id, rol_id, sp_fecha_inicio, sp_fecha_fin) => {
         try {
-            const response = await asignarRolesSede({
-                per_id,
-                rol_id: datosEnfermera.rol_id,
-                sp_fecha_inicio: datosEnfermera.sp_fecha_inicio,
-                sp_fecha_fin: datosEnfermera.sp_fecha_fin
-            });
-
-            if (!response?.success) {
-                await Swal.fire({ icon: "error", text: response?.message || "Hubo un problema al asignar el rol." });
+            if (!per_id || !rol_id || !sp_fecha_inicio || !sp_fecha_fin) {
+                console.warn("❌ Datos incompletos para la asignación del rol.");
+                await Swal.fire({
+                    icon: "warning",
+                    text: "Por favor, complete todos los campos antes de asignar el rol."
+                });
                 return false;
             }
-            return true;
+
+            const response = await asignarRolesSede({ per_id, rol_id, sp_fecha_inicio, sp_fecha_fin });
+
+            if (response?.success) {
+                console.log("✅ Rol asignado con éxito:", response.message);
+                return true;
+            } else {
+                console.warn("⚠️ Error en la asignación del rol:", response?.message || "Error desconocido.");
+                await Swal.fire({
+                    icon: "error",
+                    text: response?.message || "Hubo un problema al asignar el rol."
+                });
+                return false;
+            }
         } catch (error) {
-            await Swal.fire({ icon: "error", text: error?.message || "Ocurrió un error inesperado." });
+            console.error("❌ Error inesperado al asignar el rol:", error);
+            await Swal.fire({
+                icon: "error",
+                text: error?.message || "Ocurrió un error inesperado. Inténtelo nuevamente."
+            });
             return false;
         }
     };
+    // const handleEnfermera = async (datosEnfermera) => {
+    //     if (!datosEnfermera.per_id) {
+    //         Swal.fire({
+    //             icon: 'warning',
+    //             text: "⚠️ No se ha seleccionado una persona válida.",
+    //         });
+    //         return;
+    //     }
+
+    //     console.log("📤 Enviando datos de la enfermera:", datosEnfermera)
+
+    //     try {
+    //         const response = await startRegisterEnfermera(datosEnfermera);
+    //         console.log(response);
+
+    //         Swal.fire({
+    //             icon: response.success ? 'success' : 'error',
+    //             text: response.message,
+    //         });
+
+    //         if (response.success) {
+    //             setShowModal(false); // Cierra el modal si el registro es exitoso
+    //         } else {
+    //             console.error("❌ Error al registrar enfermera:", response.message);
+    //         }
+    //     } catch (error) {
+    //         console.error("❌ Error al registrar enfermera:", error.response.data.message);
+    //         Swal.fire({
+    //             icon: 'error',
+    //             text: error.response.data.message
+    //         })
+    //     }
+    // };
+
 
     const validarRol = async (per_id) => {
         const rolesPersona = await obtenerPersonaRolesMiGeriatricoSede(per_id);
@@ -79,8 +121,9 @@ export const ModalRegisterEnfermera = ({ onClose, enfermeraId }) => {
         try {
             const result = await buscarVincularPersona({ documento: enfermeraDocumento });
 
-            if (!result?.success) {
-                Swal.fire({ icon: 'error', text: result?.message });
+            if (result.message) {
+                setShowModalEnfermera(true);
+                console.log(result.message);
                 return;
             }
 
@@ -149,6 +192,17 @@ export const ModalRegisterEnfermera = ({ onClose, enfermeraId }) => {
                             <button type="button" className='cancel-button' onClick={onClose}>Cancelar</button>
                         </div>
                     </form>
+                    {showModalEnfermera && (
+                        <ModalEnfermeraPersona
+                            enfermeraDocumento={enfermeraDocumento}
+                            enf_codigo={enfCodigo}
+                            handleRoleChange={handleRoleChange}
+                            handleAssignSedes={handleAssignSedes}
+                            handleChange={handleChange}
+                            selectedRoles={selectedRoles}
+                            setEnfCodigo={setEnfCodigo}
+                        />
+                    )}
                 </div>
             </div>
         </div>

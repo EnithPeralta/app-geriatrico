@@ -231,10 +231,11 @@ export const GestionarPersonasPage = () => {
                             placeholder="Buscar por Cédula..."
                             value={searchCedula}
                             onChange={(e) => setSearchCedula(e.target.value)}
-                        />
-                        <button className="search-btn" onClick={buscarPersonaPorCedula}>
-                            <FaSearch />
-                        </button>
+                            onKeyPress={(e) => {
+                                if (e.key === "Enter") {
+                                    buscarPersonaPorCedula(); // Ejecuta la búsqueda solo al presionar "Enter"
+                                }
+                            }}                        />
                     </div>
 
                     {loading ? (

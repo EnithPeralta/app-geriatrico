@@ -12,6 +12,7 @@ export const AcudientePage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showRegisterAcudiente, setShowRegisterAcudiente] = useState(false);
+    
 
     useEffect(() => {
         const fetchPaciente = async () => {

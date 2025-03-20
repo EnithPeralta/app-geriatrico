@@ -121,6 +121,7 @@
 .buttons-group {
     display: flex;
     padding-top: 10rem;
+    gap: 20px;
 }
 
 .button {

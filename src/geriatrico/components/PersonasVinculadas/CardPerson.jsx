@@ -28,6 +28,7 @@ export const CardPerson = ({ persona, onClick, onEdit, onAssign, onInactivate })
                 <button className="add-button-asignar" onClick={onAssign}>
                     <i className="fas fa-arrow-up i-asignar"></i>
                 </button>
+                
             </div>
         </div>
     );

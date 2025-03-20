@@ -3,7 +3,6 @@ import { LoadingComponet, ModalEnfermera, ModalRegistrarPaciente, SideBarCompone
 import { useEnfermera, useGeriatrico, useGeriatricoPersona, usePaciente, usePersona, useSedesRol } from "../../hooks";
 import { ModalEditPersonComponent } from "../components/ModalEditPersonComponent";
 import Swal from "sweetalert2";
-import { GoBackComponet } from "../../components/GoBackComponent";
 import { PersonList } from "../components/PersonasVinculadas/PersonList";
 import { AssignCard } from "../components/PersonasVinculadas/AssignCard";
 
@@ -13,7 +12,7 @@ export const GestionPersonaGeriatricoPage = () => {
     const { homeMiGeriatrico } = useGeriatrico();
     const { obtenerPersonaRolesMiGeriatricoSede, personasVinculadasMiGeriatrico, inactivarVinculacionGeriatrico, reactivarVinculacionGeriatrico } = useGeriatricoPersona();
     const { updatePerson } = usePersona();
-    const { asignarRolAdminSede, inactivarRolAdminSede, asignarRolesSede } = useSedesRol();
+    const { asignarRolAdminSede, asignarRolesSede, inactivarRolAdminSede } = useSedesRol();
     const { startRegisterEnfermera } = useEnfermera();
     const [personas, setPersonas] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -127,65 +126,66 @@ export const GestionPersonaGeriatricoPage = () => {
         setSelectedPersona(persona);
     };
 
-    const handleInactivarRolAdminSede = async (persona) => {
-        console.log("Persona seleccionada para inactivar:", persona);
+    // const handleInactivarRolAdminSede = async (persona) => {
+    //     console.log("Persona seleccionada para inactivar:", persona);
 
-        if (!persona || !persona.per_id) {
-            console.warn("⚠️ Información incompleta para inactivar el rol: falta per_id.");
-            return;
-        }
+    //     if (!persona || !persona.per_id) {
+    //         console.warn("⚠️ Información incompleta para inactivar el rol: falta per_id.");
+    //         return;
+    //     }
 
-        if (!persona.rolesSede?.length) {
-            Swal.fire({
-                icon: "warning",
-                text: " La persona no tiene roles en una sede.",
-            });
-            console.warn("⚠️ La persona no tiene roles en una sede.");
-            return;
-        }
+    //     if (!persona.rolesSede?.length) {
+    //         Swal.fire({
+    //             icon: "warning",
+    //             text: " La persona no tiene roles en una sede.",
+    //         });
+    //         console.warn("⚠️ La persona no tiene roles en una sede.");
+    //         return;
+    //     }
 
-        const rolSede = persona.rolesSede[0];
-        console.log("Rol de sede seleccionado:", rolSede);
+    //     const rolSede = persona.rolesSede[0];
+    //     console.log("Rol de sede seleccionado:", rolSede);
 
-        if (!rolSede.sede?.id || !rolSede.rol_id) {
-            console.warn("⚠️ Información incompleta: falta sede ID o rol ID.");
-            return;
-        }
+    //     if (!rolSede.sede?.id || !rolSede.rol_id) {
+    //         console.warn("⚠️ Información incompleta: falta sede ID o rol ID.");
+    //         return;
+    //     }
 
-        // Convertir valores a números válidos antes de enviarlos
-        const per_id = Number(persona.per_id);
-        const se_id = Number(rolSede.sede.id);
-        const rol_id = Number(rolSede.rol_id);
+    //     // Convertir valores a números válidos antes de enviarlos
+    //     const per_id = Number(persona.per_id);
+    //     const se_id = Number(rolSede.sede.id);
+    //     const rol_id = Number(rolSede.rol_id);
 
-        if (isNaN(per_id) || isNaN(se_id) || isNaN(rol_id) || per_id <= 0 || se_id <= 0 || rol_id <= 0) {
-            console.error("❌ Error: Uno o más valores no son números válidos:", { per_id, se_id, rol_id });
-            return;
-        }
+    //     if (isNaN(per_id) || isNaN(se_id) || isNaN(rol_id) || per_id <= 0 || se_id <= 0 || rol_id <= 0) {
+    //         console.error("❌ Error: Uno o más valores no son números válidos:", { per_id, se_id, rol_id });
+    //         return;
+    //     }
 
-        const confirmacion = await Swal.fire({
-            text: "Esta acción inactivará el rol de la persona en la sede.",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Sí, inactivar",
-            cancelButtonText: "Cancelar"
-        });
+    //     const confirmacion = await Swal.fire({
+    //         text: "Esta acción inactivará el rol de la persona en la sede.",
+    //         icon: "warning",
+    //         showCancelButton: true,
+    //         confirmButtonText: "Sí, inactivar",
+    //         cancelButtonText: "Cancelar"
+    //     });
 
-        if (!confirmacion.isConfirmed) return;
+    //     if (!confirmacion.isConfirmed) return;
 
-        const resultado = await inactivarRolAdminSede({ per_id, se_id, rol_id });
+    //     const resultado = await inactivarRolAdminSede({ per_id, se_id, rol_id });
 
-        if (resultado.success) {
-            Swal.fire({
-                icon: "success",
-                text: resultado.message || "Rol inactivado exitosamente"
-            });
-        } else {
-            Swal.fire({
-                icon: "error",
-                text: resultado.message || "No se pudo inactivar el rol"
-            });
-        }
-    };
+    //     if (resultado.success) {
+    //         Swal.fire({
+    //             icon: "success",
+    //             text: resultado.message || "Rol inactivado exitosamente"
+    //         });
+    //     } else {
+    //         Swal.fire({
+    //             icon: "error",
+    //             text: resultado.message || "No se pudo inactivar el rol"
+    //         });
+    //     }
+    // };
+
 
     const handleInactivarVinculacion = async (persona) => {
         console.log("Persona seleccionada para inactivar:", persona);

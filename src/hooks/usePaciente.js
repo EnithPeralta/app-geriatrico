@@ -79,7 +79,7 @@ export const usePaciente = () => {
         }
     };
 
-    const obtenerRolesPacientesSede = async ({ per_id }) => {
+    const obtenerRolesPacientesSede = async ( per_id ) => {
         const token = getToken();
         if (!token) {
             return {
@@ -90,7 +90,7 @@ export const usePaciente = () => {
         }
 
         try {
-            const { data } = await geriatricoApi.get(`pacientes/sede/${per_id}`, {
+            const { data } = await geriatricoApi.get(`pacientes/roles/${per_id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -99,7 +99,7 @@ export const usePaciente = () => {
             return {
                 success: true,
                 message: data.message || "Pacientes obtenidos exitosamente",
-                data: data.data || [] // Acceder a data dentro de la respuesta
+                data: data.roles || [] // Acceder a data dentro de la respuesta
             };
 
 

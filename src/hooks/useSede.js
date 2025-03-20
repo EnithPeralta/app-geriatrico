@@ -270,6 +270,8 @@ export const useSede = () => {
         console.log("📡 Intentando obtener información para la home...");
     
         const token = getToken();
+        
+        console.log("token", token);
         if (!token) {
             const errorMessage = "❌ Token de autenticación no encontrado";
             dispatch(setSedeError(errorMessage));
@@ -280,6 +282,7 @@ export const useSede = () => {
             const { data } = await geriatricoApi.get("/sedes/homeSede", {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            console.log("data", data)
     
     
             // Desestructurar la respuesta del servidor

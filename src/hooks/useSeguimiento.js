@@ -1,23 +1,22 @@
 import { getToken } from "../helpers";
 import geriatricoApi from "../api/geriatricoApi";
-import { formatFecha } from "../utils/FechaUtils";
+import { formatFecha } from "../utils/FechaUtil";
 
 export const useSeguimiento = () => {
-    
+
     const registrarSeguimientoPaciente = async (pac_id, datoSeguimientos = {}) => {
         console.log("📌 Datos a enviar:", { pac_id, ...datoSeguimientos });
-    
+
         const token = getToken();
         if (!token) {
             return { success: false, message: "Token de autenticación no encontrado." };
         }
-    
+
         try {
             const formData = new FormData();
             formData.append("pac_id", Number(pac_id));
             formData.append("seg_fecha", formatFecha());
 
-    
             if (datoSeguimientos && typeof datoSeguimientos === "object") {
                 Object.keys(datoSeguimientos).forEach(key => {
                     const value = datoSeguimientos[key];
@@ -30,16 +29,16 @@ export const useSeguimiento = () => {
                     }
                 });
             }
-    
+
             const response = await geriatricoApi.post(`/seguimientos/paciente/${pac_id}`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "multipart/form-data",
                 },
             });
-    
+
             console.log("✅ Respuesta del servidor:", response.data);
-    
+
             return {
                 success: true,
                 message: response.data.message || "Seguimiento registrado con éxito.",
@@ -54,7 +53,7 @@ export const useSeguimiento = () => {
             };
         }
     };
-    
+
     const obtenerHistorialSeguimientos = async (pac_id) => {
         const token = getToken();
         if (!token) {
@@ -64,21 +63,21 @@ export const useSeguimiento = () => {
             };
         }
         const pacIdNum = Number(pac_id);
-       
-    
+
+
         try {
             const response = await geriatricoApi.get(`/seguimientos/historialpaciente/${pacIdNum}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-    
+
             console.log("✅ Respuesta del servidor:", response.data);
             return {
                 success: true,
                 message: response.data.message || "Historial de seguimientos obtenido exitosamente.",
                 data: response.data.historial_seguimientos || [],
-                paciente:response.data.paciente
+                paciente: response.data.paciente
             };
-            
+
         } catch (error) {
             console.error("❌ Error al obtener historial de seguimientos:", error);
             return {
@@ -88,8 +87,8 @@ export const useSeguimiento = () => {
             };
         }
     };
-    
-    const obtenerSeguimientosPorId = async(seg_id) =>{
+
+    const obtenerSeguimientosPorId = async (seg_id) => {
         const token = getToken();
         if (!token) {
             return {
@@ -97,20 +96,20 @@ export const useSeguimiento = () => {
                 message: "Token de autenticación no encontrado.",
             };
         }
-       
-    
+
+
         try {
             const response = await geriatricoApi.get(`/seguimientos/${seg_id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-    
+
             console.log("✅ Respuesta del servidor:", response.data);
             return {
                 success: true,
                 message: response.data.message || "Historial de seguimientos obtenido exitosamente.",
                 data: response.data,
             };
-            
+
         } catch (error) {
             console.error("❌ Error al obtener historial de seguimientos:", error);
             return {
@@ -123,16 +122,16 @@ export const useSeguimiento = () => {
 
     const actualizarSeguimientoPaciente = async (seg_id, datoSeguimiento) => {
         const token = getToken();
-        
+
         if (!token) {
             return { success: false, message: "Token de autenticación no encontrado." };
         }
-    
+
         const segIdNum = Number(seg_id);
         if (isNaN(segIdNum) || segIdNum <= 0) {
             return { success: false, message: "ID del seguimiento no válido." };
         }
-    
+
         try {
             // Convertir `datoSeguimiento` en FormData
             const formData = new FormData();
@@ -143,25 +142,25 @@ export const useSeguimiento = () => {
                     formData.append(key, datoSeguimiento[key]);
                 }
             });
-    
+
             const response = await geriatricoApi.put(`/seguimientos/actualizar/${segIdNum}`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "multipart/form-data", // Indicar que se envían archivos
                 },
             });
-    
+
             console.log("✅ Respuesta del servidor:", response.data);
-            
+
             return {
                 success: true,
                 message: response.data.message || "Seguimiento actualizado con éxito.",
                 data: response.data ?? {},
             };
-    
+
         } catch (error) {
             console.error("❌ Error al actualizar seguimiento:", error);
-    
+
             return {
                 success: false,
                 message: error.response?.data?.message || "Ocurrió un error inesperado.",
@@ -169,7 +168,7 @@ export const useSeguimiento = () => {
             };
         }
     };
-    
+
 
     return {
         registrarSeguimientoPaciente,

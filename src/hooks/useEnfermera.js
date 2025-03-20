@@ -37,7 +37,7 @@ export const useEnfermera = () => {
         }
     };
 
-    const obtenerRolesEnfermerasSede = async () => {
+    const obtenerEnfermerasSede = async () => {
         const token = getToken();
         if (!token) {
             return {
@@ -71,6 +71,51 @@ export const useEnfermera = () => {
         }
     };
 
+    const obtenerRolesEnfermerasSede = async (per_id) => {
+        if (!per_id) {
+            return {
+                success: false,
+                message: "❌ El ID de la persona es requerido",
+                data: [],
+            };
+        }
+    
+        const token = getToken();
+        if (!token) {
+            return {
+                success: false,
+                message: "❌ Token de autenticación no encontrado",
+                data: [],
+            };
+        }
+    
+        try {
+            const { data } = await geriatricoApi.get(`enfermeras/roles/${per_id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+    
+            console.log("✅ Respuesta del servidor:", data);
+    
+            return {
+                success: true,
+                message: data.message || "Enfermeras obtenidas exitosamente",
+                data: data.enfermeras || [], // ✅ Se asegura de devolver un array válido
+            };
+    
+        } catch (error) {
+            console.error("❌ Error al obtener los roles de enfermeras:", error);
+    
+            return {
+                success: false,
+                message: error.response?.data?.message || "Ocurrió un error inesperado. Inténtalo nuevamente.",
+                data: [],
+            };
+        }
+    };
+    
+
+    
+
     
 
 
@@ -79,6 +124,7 @@ export const useEnfermera = () => {
         status, user, errorMessage,
         // Metodos
         startRegisterEnfermera,
+        obtenerEnfermerasSede,
         obtenerRolesEnfermerasSede
     }
 }

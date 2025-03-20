@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { SelectGeriatricoProps } from './types';
 import { useGeriatrico } from '../../hooks';
+import { combineSlices } from '@reduxjs/toolkit';
 
 export const SelectGeriatrico = ({ label, ...props }: SelectGeriatricoProps) => {
     const { obtenerGeriatricos } = useGeriatrico();
@@ -29,10 +30,9 @@ export const SelectGeriatrico = ({ label, ...props }: SelectGeriatricoProps) => 
     }, [obtenerGeriatricos]);
 
     return (
-        <div className="dropdown-button-geriatrico">
+        <div>
             <label>{label}</label>
             <select
-                className="form-group"
                 name={props.name}
                 value={props.value || ""}
                 onChange={props.onChange}

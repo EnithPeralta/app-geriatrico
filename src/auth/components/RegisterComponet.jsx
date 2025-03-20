@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
-import { useAuthStore, useEnfermera, useForm, useGeriatricoPersonaRol, usePaciente, usePersona, useSedesRol, useSession } from '../../hooks';
-import { CheckboxField, InputField, ModalEnfermera, ModalRegistrarPaciente, SelectField, SelectSede } from '../../components';
+import { useAuthStore, useEnfermera, useForm, usePaciente, usePersona, useSession } from '../../hooks';
+import { CheckboxField, InputField, ModalEnfermera, ModalRegistrarPaciente, SelectField } from '../../components';
 import { SelectGeriatrico } from '../../components/SelectGeriatrico/SelectGeriatrico';
+import { AsignarRolSedeUtil, AssignRoleUtil, BuscarPersonaUtil } from '../../utils';
 
 const registerFormFields = {
     per_password: '',
@@ -21,9 +22,9 @@ export const RegisterComponent = () => {
     const { registrarPaciente } = usePaciente();
     const { obtenerSesion } = useSession();
     const { startRegisterEnfermera } = useEnfermera();
-    const { asignarRolesSede } = useSedesRol();
-    const { buscarVincularPersona } = usePersona();
-    const { asignarRolGeriatrico } = useGeriatricoPersonaRol();
+    const { buscarPersona } = BuscarPersonaUtil();
+    const { handleAssignSedes } = AsignarRolSedeUtil();
+    const { handleAssignRole } = AssignRoleUtil();
     const [esSuperAdmin, setEsSuperAdmin] = useState(false);
     const [loading, setLoading] = useState(false);
     const [adminGeriátrico, setAdminGeriátrico] = useState(null);
@@ -35,10 +36,10 @@ export const RegisterComponent = () => {
     const [showModal, setShowModal] = useState(false);
     const [showSelectRoles, setShowSelectRoles] = useState(false);
     const [showModalEnfermera, setShowModalEnfermera] = useState(false);
-    const [showExtraAdminGeriaFields, setShowExtraAdminGeriaFields] = useState(null);
-    const [selectedGeriatrico, setSelectedGeriatrico] = useState("");
+    const [showExtraAdminGeriaFields, setShowExtraAdminGeriaFields] = useState(false);
     const [fechaInicio, setFechaInicio] = useState("");
     const [fechaFin, setFechaFin] = useState("");
+    const [selectedGeriatrico, setSelectedGeriatrico] = useState([]);
 
 
 
@@ -79,6 +80,7 @@ export const RegisterComponent = () => {
         enf_codigo,
         sp_fecha_inicio,
         sp_fecha_fin,
+        ge_id,
         gp_fecha_inicio,
         gp_fecha_fin,
         togglePasswordVisibility
@@ -92,45 +94,6 @@ export const RegisterComponent = () => {
             });
         }
     }, [errorMessage]);
-
-    const buscarPersona = async () => {
-        if (!per_documento.trim()) return;
-
-        setLoading(true);
-        try {
-            const sesion = await obtenerSesion();
-            const ge_id = sesion?.ge_id;
-
-            const resultado = await buscarVincularPersona({ documento: per_documento, ge_id });
-            console.log(resultado); // Para depuración
-
-            if (resultado.success) {
-                setSelectedPersona(resultado);
-
-                Swal.fire({
-                    icon: 'question',
-                    text: resultado.message,
-                    confirmButtonText: 'Aceptar',
-                });
-
-                // Esperamos a que el usuario seleccione un rol antes de mostrar el modal correcto
-                setShowSelectRoles(true);
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    text: resultado.message,
-                });
-            }
-        } catch (error) {
-            console.error("❌ Error al buscar la persona:", error);
-            Swal.fire({
-                icon: 'error',
-                text: 'Ocurrió un error al buscar la persona.',
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
 
 
     useEffect(() => {
@@ -147,87 +110,9 @@ export const RegisterComponent = () => {
         setShowModalEnfermera(value === 5);
     };
 
-    const handleAssignSedes = async (per_id, rol_id, sp_fecha_inicio, sp_fecha_fin,) => {
-        try {
-            if (!per_id || !rol_id || !sp_fecha_inicio || !sp_fecha_fin) {
-                console.warn("❌ Datos incompletos para la asignación del rol.");
-                await Swal.fire({
-                    icon: "warning",
-                    text: "Por favor, complete todos los campos antes de asignar el rol."
-                });
-                return false;
-            }
-
-            const response = await asignarRolesSede({
-                per_id, rol_id, sp_fecha_inicio, sp_fecha_fin
-            });
-
-            if (response?.success) {
-                console.log("✅ Rol asignado con éxito:", response.message);
-                return true;
-            } else {
-                console.warn("⚠️ Error en la asignación del rol:", response?.message || "Error desconocido.");
-                await Swal.fire({
-                    icon: "error",
-                    text: response?.message || "Hubo un problema al asignar el rol."
-                });
-                return false;
-            }
-        } catch (error) {
-            console.error("❌ Error inesperado al asignar el rol:", error);
-            await Swal.fire({
-                icon: "error",
-                text: error?.message || "Ocurrió un error inesperado. Inténtelo nuevamente."
-            });
-            return false;
-        }
+    const handleGeriatricoChange = (event) => {
+        setSelectedGeriatrico(Number(event.target.value)); // Convertir a número por seguridad
     };
-
-    const handleAssignRole = async (per_id, ge_id, rol_id, gp_fecha_inicio, gp_fecha_fin) => {
-        if (!per_id, ge_id, rol_id, gp_fecha_inicio, gp_fecha_fin) {
-            Swal.fire({
-                icon: 'error',
-                text: 'Debe seleccionar un geriátrico, al menos un rol y una fecha de inicio.',
-            })
-            return;
-        }
-
-        setAssigning(true);
-        try {
-            for (let rol_id of selectedRoles) {
-                const response = await asignarRolGeriatrico({
-                    per_id,
-                    ge_id: Number(selectedGeriatrico),
-                    rol_id,
-                    gp_fecha_inicio, // Fecha ingresada manualmente
-                    gp_fecha_fin
-                });
-
-                if (!response.success) {
-                    console.error("Error al asignar rol:", response.message);
-                    Swal.fire({
-                        icon: 'error',
-                        text: response.message,
-                    })
-                    setAssigning(false);
-                    return;
-                }
-            }
-
-            Swal.fire({
-                icon: 'success',
-                text: 'Rol asignado exitosamente',
-            })
-        } catch (error) {
-            console.error("Error en la asignación del rol:", error);
-            Swal.fire({
-                icon: 'error',
-                text: 'Error al asignar el rol',
-            })
-        }
-    };
-
-
 
     const handlePacientes = async (datosPaciente) => {
         if (!datosPaciente.per_id) {
@@ -323,18 +208,42 @@ export const RegisterComponent = () => {
                 per_documento,
                 per_foto,
                 rol_id: selectedRoles
+
             });
+
+            if (!response?.success) {
+                Swal.fire({
+                    icon: 'success',
+                    text: response.message
+                });
+                return;
+            }
 
             const idPersona = response?.data?.per_id;
             if (!idPersona) {
                 Swal.fire({ icon: 'error', text: 'No se pudo obtener el ID del usuario' });
                 return;
             }
+            if (selectedGeriatrico) {
+                const asignacionExitosaGeriatrico = await handleAssignRole(
+                    idPersona,
+                    selectedSedes,
+                    { ge_id: Number(selectedGeriatrico), gp_fecha_inicio, gp_fecha_fin }
+                );
+                console.log(asignacionExitosaGeriatrico);
 
+                if (!asignacionExitosaGeriatrico) {
+                    Swal.fire({ icon: 'error', text: 'Error al asignar el rol geriátrico' });
+                    return;
+                }
+            }
             // 3️⃣ Asignar el rol al usuario recién registrado
             const asignacionExitosa = await handleAssignSedes(idPersona, selectedRoles, sp_fecha_inicio, sp_fecha_fin);
             if (!asignacionExitosa) {
-                Swal.fire({ icon: 'error', text: 'No se pudo asignar el rol. Registro cancelado.' });
+                Swal.fire({
+                    icon: 'error',
+                    text: asignacionExitosa.message
+                });
                 return;
             }
 
@@ -443,21 +352,21 @@ export const RegisterComponent = () => {
                 <InputField label="Foto" type="file" name="per_foto" onChange={onInputChange} accept="image/*" />
 
                 {validRegister() && (
-                    <div className="roles-assignment" >
+                    <div className="" >
                         <SelectField label="Rol" name="rol_id" value={selectedRoles} onChange={handleRoleChange} />
 
                         {/* Se activan los campos adicionales SOLO si el usuario tiene rol 2 (AdminGeriatrico) */}
                         {showExtraAdminGeriaFields && (
                             <div>
-                                <SelectGeriatrico label="Rol" name="rol_id" value={rol_id} onChange={handleRoleChange} />
-                                <InputField label="Fecha inicio" type="date" name="fechaInicio" value={fechaInicio} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
-                                <InputField label="Fecha fin" type="date" name="fechaFin" value={fechaFin} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
+                                <SelectGeriatrico label="Geriátrico" name="ge_id" value={selectedGeriatrico} onChange={handleGeriatricoChange} />
+                                <InputField label="Fecha inicio" type="date" name="gp_fecha_inicio" value={gp_fecha_inicio} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
+                                <InputField label="Fecha fin" type="date" name="gp_fecha_fin" value={gp_fecha_fin} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
                             </div>
                         )}
 
                         {/* Se activan los campos adicionales SOLO si el usuario tiene rol 4 (Paciente) */}
                         {showExtraFields && (
-                            <div >
+                            <div>
                                 <InputField label="Edad" type="text" name="pac_edad" value={pac_edad} onChange={onInputChange} placeholder="Edad" required />
                                 <InputField label="Peso" type="text" name="pac_peso" value={pac_peso} onChange={onInputChange} placeholder="Peso" required />
                                 <InputField label="Estatura" type="text" name="pac_talla" value={pac_talla} onChange={onInputChange} placeholder="Estatura" required />

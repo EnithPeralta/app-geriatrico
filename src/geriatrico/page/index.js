@@ -34,3 +34,5 @@ export * from './HistorySeguimientoPage';
  //AcudientePacientePage.jsx
 export * from './HistoryGeriatricoPage';
  //HistoryGeriatricoPage.jsx
+export * from './TurnoEnfermeriaPage';
+ //TurnoEnfermeriaPage.jsx

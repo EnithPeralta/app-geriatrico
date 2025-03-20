@@ -97,9 +97,13 @@ export const LoginPage = () => {
     e.preventDefault();
 
     const response = await startLogin({ per_usuario, per_password });
+    console.log(response);
 
     if (!response || !response.success) {
-      Swal.fire({ icon: "error", text: "Credenciales incorrectas" });
+      Swal.fire({
+        icon: "error",
+        text: response.message
+      });
       return;
     }
 
@@ -117,7 +121,7 @@ export const LoginPage = () => {
       return;
     }
 
-    fetchRoles(user.id);
+    await fetchRoles(user.id);
   };
 
 

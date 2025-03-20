@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { useAcudiente, useGeriatricoPersona, usePersona, useSedesRol } from '../../../hooks';
-import { SelectField } from '../../../components';
+import { ModalRegistrarPersonas, SelectField } from '../../../components';
 
 export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
     const { asignarRolesSede } = useSedesRol();
@@ -16,6 +16,7 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
     const [error, setError] = useState(null);
     const [showSelectRoles, setShowSelectRoles] = useState(false);
     const [selectedRoles, setSelectedRoles] = useState(null);
+    const [showPersona, setShowPersona] = useState(false);
 
     // Datos del acudiente (simulación de valores predeterminados)
     const [datosAcudiente, setDatosAcudiente] = useState({
@@ -71,66 +72,87 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
         }
     };
 
+
     const handleRegisterAcudiente = async (event) => {
         event.preventDefault();
         setMensaje(null);
         setError(null);
-    
+
         if (!pacienteSeleccionado || !acudienteDocumento || !parentesco) {
-            setError("Todos los campos son obligatorios.");
+            console.log("Todos los campos son obligatorios.");
             return;
         }
-    
+
         try {
             // 1️⃣ Buscar a la persona por documento
             const result = await buscarVincularPersona({ documento: acudienteDocumento });
-    
-            if (!result.success) {
-                setError(result.message);
-                return;
+            console.log("Persona buscada:", result);
+
+            if (result.message) {
+                setShowPersona(true);
+                console.log(result.message);
             }
-    
+
             // 2️⃣ Obtener roles actuales de la persona en el geriátrico
             const rolesPersona = await obtenerPersonaRolesMiGeriatricoSede(result.per_id);
             console.log("Roles de la persona:", rolesPersona);
-            
+
             if (!rolesPersona?.persona?.rolesSede) {
                 console.error("Error: rolesPersona o rolesSede no están definidos.", rolesPersona);
                 return;
             }
-    
-            const tieneRolAcudiente = rolesPersona.persona.rolesSede.some(rol => rol.rol_nombre === "Acudiente");
-            console.log("Tiene rol acudiente?", tieneRolAcudiente);
-    
-            // 3️⃣ Si NO tiene el rol, se lo asignamos
+
+            // 3️⃣ Verificar si tiene el rol de Acudiente y si está activo
+            const rolAcudiente = rolesPersona.persona.rolesSede.find(rol => rol.rol_nombre === "Acudiente");
+            const tieneRolAcudiente = !!rolAcudiente;
+            const rolInactivo = tieneRolAcudiente && !rolAcudiente.activoSede;
+
+            console.log("Tiene rol acudiente?", tieneRolAcudiente, "Está inactivo?", rolInactivo);
+
+            // 4️⃣ Si el rol está inactivo, reasignarlo
+            if (rolInactivo) {
+                setShowSelectRoles(true);
+                const reactivacionExitosa = await handleAssignSedes(
+                    result.per_id,
+                    rolAcudiente.rol_id,
+                    datosAcudiente.sp_fecha_inicio,
+                    datosAcudiente.sp_fecha_fin
+                );
+
+                if (!reactivacionExitosa) {
+                    return Swal.fire({ icon: "error", text: "No se pudo reactivar el rol. Registro cancelado." });
+                }
+            }
+
+            // 5️⃣ Si NO tiene el rol, asignarlo normalmente
             if (!tieneRolAcudiente) {
                 setShowSelectRoles(true);
-    
+
                 if (!datosAcudiente.rol_id) {
                     return Swal.fire({ icon: "warning", text: "Seleccione un rol antes de continuar." });
                 }
-    
+
                 const asignacionExitosa = await handleAssignSedes(
                     result.per_id,
                     datosAcudiente.rol_id,
                     datosAcudiente.sp_fecha_inicio,
                     datosAcudiente.sp_fecha_fin
                 );
-    
+
                 if (!asignacionExitosa) {
                     return Swal.fire({ icon: "error", text: "No se pudo asignar el rol. Registro cancelado." });
                 }
             }
-    
-            // 4️⃣ Registrar el acudiente después de la validación del rol
+
+            // 6️⃣ Registrar el acudiente después de la validación del rol
             const response = await registrarAcudiente({
                 pac_id: pacienteSeleccionado.pac_id,
                 per_id: result.per_id,
                 pa_parentesco: parentesco,
             });
-    
+
             if (response.success) {
-                setMensaje(response.message);
+                console.log(response.message);
                 setPacienteSeleccionado(prev => ({
                     ...prev,
                     acudiente: response.acudiente,
@@ -138,19 +160,19 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
                 setAcudienteDocumento("");
                 setParentesco("");
             } else {
-                setError(response.message);
+                console.error(response.message);
             }
         } catch (error) {
             console.error("Error en handleRegisterAcudiente:", error);
-            setError("Ocurrió un error inesperado al registrar el acudiente.");
+            console.log("Ocurrió un error inesperado al registrar el acudiente.");
         }
     };
-    
+
 
     return (
         <div className='modal-overlay'>
             <div className='modal'>
-                <div className='modal-content'>
+                <div className='modal-content-geriatrico'>
                     <h2>Registrar Acudiente</h2>
                     {mensaje && <p className="success-message">{mensaje}</p>}
                     {error && <p className="error-message">{error}</p>}
@@ -174,6 +196,7 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
                                 <option value="Otro">Otro</option>
                             </select>
                         </div>
+
                         {showSelectRoles && (
                             <>
                                 <SelectField
@@ -215,6 +238,18 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
                             </button>
                         </div>
                     </form>
+                    {showPersona && (
+                        <ModalRegistrarPersonas
+                            acudienteDocumento={acudienteDocumento}
+                            handleAssignSedes={handleAssignSedes}
+                            pacienteId={pacienteId}
+                            setPacienteSeleccionado={setPacienteSeleccionado}
+                            handleRoleChange={handleRoleChange}
+                            parentesco={parentesco}
+                            setParentesco={setParentesco}
+                            selectedRoles={selectedRoles}
+                        />
+                    )}
                 </div>
             </div>
         </div>

@@ -14,3 +14,4 @@ export * from './useGeriatricoPersona';
 export * from './useEnfermera';
 export * from './useCuidadosEnfermeria';
 export * from './useSeguimiento';
+export * from './useTurnos';

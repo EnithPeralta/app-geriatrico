@@ -6,6 +6,7 @@ export interface Rol {
     se_id?: number;   
     se_nombre: string;
     tipo: string;
+    activo: boolean;
 }
 
 export interface SelectRolProps {

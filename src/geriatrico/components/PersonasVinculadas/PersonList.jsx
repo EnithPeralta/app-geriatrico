@@ -36,7 +36,7 @@ export const PersonList = ({
                     {/* Mostrar RolesDisplay solo si la tarjeta está activa */}
                     {activeCard === persona.per_id && (
                         <div style={{ marginTop: "10px" }}>
-                            <RolesDisplay roles={roles} />
+                            <RolesDisplay roles={roles} persona={persona} />
                         </div>
                     )}
                 </div>

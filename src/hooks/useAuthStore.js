@@ -33,15 +33,17 @@ export const useAuthStore = () => {
 
             return { success: true, esSuperAdmin: data.persona.esSuperAdmin, user: data.persona }; // ✅ Retorna el rol
         } catch (error) {
-            console.error("❌ Error en la solicitud:", error.response?.data || error);
+            console.error(
+                "❌ Error en la solicitud:",
+                error.response?.data || error
+            );
 
             dispatch(onLogout(error.response?.data?.message));
 
-            setTimeout(() => {
-                dispatch(clearErrorMessage());
-            }, 10);
-
-            return false; // ✅ Agregar este return en caso de error
+            return {
+                success: false,
+                message: error.response?.data?.message || "Error desconocido", 
+            };
         }
     };
 

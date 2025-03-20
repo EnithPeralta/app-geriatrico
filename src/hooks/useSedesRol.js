@@ -44,48 +44,6 @@ export const useSedesRol = () => {
         }
     };
 
-    const obtenerPersonaRolesMiGeriatricoSede = async ({ per_id }) => {
-        const token = getToken();
-        if (!token) {
-            return {
-                success: false,
-                message: "Token de autenticación no encontrado",
-            };
-        }
-
-        try {
-            const { data } = await geriatricoApi.get(`/personas/roles/${per_id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            console.log("✅ Respuesta del servidor:", data);
-
-            return {
-                success: true,
-                message: data.message || "Roles obtenidos exitosamente",
-                persona: data.persona || null
-            };
-
-        } catch (error) {
-            console.error("❌ Error al obtener los roles:", error);
-
-            let errorMessage = "Error al obtener los roles";
-            if (error.response) {
-                errorMessage = error.response.data?.message || errorMessage;
-            } else if (error.request) {
-                errorMessage = "No se recibió respuesta del servidor";
-            } else {
-                errorMessage = error.message;
-            }
-
-            return {
-                success: false,
-                message: errorMessage,
-                persona: null
-            };
-        }
-    };
-
     const inactivarRolAdminSede = async ({ per_id, se_id, rol_id }) => {
         const token = getToken();
         if (!token) {
@@ -94,27 +52,27 @@ export const useSedesRol = () => {
                 message: "Token de autenticación no encontrado",
             };
         }
-    
+
         try {
             const { data } = await geriatricoApi.put(
                 "/sedepersonarol/inactivarRolAdminSede",
-                { per_id, se_id, rol_id }, 
+                { per_id, se_id, rol_id },
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
-    
+
             console.log("✅ Respuesta del servidor:", data);
-    
+
             return {
                 success: true,
                 message: data.message || "Rol administrador sede inactivado exitosamente",
                 sedePersonaRol: data.data || null, // Asegurar compatibilidad con la respuesta del backend
             };
-    
+
         } catch (error) {
             console.error("❌ Error al inactivar el rol de la sede:", error);
-    
+
             let errorMessage = "Error al inactivar el rol de la sede";
             if (error.response) {
                 errorMessage = error.response.data?.message || errorMessage;
@@ -123,7 +81,7 @@ export const useSedesRol = () => {
             } else {
                 errorMessage = error.message;
             }
-    
+
             return {
                 success: false,
                 message: errorMessage,
@@ -131,10 +89,10 @@ export const useSedesRol = () => {
             };
         }
     };
-    
+
     const asignarRolesSede = async ({ per_id, rol_id, sp_fecha_inicio, sp_fecha_fin }) => {
         console.log("📤 Enviando datos para asignar roles a la sede:", { per_id, rol_id, sp_fecha_inicio, sp_fecha_fin });
-    
+
         // Obtener el token
         const token = getToken();
         if (!token) {
@@ -146,7 +104,7 @@ export const useSedesRol = () => {
 
         const rol_id_final = Array.isArray(rol_id) ? rol_id[0] : rol_id;
 
-    
+
         // Validar datos obligatorios
         if (!per_id || !rol_id || !sp_fecha_inicio) {
             return {
@@ -165,10 +123,10 @@ export const useSedesRol = () => {
                     },
                 }
             );
-    
+
             console.log("✅ Respuesta del servidor:", data);
             console.log("---------------------------------");
-    
+
             return {
                 success: true,
                 message: data.message || "Rol asignado correctamente.",
@@ -180,7 +138,7 @@ export const useSedesRol = () => {
         } catch (error) {
             console.error("❌ Error al asignar roles a la sede:", error);
             let errorMessage = error.response.data?.message || errorMessage;
-       
+
             return {
                 success: false,
                 message: errorMessage,
@@ -188,7 +146,41 @@ export const useSedesRol = () => {
             };
         }
     };
-    
 
-    return { asignarRolAdminSede, obtenerPersonaRolesMiGeriatricoSede, inactivarRolAdminSede, asignarRolesSede };
+    const inactivarRolesSede = async ({ per_id, se_id, rol_id }) => {
+        const token = getToken();
+        if (!token) {
+            return {
+                success: false,
+                message: "Token de autenticación no encontrado",
+            };
+        }
+
+        try {
+            const { data } = await geriatricoApi.put(
+                "/sedepersonarol/inactivarRolSede",
+                { per_id, se_id, rol_id },
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+
+            console.log("✅ Respuesta del servidor:", data);
+
+            return {
+                success: true,
+                message: data.message || "Rol inactivado exitosamente",
+                sedePersonaRol: data.data || null,
+            };
+        } catch (error) {
+            console.error("❌ Error al inactivar el rol de la sede:", error);
+            return {
+                success: false,
+                message: error.response?.data?.message || "Error al inactivar el rol de la sede",
+            };
+        }
+    };
+
+
+    return { asignarRolAdminSede, inactivarRolAdminSede, asignarRolesSede, inactivarRolesSede };
 };

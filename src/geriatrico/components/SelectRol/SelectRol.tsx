@@ -14,6 +14,7 @@ export const SelectRol = (props: SelectRolProps) => {
             try {
                 setLoading(true);
                 const response = await obtenerRolesAsignados();
+                console.log(response);
                 if (response.success) {
                     setRoles(response.roles || []);
                     console.log(response.roles);
@@ -51,16 +52,19 @@ export const SelectRol = (props: SelectRolProps) => {
                 onChange={handleChange} 
             >
                 <option hidden>Seleccione un rol</option>
-                {roles.map((rol, index) => (
+                {roles
+                .filter(rol => rol.activo !== false) // 🔹 Filtra los roles deshabilitados
+                .map((rol, index) => (
                     <option 
                         key={`${index}-${rol.rol_id}`} 
                         value={rol.rol_id}
                         data-ge_id={rol.ge_id || undefined} 
                         data-se_id={rol.se_id || undefined}
                     >
-                        {rol.se_nombre || rol.ge_nombre}
+                   {[rol.se_nombre, rol.rol_nombre, rol.ge_nombre].filter(Boolean).join(" - ")}
                     </option>
-                ))}
+                ))
+            }
             </select>
         </div>
     );

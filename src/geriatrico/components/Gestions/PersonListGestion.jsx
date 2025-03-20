@@ -29,7 +29,7 @@ export const PersonListGestion = ({
                                 onAssign={(e) => {
                                     e.stopPropagation();
                                     openAssignCard(persona);
-                                }}  
+                                }} 
                             />
                             {activeCard === persona.id && (
                                 <div style={{ marginTop: "10px" }}>
