@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SideBarComponent } from '../../components';
-import { PInformation } from '../layout/PInformation';
 import { useCuidadosEnfermeria, usePaciente } from '../../hooks';
 import Swal from 'sweetalert2';
 import '../../css/cuidados.css';
@@ -18,7 +17,6 @@ export const CuidadosEnfermeriaPage = () => {
 
     const [datosCuidados, setDatosCuidados] = useState({
         pac_id: Number(id),
-        cue_codigo: "",
         cue_fecha_inicio: "",
         cue_fecha_fin: "",
         cue_bano: "",
@@ -102,18 +100,6 @@ export const CuidadosEnfermeriaPage = () => {
 
 
 
-
-    // Navegar a la pantalla de acudiente del paciente
-    const handleAcudiente = async () => {
-        if (!paciente?.pac_id) return;
-        try {
-            await obtenerAcudientesDePaciente(paciente.pac_id);
-            navigate(`/geriatrico/acudiente/${paciente.pac_id}`);
-        } catch {
-            setError("Error al obtener el detalle del paciente.");
-        }
-    };
-
     // Manejar cambios en los checkboxes
     const handleChangeBano = (event) => {
         const { name, checked } = event.target;
@@ -171,12 +157,10 @@ export const CuidadosEnfermeriaPage = () => {
 
     return (
         <div className='main-container'>
-            <SideBarComponent />
             <div className='content'>
-                <PInformation persona={paciente} onEdit={handleAcudiente} />
                 <div className="animate__animated animate__fadeInUp">
                     <h2>Cuidados de Enfermería</h2>
-                    <div className="cuidado-card">
+                    <div className="">
                         {/* Checkbox Fecha */}
                         <div className="cuidado-item">
                             <span>Fecha inicial</span>
@@ -202,22 +186,6 @@ export const CuidadosEnfermeriaPage = () => {
                                         className='checkbox-text'
                                         name="cue_fecha_fin"
                                         value={datosCuidados.cue_fecha_fin}
-                                        onChange={handleChange}
-                                    />
-                                </label>
-                            </div>
-                        </div>
-
-                        {/* Checkbox Codigo */}
-                        <div className="cuidado-item">
-                            <span>Codigo de cuidado</span>
-                            <div className="options">
-                                <label className="container-checkbox-text">
-                                    <input
-                                        type="text"
-                                        className='checkbox-text'
-                                        name="cue_codigo"
-                                        value={datosCuidados.cue_codigo}
                                         onChange={handleChange}
                                     />
                                 </label>

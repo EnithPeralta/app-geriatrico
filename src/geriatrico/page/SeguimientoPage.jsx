@@ -120,16 +120,12 @@ export const SeguimientoPage = () => {
     return (
         <div className='animate__animated animate__fadeIn animate__faster'>
             <div className='main-container'>
-                <SideBarComponent />
                 <div className='content'>
-                    <PInformation persona={paciente} onEdit={handleAcudiente} />
-                    <div className=''>
-                        <h2 className="h2">Seguimiento de pacientes</h2>
+                        <h2 className="">Seguimiento de pacientes</h2>
                         <div className='button-container'>
                             <button className='save-button' onClick={() => { handleHistory(paciente?.pac_id) }} >Historial</button>
                         </div>
-                    </div>
-                    <form onSubmit={handleRegistrarSeguimientoPaciente} className="cuidado-card">
+                    <form onSubmit={handleRegistrarSeguimientoPaciente} className="">
                         <div className="segimiento-item">
                             <label>Foto:</label>
                             <input type="file" name="seg_foto" onChange={handleFileChange} />
