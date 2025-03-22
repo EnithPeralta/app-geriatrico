@@ -245,7 +245,7 @@
 
 .add-button-asignar,
 .edit-button-asignar,
-.active,
+.asignar,
 .inactive,
 .inactive-button-fa {
     color: white;
@@ -265,11 +265,11 @@
     background-color: #009ee2;
 }
 
-.active {
+.asignar {
     background-color: #0caf07;
 }
 
-.active:hover {
+.asignar:hover {
     background-color: #087005;
 }
 

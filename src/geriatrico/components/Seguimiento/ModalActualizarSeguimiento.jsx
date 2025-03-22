@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSeguimiento } from '../../../hooks';
 import Swal from 'sweetalert2';
+import { FaUser } from 'react-icons/fa';
 
 export const ModalActualizarSeguimiento = ({ id, setShowModal }) => {
     const { obtenerSeguimientosPorId, actualizarSeguimientoPaciente } = useSeguimiento();
@@ -93,19 +94,20 @@ export const ModalActualizarSeguimiento = ({ id, setShowModal }) => {
                 icon: 'error',
                 text: result.message
             });
+            setShowModal(false); // Cerrar el modal tras la actualización
         }
     };
 
     return (
         <div className="modal-overlay">
             <div className="modal">
-                <div className="modal-content">
+                <div className="modal-content-geriatrico">
                     <form onSubmit={handleSubmit}>
-                        <div className="profile-img">
+                        <div className="modal-img">
                             {editedSeguimiento && editedSeguimiento.seg_foto_preview ? (
                                 <img src={editedSeguimiento.seg_foto_preview} alt="Foto de perfil" height="100px" width="100px" />
                             ) : (
-                                <i className="fas fa-user-circle"></i>
+                                <FaUser size={40} />
                             )}
                         </div>
 

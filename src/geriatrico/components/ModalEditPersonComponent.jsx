@@ -1,10 +1,35 @@
 import React, { useState, useEffect } from "react";
+import { usePersona } from "../../hooks";
+import Swal from "sweetalert2";
 
-export const ModalEditPersonComponent = ({ editedPersona, onSubmit, onClose }) => {
-    const [personaEditada, setPersonaEditada] = useState(editedPersona || {});
+export const ModalEditPersonComponent = ({ editedPersona, onClose, setPersonas }) => {
+    const { updatePerson } = usePersona();
+    const [personaEditada, setPersonaEditada] = useState({
+        id: "",
+        usuario: "",
+        nombre: "",
+        documento: "",
+        correo: "",
+        telefono: "",
+        genero: "",
+        foto: "",
+        previewFoto: ""
+    });
 
     useEffect(() => {
-        setPersonaEditada(editedPersona || {});
+        if (editedPersona) {
+            setPersonaEditada({
+                id: editedPersona.id || "",
+                usuario: editedPersona.usuario || "",
+                nombre: editedPersona.nombre || "",
+                documento: editedPersona.documento || "",
+                correo: editedPersona.correo || "",
+                telefono: editedPersona.telefono || "",
+                genero: editedPersona.genero || "",
+                foto: editedPersona.foto || "",
+                previewFoto: editedPersona.foto || ""
+            });
+        }
     }, [editedPersona]);
 
     const handleFileChange = (e) => {
@@ -14,8 +39,8 @@ export const ModalEditPersonComponent = ({ editedPersona, onSubmit, onClose }) =
             reader.onloadend = () => {
                 setPersonaEditada(prev => ({
                     ...prev,
-                    per_foto: file,  // Guardar el archivo
-                    previewFoto: reader.result  // Vista previa de la imagen
+                    foto: file,
+                    previewFoto: reader.result
                 }));
             };
             reader.readAsDataURL(file);
@@ -30,16 +55,39 @@ export const ModalEditPersonComponent = ({ editedPersona, onSubmit, onClose }) =
         }));
     };
 
-    const handleSubmit = (event) => {
+    const handleEditSubmit = async (event) => {
         event.preventDefault();
-        onSubmit(event, personaEditada);
+
+        if (!personaEditada) return;
+
+        const result = await updatePerson(personaEditada.id, personaEditada);
+
+        console.log("Respuesta del servidor:", result);
+
+        if (result.success) {
+            setPersonas(prev =>
+                prev.map(p => (p.id === result.persona.id ? result.persona : p))
+            );
+            onClose();
+            Swal.fire({
+                icon: "success",
+                text: "Persona actualizada exitosamente",
+            });
+        } else {
+            console.error(result.message);
+            Swal.fire({
+                icon: "error",
+                text: result.message,
+            });
+        }
     };
 
     return (
         <div className="modal-overlay">
             <div className="modal">
                 <div className="modal-content-geriatrico">
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleEditSubmit}>
+                        {/* Foto de perfil */}
                         <div className="modal-img">
                             {personaEditada.previewFoto ? (
                                 <img
@@ -48,17 +96,12 @@ export const ModalEditPersonComponent = ({ editedPersona, onSubmit, onClose }) =
                                     height={100}
                                     width={100}
                                 />
-                            ) : personaEditada.per_foto ? (
-                                <img
-                                    src={typeof personaEditada.per_foto === "string" ? personaEditada.per_foto : URL.createObjectURL(personaEditada.per_foto)}
-                                    alt="Foto de perfil"
-                                    height={100}
-                                    width={100}
-                                />
                             ) : (
                                 <i className="fas fa-user-circle icon-edit-user"></i>
                             )}
                         </div>
+
+                        {/* Subir nueva foto */}
                         <div className="modal-field">
                             <label>Cambiar foto:</label>
                             <input
@@ -68,50 +111,69 @@ export const ModalEditPersonComponent = ({ editedPersona, onSubmit, onClose }) =
                                 onChange={handleFileChange}
                             />
                         </div>
+
+                        {/* Campos de edición */}
                         <div className="modal-field">
                             <label>Nombre Completo:</label>
                             <input
                                 className="modal-input"
                                 type="text"
                                 name="nombre"
-                                value={personaEditada.nombre || ""}
+                                value={personaEditada.nombre}
                                 onChange={handleEditChange}
                                 required
                             />
                         </div>
+
+                        <div className="modal-field">
+                            <label>Documento:</label>
+                            <input
+                                className="modal-input"
+                                type="text"
+                                name="documento"
+                                value={personaEditada.documento}
+                                onChange={handleEditChange}
+                                required
+                            />
+                        </div>
+
                         <div className="modal-field">
                             <label>Correo:</label>
                             <input
                                 className="modal-input"
                                 type="email"
                                 name="correo"
-                                value={personaEditada.correo || ""}
+                                value={personaEditada.correo}
                                 onChange={handleEditChange}
                                 required
                             />
                         </div>
+
                         <div className="modal-field">
                             <label>Teléfono:</label>
                             <input
                                 className="modal-input"
                                 type="text"
                                 name="telefono"
-                                value={personaEditada.telefono || ""}
+                                value={personaEditada.telefono}
                                 onChange={handleEditChange}
                                 required
                             />
                         </div>
+
                         <div className="modal-field">
                             <label>Género:</label>
                             <input
                                 className="modal-input"
                                 type="text"
                                 name="genero"
-                                value={personaEditada.genero || ""}
+                                value={personaEditada.genero}
                                 onChange={handleEditChange}
                                 required
                             />
                         </div>
+
+                        {/* Botones */}
                         <div className="modal-buttons">
                             <button type="submit" className="create">
                                 Guardar

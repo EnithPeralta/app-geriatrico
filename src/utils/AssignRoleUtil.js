@@ -6,6 +6,7 @@ export const AssignRoleUtil = () => {
     const { asignarRolGeriatrico } = useGeriatricoPersonaRol();
     const [assigning, setAssigning] = useState(false)
     const [selectedGeriatrico, setSelectedGeriatrico] = useState(null);
+    const [selectedRoles, setSelectedRoles] = useState([]);
 
     const handleAssignRole = async (per_id, ge_id, rol_id, gp_fecha_inicio, gp_fecha_fin) => {
         if (!per_id, ge_id, rol_id, gp_fecha_inicio, gp_fecha_fin) {
@@ -18,6 +19,7 @@ export const AssignRoleUtil = () => {
 
         setAssigning(true);
         try {
+            let successMessage = '';
             for (let rol_id of selectedRoles) {
                 const response = await asignarRolGeriatrico({
                     per_id,
@@ -36,11 +38,12 @@ export const AssignRoleUtil = () => {
                     setAssigning(false);
                     return;
                 }
+                successMessage = response.message; 
             }
 
             Swal.fire({
                 icon: 'success',
-                text: response.message,
+                text: successMessage || 'Roles asignados correctamente',
             })
         } catch (error) {
             console.error("Error en la asignación del rol:", error);

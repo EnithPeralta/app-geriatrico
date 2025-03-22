@@ -19,8 +19,8 @@ export const CardPerson = ({ persona, onClick, onEdit, onAssign, onInactivate })
                 )}
             </div>
             <div className="buttons-asignar">
-                <button className={persona.gp_activo ? 'active' : 'inactive'} onClick={onInactivate}>
-                    <i className={`fa-solid ${persona.gp_activo ? "fa-user-gear active" : "fa-user-slash inactive"}`} />
+                <button className={persona.gp_activo ? 'asignar' : 'inactive'} onClick={onInactivate}>
+                    <i className={`fa-solid ${persona.gp_activo ? "fa-user-gear " : "fa-user-slash inactive"}`} />
                 </button>
                 <button className="edit-button-asignar" onClick={onEdit}>
                     <i className="fa-solid fa-user-pen i-asignar"></i>
@@ -28,7 +28,7 @@ export const CardPerson = ({ persona, onClick, onEdit, onAssign, onInactivate })
                 <button className="add-button-asignar" onClick={onAssign}>
                     <i className="fas fa-arrow-up i-asignar"></i>
                 </button>
-                
+
             </div>
         </div>
     );

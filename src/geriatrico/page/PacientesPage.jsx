@@ -94,7 +94,7 @@ export const PacientesPage = () => {
                         </div>
                     ))
                 ) : (
-                    <LoadingComponet />
+                    <p className="error-message">No se encontraron pacientes.</p>
                 )}
             </div>
         </div>

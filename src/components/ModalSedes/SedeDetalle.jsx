@@ -21,10 +21,16 @@ export const SedeDetalle = ({ sedeDetalle, isOpens, onClose }) => {
                             value={sedeDetalle.se_direccion}
                             readOnly
                         />
-                        <label>Cupos:</label>
+                        <label>Cupos Ocupados:</label>
                         <input
                             type="text"
-                            value={sedeDetalle.cupos_totales}
+                            value={sedeDetalle.cupos_ocupados}
+                            readOnly
+                        />
+                        <label>Cupos Disponibles:</label>
+                        <input
+                            type="text"
+                            value={sedeDetalle.cupos_disponibles}
                             readOnly
                         />
                     </div>

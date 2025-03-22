@@ -3,14 +3,16 @@ import { useRoles } from '../../hooks';
 import '../../css/roles.css';
 import { LoadingComponet, SideBarComponent } from '../../components';
 import { GoBackComponet } from '../../components/GoBackComponent';
+import { ModalCrearRol } from '../components/Modal-Rol/ModalCrearRol';
+import { ModalEditarRol } from '../components/Modal-Rol/ModalEditarRol';
 
 export const RolesPage = () => {
     const [roles, setRoles] = useState([]);
     const { obtenerRoles, crearRol, actualizarRol } = useRoles();
     const [error, setError] = useState(null);
-    // const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    // const [selectedRol, setSelectedRol] = useState(null);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedRol, setSelectedRol] = useState(null);
 
     useEffect(() => {
         const cargaRoles = async () => {
@@ -83,6 +85,19 @@ export const RolesPage = () => {
                     </div>
                 </div>
             </div>
+            {/* Modal para crear un nuevo rol */}
+            <ModalCrearRol
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+                onSave={handleSaveRol}
+            />
+            {/* Modal para editar un rol existente */}
+            <ModalEditarRol
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                rol={selectedRol}
+                onUpdate={handleUpdateRol}
+            />
         </div>
     )
 }

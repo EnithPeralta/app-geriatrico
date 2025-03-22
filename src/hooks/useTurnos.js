@@ -37,5 +37,70 @@ export const useTurnos = () => {
         }
     };
 
-    return { asignarTurnoEnfermeria };
+    const verMisTurnosEnfermeria = async () => {
+        const token = getToken();
+        if (!token) {
+            return { success: false, message: "Token de autenticación no encontrado." };
+        }
+
+        try {
+            const response = await geriatricoApi.get(`/turnos/misturnos`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            console.log("✅ Respuesta del servidor:", response.data);
+
+            return {
+                success: true,
+                message: response.data.message || "Turnos obtenidos exitosamente.",
+                turnos: response.data.turnos_por_sede || [], // Extraer los turnos agrupados
+            };
+
+        } catch (error) {
+            console.error("❌ Error al obtener turnos:", error);
+
+            return {
+                success: false,
+                message: error.response?.data?.message || "Ocurrió un error inesperado.",
+                error: error.response?.data || error.message
+            };
+        }
+    };
+
+    const verTurnosSede = async () => {
+        const token = getToken();
+        if (!token) {
+            return { success: false, message: "Token de autenticación no encontrado." };
+        }
+
+        try {
+            const response = await geriatricoApi.get(`/turnos/sede`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            console.log("✅ Respuesta del servidor:", response.data);
+
+            return {
+                success: true,
+                message: response.data.message || "Turnos obtenidos exitosamente.",
+                turnos: response.data.turnos || [], // Extraer los turnos agrupados
+            };
+
+        } catch (error) {
+            console.error("❌ Error al obtener turnos:", error);
+
+            return {
+                success: false,
+                message: error.response?.data?.message || "Ocurrió un error inesperado.",
+                error: error.response?.data || error.message
+            };
+        }
+    }
+
+
+    return { asignarTurnoEnfermeria, verMisTurnosEnfermeria, verTurnosSede };
 };

@@ -9,10 +9,11 @@ export const InputField = (props: InputFieldProps) => {
                 <input
                     type={props.type}
                     name={props.name}
-                    value={props.value || ""} // Evita valores undefined
+                    value={props.type === "file" ? undefined : props.value}
                     onChange={props.onChange}
                     placeholder={props.placeholder}
                     required={props.required}
+                    accept='image/*'
                 />
                 {props.icon && <i className={props.icon} onClick={props.onClick}></i>}
             </div>

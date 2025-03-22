@@ -25,33 +25,42 @@ export const ModalRegistrarPaciente = ({ datosIniciales, onClose, selectedRoles 
         if (datosIniciales?.per_id) {
             obtenerDetallePacienteSede(datosIniciales.per_id).then((response) => {
                 if (response.success && response.paciente) {
-                    setDatosPaciente((prev) => ({
-                        ...prev,
-                        pac_edad: response.paciente.edad || "",
-                        pac_peso: response.paciente.peso || "",
-                        pac_talla: response.paciente.talla || "",
-                        pac_regimen_eps: response.paciente.regimen_eps || "",
-                        pac_nombre_eps: response.paciente.nombre_eps || "",
-                        pac_rh_grupo_sanguineo: response.paciente.rh_grupo_sanguineo || "",
-                        pac_talla_camisa: response.paciente.talla_camisa || "",
-                        pac_talla_pantalon: response.paciente.talla_pantalon || "",
-                        rol_id: selectedRoles?.[0] || prev.rol_id,
-                        sp_fecha_inicio: response.paciente.sp_fecha_inicio || "",
-                        sp_fecha_fin: response.paciente.sp_fecha_fin || "",
-                    }));
-
-                    setEsActualizacion(true);
-
+                    const tieneRol = response.paciente.rol_id === selectedRoles?.[0];
+                    const rolInactivo = response.paciente.activoRolSede === false; // Ajusta según el campo correcto
+    
+                    if (!rolInactivo) {
+                        setDatosPaciente((prev) => ({
+                            ...prev,
+                            pac_edad: response.paciente.edad || "",
+                            pac_peso: response.paciente.peso || "",
+                            pac_talla: response.paciente.talla || "",
+                            pac_regimen_eps: response.paciente.regimen_eps || "",
+                            pac_nombre_eps: response.paciente.nombre_eps || "",
+                            pac_rh_grupo_sanguineo: response.paciente.rh_grupo_sanguineo || "",
+                            pac_talla_camisa: response.paciente.talla_camisa || "",
+                            pac_talla_pantalon: response.paciente.talla_pantalon || "",
+                            rol_id: selectedRoles?.[0] || prev.rol_id,
+                            sp_fecha_inicio: response.paciente.sp_fecha_inicio || "",
+                            sp_fecha_fin: response.paciente.sp_fecha_fin || "",
+                        }));
+                    }
+    
+                    setEsActualizacion(tieneRol && !rolInactivo);
+    
                     Swal.fire({
                         icon: "info",
-                        text: "Este paciente ya tenía datos registrados. Se han cargado sus datos anteriores.",
+                        text: rolInactivo
+                            ? "El rol de paciente estaba inactivo. Se debe registrar nuevamente."
+                            : tieneRol
+                            ? "Este paciente ya tiene este rol asignado. Se han cargado sus datos anteriores."
+                            : "Este paciente tiene datos previos, pero el rol es nuevo.",
                         confirmButtonText: "OK",
                     });
                 }
             });
         }
-    }, [datosIniciales?.per_id]); // Agregado per_id como dependencia
-
+    }, [datosIniciales?.per_id, selectedRoles]);
+    
     const handleChange = (e) => {
         const { name, value } = e.target;
         setDatosPaciente((prev) => ({
@@ -98,11 +107,13 @@ export const ModalRegistrarPaciente = ({ datosIniciales, onClose, selectedRoles 
 
     const handleSubmit = async () => {
         if (!datosPaciente.per_id || !datosPaciente.rol_id || !datosPaciente.sp_fecha_inicio || !datosPaciente.sp_fecha_fin) {
+            console.log("Datos del paciente a registrar:", datosPaciente);
             return Swal.fire({
                 icon: "warning",
                 text: "⚠️ Faltan datos obligatorios para registrar al paciente.",
             });
         }
+        console.log("Datos del paciente a registrar:", datosPaciente);
     
         const asignacionExitosa = await handleAssignSedes(
             datosPaciente.per_id,
@@ -116,6 +127,8 @@ export const ModalRegistrarPaciente = ({ datosIniciales, onClose, selectedRoles 
         }
     
         const response = await registrarPaciente(datosPaciente);
+    
+        console.log("Respuesta del servidor:", response);
     
         if (response.success) {
             Swal.fire({

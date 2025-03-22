@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
-import { useAuthStore, useEnfermera, useForm, usePaciente, usePersona, useSession } from '../../hooks';
+import { useAuthStore, useEnfermera, useForm, useGeriatricoPersonaRol, usePaciente, usePersona, useSedesRol, useSession } from '../../hooks';
 import { CheckboxField, InputField, ModalEnfermera, ModalRegistrarPaciente, SelectField } from '../../components';
 import { SelectGeriatrico } from '../../components/SelectGeriatrico/SelectGeriatrico';
-import { AsignarRolSedeUtil, AssignRoleUtil, BuscarPersonaUtil } from '../../utils';
+import { AssignRoleUtil } from '../../utils';
+import { ModalAdminSede } from '../../components/AsignarSede/ModalAdminSede';
 
 const registerFormFields = {
     per_password: '',
@@ -19,12 +20,12 @@ const registerFormFields = {
 
 export const RegisterComponent = () => {
     const { startRegister, errorMessage } = useAuthStore();
+    const { buscarVincularPersona } = usePersona();
     const { registrarPaciente } = usePaciente();
     const { obtenerSesion } = useSession();
     const { startRegisterEnfermera } = useEnfermera();
-    const { buscarPersona } = BuscarPersonaUtil();
-    const { handleAssignSedes } = AsignarRolSedeUtil();
-    const { handleAssignRole } = AssignRoleUtil();
+    const { asignarRolGeriatrico } = useGeriatricoPersonaRol();
+    const { asignarRolesSede, asignarRolAdminSede } = useSedesRol();
     const [esSuperAdmin, setEsSuperAdmin] = useState(false);
     const [loading, setLoading] = useState(false);
     const [adminGeriátrico, setAdminGeriátrico] = useState(null);
@@ -34,10 +35,12 @@ export const RegisterComponent = () => {
     const [showExtraFields, setShowExtraFields] = useState("");
     const fetchedRef = useRef(false);
     const [showModal, setShowModal] = useState(false);
+    const [showModalSede, setShowModalSede] = useState(false);
     const [showSelectRoles, setShowSelectRoles] = useState(false);
     const [showModalEnfermera, setShowModalEnfermera] = useState(false);
     const [showExtraAdminGeriaFields, setShowExtraAdminGeriaFields] = useState(false);
     const [fechaInicio, setFechaInicio] = useState("");
+    const [assigning, setAssigning] = useState(false);
     const [fechaFin, setFechaFin] = useState("");
     const [selectedGeriatrico, setSelectedGeriatrico] = useState([]);
 
@@ -100,6 +103,173 @@ export const RegisterComponent = () => {
         // showExtraFields se activa si el usuario elige el rol 3 (Admin Sede)
         setShowExtraFields(rol_id === 3 && !esSuperAdmin && !adminGeriátrico);
     }, [rol_id, esSuperAdmin, adminGeriátrico]);
+
+
+    const buscarPersona = async () => {
+        if (!per_documento.trim()) return;
+
+        setLoading(true);
+        try {
+            const sesion = await obtenerSesion();
+            const ge_id = sesion?.ge_id;
+
+            const resultado = await buscarVincularPersona({ documento: per_documento, ge_id });
+            console.log(resultado); // Para depuración
+
+            if (resultado.success) {
+                setSelectedPersona(resultado);
+
+                Swal.fire({
+                    icon: 'question',
+                    text: resultado.message,
+                    confirmButtonText: 'Aceptar',
+                });
+
+                // Esperamos a que el usuario seleccione un rol antes de mostrar el modal correcto
+                setShowSelectRoles(true);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    text: resultado.message,
+                });
+            }
+        } catch (error) {
+            console.error("❌ Error al buscar la persona:", error);
+            Swal.fire({
+                icon: 'error',
+                text: 'Ocurrió un error al buscar la persona.',
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleAssignSedes = async (per_id, rol_id, sp_fecha_inicio, sp_fecha_fin,) => {
+        try {
+            if (!per_id || !rol_id || !sp_fecha_inicio || !sp_fecha_fin) {
+                console.warn("❌ Datos incompletos para la asignación del rol.");
+                await Swal.fire({
+                    icon: "warning",
+                    text: "Por favor, complete todos los campos antes de asignar el rol."
+                });
+                return false;
+            }
+
+            const response = await asignarRolesSede({
+                per_id, rol_id, sp_fecha_inicio, sp_fecha_fin
+            });
+
+            if (response?.success) {
+                console.log("✅ Rol asignado con éxito:", response.message);
+                return true;
+            } else {
+                console.warn("⚠️ Error en la asignación del rol:", response?.message || "Error desconocido.");
+                await Swal.fire({
+                    icon: "error",
+                    text: response?.message || "Hubo un problema al asignar el rol."
+                });
+                return false;
+            }
+        } catch (error) {
+            console.error("❌ Error inesperado al asignar el rol:", error);
+            await Swal.fire({
+                icon: "error",
+                text: error?.message || "Ocurrió un error inesperado. Inténtelo nuevamente."
+            });
+            return false;
+        }
+    };
+
+    const handleAssignRole = async (per_id, ge_id, rol_id, gp_fecha_inicio, gp_fecha_fin) => {
+        if (!per_id, ge_id, rol_id, gp_fecha_inicio, gp_fecha_fin) {
+            Swal.fire({
+                icon: 'error',
+                text: 'Debe seleccionar un geriátrico, al menos un rol y una fecha de inicio.',
+            })
+            return;
+        }
+
+        setAssigning(true);
+        try {
+            let successMessage = '';
+            for (let rol_id of selectedRoles) {
+                const response = await asignarRolGeriatrico({
+                    per_id,
+                    ge_id: Number(selectedGeriatrico),
+                    rol_id,
+                    gp_fecha_inicio,
+                    gp_fecha_fin
+                });
+
+                if (!response.success) {
+                    console.error("Error al asignar rol:", response.message);
+                    Swal.fire({
+                        icon: 'error',
+                        text: response.message,
+                    })
+                    setAssigning(false);
+                    return;
+                }
+                successMessage = response.message;
+            }
+
+            Swal.fire({
+                icon: 'success',
+                text: successMessage || 'Roles asignados correctamente',
+            })
+        } catch (error) {
+            console.error("Error en la asignación del rol:", error);
+            Swal.fire({
+                icon: 'error',
+                text: 'Error al asignar el rol',
+            })
+        }
+    };
+
+    const handleAssignAdminSede = async () => {
+        if (!selectedPersona || !selectedSedes || selectedRoles.length === 0 || !fechaInicio) {
+            Swal.fire({
+                icon: "error",
+                text: "Debe seleccionar al menos una sede y un rol, y definir la fecha de inicio.",
+            });
+            return;
+        }
+        setAssigning(true);
+        try {
+            for (let rol_id of selectedRoles) {
+                const response = await asignarRolAdminSede({
+                    per_id: selectedPersona.per_id,
+                    se_id: Number(selectedSedes),
+                    rol_id: rol_id,
+                    sp_fecha_inicio: fechaInicio,
+                    sp_fecha_fin: fechaFin || null,
+                });
+
+                console.log("Respuesta del servidor:", response);
+
+                if (!response.success) {
+                    throw new Error(response.message);
+                }
+
+                // ✅ Mostrar el modal si el rol asignado es "Paciente"
+                if (response.rolNombre === "Paciente") {
+                    Swal.fire({
+                        icon: "success",
+                        text: response.mensajeAdicional,
+                    });
+                    setShowModal(true);
+                }
+            }
+        } catch (error) {
+            console.error("Error al asignar rol:", error);
+            Swal.fire({
+                icon: "error",
+                text: error.message || "Error al asignar rol",
+            });
+        } finally {
+            setAssigning(false);
+        }
+    };
 
     const handleRoleChange = (event) => {
         const value = Number(event.target.value); // Asegurar que sea un número
@@ -228,7 +398,11 @@ export const RegisterComponent = () => {
                 const asignacionExitosaGeriatrico = await handleAssignRole(
                     idPersona,
                     selectedSedes,
-                    { ge_id: Number(selectedGeriatrico), gp_fecha_inicio, gp_fecha_fin }
+                    {
+                        ge_id: Number(selectedGeriatrico),
+                        gp_fecha_inicio,
+                        gp_fecha_fin
+                    }
                 );
                 console.log(asignacionExitosaGeriatrico);
 
@@ -253,12 +427,10 @@ export const RegisterComponent = () => {
             if (rolId === 2) { // Admin Geriátrico
                 const datosAdminGeriatrico = {
                     per_id: idPersona,
-                    ge_id,
+                    ge_id: Number(selectedGeriatrico),
                     rol_id: rolId,
-                    gp_fecha_inicio: fechaInicio,
-                    gp_fecha_fin: fechaFin,
-                    sp_fecha_inicio: fechaInicio,
-                    sp_fecha_fin: fechaFin
+                    gp_fecha_inicio,
+                    gp_fecha_fin,
                 };
 
                 console.log("📤 Enviando datos del admin geriátrico:", datosAdminGeriatrico);
@@ -325,10 +497,9 @@ export const RegisterComponent = () => {
                         name="per_documento"
                         value={per_documento}
                         onChange={onInputChange}
-                        onBlur={buscarPersona} // Dispara la búsqueda al salir del campo
                     />
                     <button type="button" className="search-button-buscar" onClick={buscarPersona} disabled={loading}>
-                        <i className={`fas fa-search ${loading ? 'fa-spin' : ''}`} />
+                        <i className={`fas fa-search ${loading ? 'fa-spin' : ''}`} /> Buscar
                     </button>
                 </div>
             )}
@@ -351,7 +522,7 @@ export const RegisterComponent = () => {
                 <InputField label="Teléfono" type="text" name="per_telefono" value={per_telefono} onChange={onInputChange} placeholder="3112345678" icon="fas fa-phone" />
                 <InputField label="Foto" type="file" name="per_foto" onChange={onInputChange} accept="image/*" />
 
-                {validRegister() && (
+                {!esSuperAdmin && validRegister() && (
                     <div className="" >
                         <SelectField label="Rol" name="rol_id" value={selectedRoles} onChange={handleRoleChange} />
 
@@ -402,8 +573,14 @@ export const RegisterComponent = () => {
                         setSelectedRoles(rolesNumericos);
 
                         const rolSeleccionado = rolesNumericos[0] || null;
+                        console.log(rolSeleccionado);
 
-                        if (rolSeleccionado === 5) {
+                        if (rolSeleccionado === 3) {
+                            setShowModalSede(true);
+                            console.log(showModalSede);
+                            setShowModal(false);
+                            setShowModalEnfermera(false);
+                        } else if (rolSeleccionado === 5) {
                             setShowModalEnfermera(true);
                             setShowModal(false);
                         } else {
@@ -411,6 +588,23 @@ export const RegisterComponent = () => {
                             setShowModalEnfermera(false);
                         }
                     }}
+                />
+            )}
+
+            {showModalSede && selectedPersona && (
+                <ModalAdminSede
+                    assigning={assigning}
+                    fechaFin={fechaFin}
+                    fechaInicio={fechaInicio}
+                    selectedRoles={selectedRoles}
+                    selectedSedes={selectedSedes}
+                    setSelectedSedes={setSelectedSedes}
+                    handleAssignAdminSede={handleAssignAdminSede}
+                    handleAssignSedes={handleAssignSedes}
+                    setFechaFin={setFechaFin}
+                    setFechaInicio={setFechaInicio}
+                    setAssigning={setAssigning}
+                    onClose={() => setShowModalSede(false)}
                 />
             )}
 

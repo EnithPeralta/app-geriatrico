@@ -1,0 +1,215 @@
+.historial-content {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+.daily-container {
+    background: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+    padding: 1rem; /* Reducido padding */
+    box-shadow: 20px 20px 60px #bebebe,
+    -20px -20px 60px #ffffff;
+    z-index: 100;
+}
+.daily-container .daily-title {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #0090bc; /* Gris oscuro */
+}
+
+.daily-card {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Reducido minmax */
+    gap: 1rem;
+}
+
+
+.historial-card {
+    border-radius: 8px;
+    padding: 1rem; /* Reducido padding */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.historial-card:hover {
+    transform: translateY(-1px);
+}
+
+.historial-card .summary-title {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #3d3d3d; /* Gris */
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Reducido minmax */
+    gap: 0.5rem;
+}
+
+/* NUEVO ESTILO PARA EL GRID DE RESUMEN */
+.summary-grid {
+    grid-template-columns: repeat(3, 1fr); /* Organiza en filas de tres */
+}
+
+.metric-item {
+    text-align: center;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.metric-icon {
+    font-size: 1.2rem;
+    color: #4299e1; /* Azul más suave */
+    margin-bottom: 0.25rem;
+}
+
+.metric-value {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #2d3748;
+}
+
+.metric-label {
+    color: #718096;
+    font-size: 0.75rem;
+}
+
+
+.timeline-container {
+    position: relative;
+    padding-left: 5px;
+
+
+}
+
+.timeline-item {
+    position: relative;
+    padding: 0.75rem 0;
+    background: white;
+    border-radius: 6px;
+    padding-right: 15px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -22px;
+    top: 18px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0090bc;
+}
+
+.timeline-content {
+    border-left: 2px solid #0090bc;
+    padding-left: 1rem;
+    padding-bottom: 1rem;
+}
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.3rem;
+}
+
+.timeline-hour {
+    color: #718096;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.timeline-type {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.timeline-detail {
+    color: #2d3748;
+    font-size: 0.85rem;
+    margin-bottom: 0.2rem;
+}
+
+
+.report-section {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: #edf2f7;
+    border-radius: 6px;
+}
+
+.report-section h4 {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #0090bc;
+}
+
+.report-section ul {
+    padding-left: 1rem;
+}
+
+.report-section li {
+    font-size: 0.8rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.foto-seguimiento{
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .historial-content {
+        padding: 0.8rem;
+    }
+    
+    .daily-container {
+        padding: 0.8rem;
+    }
+    
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+.timeline-type.medición {
+    background: #e8f5e9; /* Verde suave */
+    color: #388e3c; /* Verde oscuro */
+}
+
+.timeline-type.tratamiento {
+    background: #ffebee; /* Rojo suave */
+    color: #d32f2f; /* Rojo oscuro */
+}
+
+.timeline-type.consulta {
+    background: #e3f2fd; /* Azul suave */
+    color: #1976d2; /* Azul oscuro */
+}

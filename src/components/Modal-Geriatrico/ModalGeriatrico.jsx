@@ -13,22 +13,25 @@ export const ModalGeriatrico = ({ geriatrico, isOpen, onClose }) => {
                             geriatrico.sedes.map((sede, index) => (
                                 <div key={index} className="grid-item">
                                     <img src={sede.se_foto} alt="Logo" className="" height={100} width={100} />
-                                    <label> Nombre:</label>
-                                    <span>
+                                    <span> Nombre:</span>
+                                    <label>
                                         {sede.se_nombre}
-                                    </span>
+                                    </label>
 
-                                    <label>Dirección:</label>
-                                    <span>{sede.se_direccion}</span>
+                                    <span>Dirección:</span>
+                                    <label>{sede.se_direccion}</label>
 
-                                    <label>Telefono:</label>
-                                    <span>{sede.se_telefono}</span>
+                                    <span>Telefono:</span>
+                                    <label>{sede.se_telefono}</label>
 
-                                    <label>Cupos:</label>
-                                    <span>{sede.cupos_totales}</span>
+                                    <span>Cupos Totales:</span>
+                                    <label>{sede.cupos_totales}</label>
 
-                                    <label>Estado</label>
-                                    <span>{sede.se_activo ? 'Activo' : 'Inactivo'}</span>
+                                    <span>Cupos Ocupados:</span>
+                                    <label>{sede.cupos_ocupados}</label>
+
+                                    <span>Estado</span>
+                                    <label>{sede.se_activo ? 'Activo' : 'Inactivo'}</label>
                                 </div>
                             ))
                         ) : (

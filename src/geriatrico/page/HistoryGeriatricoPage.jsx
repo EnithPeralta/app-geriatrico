@@ -36,8 +36,23 @@ export const HistoyGeriatricoPage = () => {
     );
 
     if (loading) return <LoadingComponet />;
-    if (error) return <p>Error: {error}</p>;
-    if (filtrarHistorial.length === 0) return <p>No hay historial de roles disponible.</p>;
+    if (error) return (
+        <div className="content">
+            <div className="history-day">
+                <div className='history-card'>
+                    <h4 className="h4">Historial vacío</h4>
+                    <p>{error}</p>
+                </div>
+            </div>
+        </div>
+    );
+
+    if (filtrarHistorial.length === 0) return (
+        <div className="history-day">
+            <div className="history-card">
+                <h4 className="h4">No hay historial de roles disponible.</h4>
+            </div>
+        </div>)
 
     return (
         <div className='animate__animated animate__fadeIn animate__faster'>
@@ -45,7 +60,7 @@ export const HistoyGeriatricoPage = () => {
                 <SideBarComponent />
                 <div className='content'>
                     <div className='gestionar'>
-                        <h4 className='h4'>Historial de Seguimientos</h4>
+                        <h4 className='h4'>Historial</h4>
                         <input
                             type="text"
                             placeholder="Buscar por fecha (día, mes, año)"

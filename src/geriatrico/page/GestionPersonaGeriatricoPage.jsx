@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { LoadingComponet, ModalEnfermera, ModalRegistrarPaciente, SideBarComponent } from "../../components";
-import { useEnfermera, useGeriatrico, useGeriatricoPersona, usePaciente, usePersona, useSedesRol } from "../../hooks";
+import { useEnfermera, useGeriatrico, useGeriatricoPersona, usePaciente, useSedesRol } from "../../hooks";
 import { ModalEditPersonComponent } from "../components/ModalEditPersonComponent";
 import Swal from "sweetalert2";
 import { PersonList } from "../components/PersonasVinculadas/PersonList";
@@ -11,8 +11,7 @@ export const GestionPersonaGeriatricoPage = () => {
     const { registrarPaciente } = usePaciente();
     const { homeMiGeriatrico } = useGeriatrico();
     const { obtenerPersonaRolesMiGeriatricoSede, personasVinculadasMiGeriatrico, inactivarVinculacionGeriatrico, reactivarVinculacionGeriatrico } = useGeriatricoPersona();
-    const { updatePerson } = usePersona();
-    const { asignarRolAdminSede, asignarRolesSede, inactivarRolAdminSede } = useSedesRol();
+    const { asignarRolAdminSede, asignarRolesSede } = useSedesRol();
     const { startRegisterEnfermera } = useEnfermera();
     const [personas, setPersonas] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -197,7 +196,7 @@ export const GestionPersonaGeriatricoPage = () => {
 
         const confirmacion = await Swal.fire({
             text: "Deseas inactivará la vinculación de la persona al geriatrico.",
-            icon: "warning",
+            icon: "question",
             showCancelButton: true,
             confirmButtonText: "Sí, inactivar",
             cancelButtonText: "Cancelar"
@@ -231,7 +230,7 @@ export const GestionPersonaGeriatricoPage = () => {
 
         const confirmacion = await Swal.fire({
             text: "Deseas reactivará la vinculación de la persona al geriatrico.",
-            icon: "warning",
+            icon: "question",
             showCancelButton: true,
             confirmButtonText: "Sí, reactivar",
             cancelButtonText: "Cancelar"
@@ -470,44 +469,6 @@ export const GestionPersonaGeriatricoPage = () => {
         setShowEditModal(true);
     };
 
-    const handleEditSubmit = async (event, datosPersona) => {
-        event.preventDefault(); // Evita que el formulario recargue la página
-
-        if (!datosPersona) return;
-
-        const personaActualizada = {
-            per_id: datosPersona.id,
-            per_usuario: datosPersona.usuario,
-            per_nombre_completo: datosPersona.nombre,
-            per_documento: datosPersona.documento,
-            per_correo: datosPersona.correo,
-            per_telefono: datosPersona.telefono,
-            per_genero: datosPersona.genero,
-            per_password: datosPersona.password,
-            per_foto: datosPersona.foto
-        };
-
-        console.log("Datos enviados corregidos:", personaActualizada);
-
-        const result = await updatePerson(personaActualizada.per_id, personaActualizada);
-
-        console.log("Respuesta del servidor:", result);
-
-        if (result.success) {
-            setPersonas(prev => prev.map(p => (p.per_id === result.persona.per_id ? result.persona : p)));
-            setShowEditModal(false);
-            Swal.fire({
-                icon: 'success',
-                text: 'Persona actualizada exitosamente',
-            });
-        } else {
-            console.error(result.message);
-            Swal.fire({
-                icon: 'error',
-                text: result.message,
-            });
-        }
-    };
 
 
     if (loading) {
@@ -564,7 +525,7 @@ export const GestionPersonaGeriatricoPage = () => {
                         {showEditModal && editedPersona && (
                             <ModalEditPersonComponent
                                 editedPersona={editedPersona}
-                                onSubmit={handleEditSubmit}
+                                setPersonas={setPersonas}
                                 onClose={() => setShowEditModal(false)}
                             />
                         )}

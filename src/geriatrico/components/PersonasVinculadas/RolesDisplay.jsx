@@ -71,8 +71,8 @@ export const RolesDisplay = ({ roles, persona }) => {
 
         // Confirmación del usuario
         const confirmacion = await Swal.fire({
-            text: "Esta acción inactivará el rol de Administrador Sede.",
-            icon: "warning",
+            text: "Deseas inactivará el rol de Administrador Sede.",
+            icon: "question",
             showCancelButton: true,
             confirmButtonText: "Sí, inactivar",
             cancelButtonText: "Cancelar"
@@ -154,8 +154,8 @@ export const RolesDisplay = ({ roles, persona }) => {
 
         // Confirmación del usuario
         const confirmacion = await Swal.fire({
-            text: "Esta acción inactivará el rol de Paciente, Enfermera(O) o Colaborador.",
-            icon: "warning",
+            text: "Deseas inactivará el rol de Paciente, Enfermera(O) o Colaborador.",
+            icon: "question",
             showCancelButton: true,
             confirmButtonText: "Sí, inactivar",
             cancelButtonText: "Cancelar"
@@ -214,14 +214,13 @@ export const RolesDisplay = ({ roles, persona }) => {
                             {["Paciente", "Enfermera(O)", "Colaborador"].includes(rol.rol_nombre) && rol.activoRolSede && (
                                 <div className="buttons-asignar">
                                     <button
-                                        className="active"
+                                        className="asignar"
                                         onClick={() => handleInactivarRolesSede(persona)}
                                     >
                                         <i className="fa-solid fa-user-gear i-asignar"></i>
                                     </button>
                                 </div>
                             )}
-
 
 
                             {rol.rol_nombre === "Administrador Sede" && rol.activoRolSede && (

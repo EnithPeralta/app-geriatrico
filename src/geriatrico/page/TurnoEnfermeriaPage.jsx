@@ -64,7 +64,7 @@ export const TurnoEnfermeriaPage = () => {
         <div className="main-container">
             <SideBarComponent />
             <div className="content crear-turno-content">
-                <h2 className='h1'><FaCalendarDay /> Crear Turno</h2>
+                <h2 className='h1'><FaCalendarDay /> Asignar Turno</h2>
                 <div className="crear-turno-form-container">
                     <form className='crear-turno-form' onSubmit={handleAsignarTurno}>
                         <div className='form-group'>

@@ -52,22 +52,30 @@ export const ModalEditarPaciente = ({ paciente, cerrarModal }) => {
     // Manejo de la edición del paciente
     const handleEditarPaciente = async (e) => {
         e.preventDefault();
-
+        const datosFormateados = {
+            ...datosPaciente,
+            pac_edad: Number(datosPaciente.pac_edad),
+        };
+        console.log("📤 Enviando datos para actualizar paciente:", datosFormateados);
+    
         try {
-            const result = await actualizarDetallePaciente(datosPaciente.per_id, datosPaciente);
-
+            const result = await actualizarDetallePaciente(datosFormateados.per_id, datosFormateados);
+    
             if (result.success) {
                 Swal.fire({
                     icon: "success",
-                    text: "Los cambios han sido guardados correctamente.",
+                    text: result.message,
                 });
+            
+                setDatosPaciente({
+                    ...result.paciente,
+                    pac_edad: Number(result.paciente.pac_edad),
+                });
+            
                 console.log("✅ Datos del paciente actualizados:", result.paciente);
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    text: result.message || "Hubo un error al actualizar el paciente.",
-                });
             }
+    
+            cerrarModal();            
         } catch (error) {
             console.error("🚨 Error inesperado al editar paciente:", error);
             Swal.fire({
@@ -76,57 +84,17 @@ export const ModalEditarPaciente = ({ paciente, cerrarModal }) => {
             });
         }
     };
+    
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setDatosPaciente(prev => ({
-                    ...prev,
-                    foto: file,  // Guardar el archivo
-                    previewFoto: reader.result  // Vista previa de la imagen
-                }));
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+
 
 
     return (
         <div className="modal-overlay">
             <div className="modal">
-                <div className="modal-content">
+                <div className="modal-content-geriatrico">
                     <h2>Editar Paciente</h2>
                     <form onSubmit={handleEditarPaciente}>
-                    <div className="modal-img">
-                            {datosPaciente.previewFoto ? (
-                                <img
-                                    src={datosPaciente.previewFoto}
-                                    alt="Foto de perfil"
-                                    height={100}
-                                    width={100}
-                                />
-                            ) : datosPaciente.foto ? (
-                                <img
-                                    src={typeof datosPaciente.foto === "string" ? datosPaciente.foto : URL.createObjectURL(datosPaciente.foto)}
-                                    alt="Foto de perfil"
-                                    height={100}
-                                    width={100}
-                                />
-                            ) : (
-                                <i className="fas fa-user-circle icon-edit-user"></i>
-                            )}
-                        </div>
-                        <div className="modal-field">
-                            <label>Cambiar foto:</label>
-                            <input
-                                className="modal-input"
-                                type="file"
-                                accept="image/*"
-                                onChange={handleFileChange}
-                            />
-                        </div>
                         <div className="modal-field">
                             <label>Nombre EPS:</label>
                             <input

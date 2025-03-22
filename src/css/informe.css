@@ -1,0 +1,11 @@
+.report-header {
+    border-bottom: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.report-header .report-date {
+    font-size: 16px;
+    color: #777;
+    text-align: right;
+  }
+  

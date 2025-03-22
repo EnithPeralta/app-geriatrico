@@ -31,15 +31,14 @@ export const SelectSede = ({ label, ...props }: SelectSedeProps) => {
     }, []);
 
     return (
-        <div className="dropdown-button-geriatrico">
+        <div className="">
             <label>{label}</label>
             <select
-                className="select-geriatrico"
                 name={props.name}
                 value={props.value || ""}
                 onChange={props.onChange}
             >
-                <option hidden>Seleccione Sedes</option>
+                <option  hidden>Seleccione Sedes</option>
                 {error ? (
                     <option value="" disabled>{`Error: ${error}`}</option>
                 ) : (

@@ -36,3 +36,15 @@ export * from './HistoryGeriatricoPage';
  //HistoryGeriatricoPage.jsx
 export * from './TurnoEnfermeriaPage';
  //TurnoEnfermeriaPage.jsx
+ export * from './InformeEnfemeriaPage';
+ //InformeEnfemeriaPage.jsx
+ export * from './CuadroTurnosEnfermeraPage';
+ //CuadroTurnosEnfermeraPage.jsx
+ export * from './TurnoSedePage';
+ //TurnoSedePage.jsx
+ export * from './RolPacienteSedePage';
+ //RolPacienteSedePage.jsx
+ export * from './RolEnfermeraPage';
+ //RolEnfermeraPage.jsx
+ export * from './HistorialPacientePage';
+ //HistorialPacientePage.jsx

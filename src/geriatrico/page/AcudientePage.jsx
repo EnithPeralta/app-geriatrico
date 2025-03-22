@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAcudiente } from '../../hooks';
+import { useAcudiente, useSession } from '../../hooks';
 import { ModalRegisterAcudiente } from '../components/Acudiente/ModalRegisterAcudiente';
 import { LoadingComponet, SideBarComponent } from '../../components';
 import Swal from 'sweetalert2';
@@ -8,11 +8,12 @@ import Swal from 'sweetalert2';
 export const AcudientePage = () => {
     const { id } = useParams();
     const { obtenerAcudientesDePaciente, inactivarRelacionAcudiente, reactivarRelacionAcudiente } = useAcudiente();
+    const { session, obtenerSesion } = useSession();
     const [acudientes, setAcudientes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showRegisterAcudiente, setShowRegisterAcudiente] = useState(false);
-    
+
 
     useEffect(() => {
         const fetchPaciente = async () => {
@@ -38,7 +39,7 @@ export const AcudientePage = () => {
     const handleInactivarRelacionAcudiente = async (pa_id) => {
         const confirm = await Swal.fire({
             text: "¿Estas seguro de que deseas inactivar la relacion con el acudiente?",
-            icon: "warning",
+            icon: "question",
             showCancelButton: true,
             confirmButtonText: "Si, inactivar",
             cancelButtonText: "Cancelar"
@@ -60,7 +61,7 @@ export const AcudientePage = () => {
     const handlereactivarRelacionAcudiente = async (pa_id) => {
         const confirm = await Swal.fire({
             text: "¿Estas seguro de que deseas reactivar la relacion con el acudiente?",
-            icon: "warning",
+            icon: "question",
             showCancelButton: true,
             confirmButtonText: "Si, reactivar",
             cancelButtonText: "Cancelar"
@@ -84,12 +85,14 @@ export const AcudientePage = () => {
             <div className='main-container'>
                 <SideBarComponent />
                 <div className='content-area'>
-                    <div className='gestionar'>
-                        <h2 className='gestionar-title'>Acudientes</h2>
-                        <button className='gestionar-btn' onClick={() => setShowRegisterAcudiente(true)}>
-                            Agregar Acudiente
-                        </button>
-                    </div>
+                    {session?.rol_id === 3 && (
+                        <div className='gestionar'>
+                            <h2 className='gestionar-title'>Acudientes</h2>
+                            <button className='gestionar-btn' onClick={() => setShowRegisterAcudiente(true)}>
+                                Agregar Acudiente
+                            </button>
+                        </div>
+                    )}
                     {loading ? (
                         <LoadingComponet />
                     ) : error ? (
@@ -111,20 +114,22 @@ export const AcudientePage = () => {
                                     <div className='user-id'>{acudiente.telefono}</div>
                                     <div className='user-id'>{acudiente.correo}</div>
                                 </div>
-
-                                <div className="buttons-asignar">
-                                    <button className={acudiente.acudienteActivo ? 'active' : 'inactive'}
-                                        onClick={() => {
-                                            if (acudiente.acudienteActivo) {
-                                                handleInactivarRelacionAcudiente(acudiente.pa_id);
-                                            } else {
-                                                handlereactivarRelacionAcudiente(acudiente.pa_id);
+                                {session?.rol_id === 3 && (
+                                    <div className="buttons-asignar">
+                                        <button className={acudiente.acudienteActivo ? 'asignar' : 'inactive'}
+                                            onClick={() => {
+                                                if (acudiente.acudienteActivo) {
+                                                    handleInactivarRelacionAcudiente(acudiente.pa_id);
+                                                } else {
+                                                    handlereactivarRelacionAcudiente(acudiente.pa_id);
+                                                }
                                             }
-                                        }
-                                        }>
-                                        <i className={`fa-solid ${acudiente.acudienteActivo ? "fa-user-gear active" : "fa-user-slash inactive"}`} />
-                                    </button>
-                                </div>
+                                            }>
+                                            <i className={`fa-solid ${acudiente.acudienteActivo ? "fa-user-gear asignar" : "fa-user-slash inactive"}`} />
+                                        </button>
+                                    </div>
+                                )
+                                }
                             </div>
                         ))
                     ) : (

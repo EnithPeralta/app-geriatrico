@@ -18,11 +18,11 @@ export const CardPersonEnfermera = ({ enfermera, onClick, onInactivate, onCrearT
                 )}
             </div>
             <div className="buttons-asignar">
-                <button className={enfermera.activoSede ? 'active' : 'inactive'} onClick={onInactivate}>
-                    <i className={`fa-solid ${enfermera.activoSede ? "fa-user-gear active" : "fa-user-slash inactive"}`} />
+                <button className={enfermera.activoSede ? 'asignar' : 'inactive'} onClick={onInactivate}>
+                    <i className={`fa-solid ${enfermera.activoSede ? "fa-user-gear asignar" : "fa-user-slash inactive"}`} />
                 </button>
                 {enfermera.activoSede && (
-                    <button className="active" onClick={onCrearTurno}>
+                    <button className="asignar" onClick={onCrearTurno}>
                         <i className="fa-solid fa-user-pen i-asignar"></i>
                     </button>
                 )}

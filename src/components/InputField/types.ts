@@ -8,4 +8,5 @@ export interface InputFieldProps {
     icon: string; 
     onClick: VoidFunction;
     required: boolean;
+    accept?: string;
 }

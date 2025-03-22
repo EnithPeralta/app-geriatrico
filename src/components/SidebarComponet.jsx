@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import "../css/side.css";
-import { FaAngleDoubleLeft, FaArrowCircleRight, FaHome, FaHotel, FaUser, FaUsersCog, FaUsers, FaHandshake, FaHospitalUser, FaUserNurse } from 'react-icons/fa';
+import { FaAngleDoubleLeft, FaArrowCircleRight, FaHome, FaHotel, FaUser, FaUsersCog, FaUsers, FaHandshake, FaHospitalUser, FaUserNurse, FaFile, FaBug, FaBuilding } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useAuthStore, useGeriatrico, useSede, useSession } from '../hooks';
 
@@ -39,7 +39,7 @@ export const SideBarComponent = () => {
     }, []);
 
     useEffect(() => {
-        if (esSuperAdmin) return;
+        if (!esSuperAdmin) return;
 
         const fetchSede = async () => {
             try {
@@ -58,6 +58,7 @@ export const SideBarComponent = () => {
 
     useEffect(() => {
         const fetchSedeEspecifica = async () => {
+            if (esSuperAdmin) return;
             try {
                 const result = await obtenerSedesHome();
                 if (result.success && result.sede && result.geriatrico) {
@@ -80,15 +81,15 @@ export const SideBarComponent = () => {
         setSidebarOpen(!sidebarOpen);
     };
 
-    const toggleSubMenu = (buttonId) => {
-        if (!subMenuOpen[buttonId]) {
-            closeAllSubMenus();
-        }
-        setSubMenuOpen((prev) => ({ ...prev, [buttonId]: !prev[buttonId] }));
-        if (!sidebarOpen) {
-            setSidebarOpen(true);
-        }
-    };
+    // const toggleSubMenu = (buttonId) => {
+    //     if (!subMenuOpen[buttonId]) {
+    //         closeAllSubMenus();
+    //     }
+    //     setSubMenuOpen((prev) => ({ ...prev, [buttonId]: !prev[buttonId] }));
+    //     if (!sidebarOpen) {
+    //         setSidebarOpen(true);
+    //     }
+    // };
 
     const closeAllSubMenus = () => {
         setSubMenuOpen({});
@@ -246,6 +247,12 @@ export const SideBarComponent = () => {
                                 </Link>
                             </li>
                             <li>
+                                <Link to={'/geriatrico/turnoSede'}>
+                                    <FaBuilding className='icon' />
+                                    <span>Turnos Sede</span>
+                                </Link>
+                            </li>
+                            <li>
                                 <Link to={'/geriatrico/pacientes'}>
                                     <FaHospitalUser className='icon' />
                                     <span>Pacientes</span>
@@ -310,6 +317,12 @@ export const SideBarComponent = () => {
                                 <Link to={'/geriatrico/home'}>
                                     <FaHome className='icon' />
                                     <span>Inicio</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/misTurnos'}>
+                                    <FaFile className='icon' />
+                                    <span>Mis Turnos</span>
                                 </Link>
                             </li>
                             <li>

@@ -226,53 +226,53 @@ export const usePersona = () => {
 
     const updatePerson = async (per_id, data) => {
         console.log("Datos enviados:", data);
+    
         const token = getToken();
         if (!token) {
-            return { success: false, message: "Token de autenticación no encontrado" };
+            throw new Error("Token de autenticación no encontrado");
         }
     
         const formData = new FormData();
-        
-        for (const [key, value] of Object.entries(data)) {
-            if (key === "per_foto" && typeof value === "string" && value.startsWith("data:image")) {
-                try {
-                    const blob = await fetch(value).then(res => res.blob());
-                    const file = new File([blob], "perfil.jpg", { type: blob.type, lastModified: new Date().getTime() });
-                    formData.append("per_foto", file);
-                } catch (error) {
-                    console.error("Error al procesar la imagen:", error);
-                    return { success: false, message: "Error al procesar la imagen" };
-                }
-            } else if (value !== null && value !== undefined) {  
-                formData.append(key, value);
-            }
-        }
     
         try {
+            for (const [key, value] of Object.entries(data)) {
+                if (key === "per_foto") {
+                    if (value instanceof File || value instanceof Blob) {
+                        formData.append("per_foto", value);
+                    } else if (typeof value === "string" && value.startsWith("data:image")) {
+                        const blob = await fetch(value).then(res => res.blob());
+                        const file = new File([blob], "perfil.jpg", { type: blob.type });
+                        formData.append("per_foto", file);
+                    }
+                } else if (value !== null && value !== undefined && value !== "") {
+                    formData.append(key, value);
+                }
+            }
+    
+            // Petición al backend
             const response = await geriatricoApi.put(`/personas/${per_id}`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data"
+                    "Content-Type": "multipart/form-data",
                 }
             });
     
-            console.log("Respuesta completa del servidor:", response.data);
+            console.log("Respuesta del servidor:", response.data);
     
-            if (response.data?.persona) {  
-                console.log("Persona actualizada con éxito", response.data);
+            if (response.data?.persona) {
                 return { success: true, message: response.data.message, persona: response.data.persona };
             } else {
-                console.warn("No se encontró el objeto 'persona' en la respuesta:", response.data);
                 return { success: false, message: response.data.message || "Error desconocido en la actualización" };
             }
         } catch (error) {
             console.error("Error en la actualización:", error);
-            return { 
-                success: false, 
-                message: error?.response?.data?.message || error?.response?.data?.error || "Error al actualizar la persona" 
+            return {
+                success: false,
+                message: error?.response?.data?.message || error?.response?.data?.error || "Error al actualizar la persona",
             };
         }
     };
+    
     
     
         

@@ -44,7 +44,7 @@ export const AcudientePacientePage = () => {
     }, []);
 
     const handleHistory = (pacienteId) => {
-        navigate(`/geriatrico/historial/${pacienteId}`);
+        navigate(`/geriatrico/historialPaciente/${pacienteId}`);
     };
 
     return (
