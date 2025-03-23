@@ -16,8 +16,9 @@ export const usePassword = () => {
             const { data } = await geriatricoApi.post('recuperarPassword', { per_correo });
             dispatch(requestSuccess(data.message)); // Si la solicitud tiene éxito, se maneja el éxito
         } catch (error) {
-            dispatch(requestFail("Hubo un error al enviar el correo de recuperación.")); // Si falla, maneja el error
-            console.error("Error en la solicitud:", error); // Se muestra el error en consola
+            const errorMessage = error.response?.data?.message || "Error al procesar la solicitud";
+            dispatch(requestFail(errorMessage));
+            console.error("Error en forgotPassword:", errorMessage);
         }
     };
 
@@ -32,8 +33,9 @@ export const usePassword = () => {
             console.log(data.message); // Mensaje de respuesta del backend
             return data; // Devuelve la respuesta por si se necesita en otro lugar
         } catch (error) {
-            dispatch(requestFail("Hubo un error al restablecer la contraseña.")); // Si falla, maneja el error
-            console.error("Error en la solicitud:", error); // Se muestra el error en consola
+            const errorMessage = error.response?.data?.message || "Error al procesar la solicitud";
+            dispatch(requestFail(errorMessage));
+            console.error("Error en resetPassword:", errorMessage);
         }
     };
 

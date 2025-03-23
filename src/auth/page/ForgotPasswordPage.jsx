@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../../css/forge.css';
 import { usePassword } from '../../hooks';
+import Swal from "sweetalert2";
 
 export const ForgotPasswordPage = () => {
     const [email, setEmail] = useState("");  // Para almacenar el correo ingresado por el usuario
@@ -11,8 +12,30 @@ export const ForgotPasswordPage = () => {
         e.preventDefault();
         if (email) {
             forgotPassword({ per_correo: email });  // Llamamos a la función de recuperación de contraseña
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                text: "Por favor, ingresa un correo válido."
+            });
         }
     };
+    useEffect(() => {
+        if (message) {
+            Swal.fire({
+                icon: 'success',
+                text: message
+            });
+        }
+    }, [message]);
+
+    useEffect(() => {
+        if (error) {
+            Swal.fire({
+                icon: 'error',
+                text: error
+            });
+        }
+    }, [error]);
 
     return (
         <div className="bodyForget">
@@ -36,10 +59,6 @@ export const ForgotPasswordPage = () => {
                     >
                         {loading ? "Enviando..." : "Enviar"}  {/* Cambiamos el texto del botón si está en proceso */}
                     </button>
-                    
-
-                    {message && <p className="message-success">{message}</p>}  {/* Mensaje de éxito */}
-                    {error && <p className="message-error">{error}</p>}  {/* Mensaje de error */}
                 </div>
                 <div className="right-forget">
                 </div>

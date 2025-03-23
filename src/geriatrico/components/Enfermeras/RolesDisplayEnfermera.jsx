@@ -18,7 +18,6 @@ export const RolesDisplayEnfermera = ({ roles }) => {
                             </div>
                             <div className="user-details">
                                 <span className="user-name">{rol.rol}</span>
-                                <span className="user-id">{rol.se_nombre || "Sede no especificada"}</span>
                                 <span className="user-id">{rol.fechaInicio} - {rol.fechaFin || "Indefinido"}</span>
                                 <span className="user-id">{rol.activoSede ? "Activo" : "Inactivo"}</span>
                             </div>

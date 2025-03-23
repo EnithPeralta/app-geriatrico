@@ -14,8 +14,8 @@ export const PersonList = ({
 }) => {
     return (
         <div>
-            {personasFiltradas.map(persona => (
-                <div key={`${persona.per_id}-${persona.per_documento}`} style={{ position: "relative" }}>
+            {personasFiltradas.map((persona, index) => (
+                <div key={`${persona.per_id}-${persona.per_documento}-${index}`} style={{ position: "relative" }}>
                     <CardPerson
                         persona={persona}
                         activeCard={activeCard}
