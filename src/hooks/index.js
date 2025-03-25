@@ -15,3 +15,5 @@ export * from './useEnfermera';
 export * from './useCuidadosEnfermeria';
 export * from './useSeguimiento';
 export * from './useTurnos';
+export * from './useRecomendaciones';
+export * from './useDiagnostico';

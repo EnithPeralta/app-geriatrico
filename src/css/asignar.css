@@ -246,6 +246,7 @@
 .add-button-asignar,
 .edit-button-asignar,
 .asignar,
+.turnos,
 .inactive,
 .inactive-button-fa {
     color: white;
@@ -271,6 +272,14 @@
 
 .asignar:hover {
     background-color: #087005;
+}
+
+.turnos {
+    background-color: #007bb5;
+}
+
+.turnos:hover {
+    background-color: #006994;
 }
 
 .inactive,

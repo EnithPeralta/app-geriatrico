@@ -16,9 +16,13 @@ const registerFormFields = {
 };
 
 export const ModalRegistrarPersonas = ({ handleAssignSedes, pacienteId, acudienteDocumento, setPacienteSeleccionado, handleRoleChange, parentesco, setParentesco, selectedRoles }) => {
-    const [pacienteSeleccionado, setPacienteSeleccionadoState] = useState({ pac_id: pacienteId });
     const { startRegister } = useAuthStore();
     const { registrarAcudiente } = useAcudiente();
+    const pacienteSeleccionado = { pac_id: Number(pacienteId) };
+    if (isNaN(pacienteSeleccionado.pac_id)) {
+        console.error("❌ Error: pac_id no es un número válido.");
+        return;
+    }
 
 
     const {
@@ -35,7 +39,6 @@ export const ModalRegistrarPersonas = ({ handleAssignSedes, pacienteId, acudient
         isPasswordVisible,
         sp_fecha_inicio,
         sp_fecha_fin,
-        rol_id
     } = useForm(registerFormFields);
 
 

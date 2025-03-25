@@ -3,7 +3,7 @@ import { useAcudiente, usePaciente, useSeguimiento, useSession } from '../../hoo
 import { useParams, useNavigate } from 'react-router-dom';
 import { LoadingComponet, SideBarComponent } from '../../components';
 import { PInformation } from '../layout';
-import { FaCalendarDay, FaCameraRetro, FaClock, FaEdit, FaFileMedicalAlt, FaHandHoldingMedical, FaHeartbeat, FaLungs, FaNotesMedical, FaStethoscope, FaSyringe, FaThermometerHalf, FaUser, FaWeight } from 'react-icons/fa';
+import { FaCalendarDay, FaCameraRetro, FaClock, FaEdit, FaFileMedicalAlt, FaHandHoldingMedical, FaHeartbeat, FaIdCard, FaLungs, FaNotesMedical, FaStethoscope, FaSyringe, FaThermometerHalf, FaUser, FaUserNurse, FaWeight } from 'react-icons/fa';
 import { ModalActualizarSeguimiento } from '../components/Seguimiento/ModalActualizarSeguimiento';
 
 export const HistorySeguimientoPage = () => {
@@ -87,7 +87,7 @@ export const HistorySeguimientoPage = () => {
                         />
                     </div>
                     {filteredHistorial.length > 0 ? (
-                        filteredHistorial.map(({ seg_id, seg_fecha, seg_foto, seg_glicemia, seg_peso, seg_talla, seg_temp, otro }) => (
+                        filteredHistorial.map(({ seg_id, seg_fecha, seg_foto, seg_glicemia, seg_peso, seg_talla, seg_temp, otro, enfermera }) => (
                             <div key={seg_id} className='daily-container'>
                                 <h4 className="daily-title"><FaCalendarDay /> {seg_fecha}</h4>
                                 <div className='daily-card'>
@@ -112,7 +112,7 @@ export const HistorySeguimientoPage = () => {
                                             <div className="metric-item">
                                                 <FaHandHoldingMedical className="metric-icon" />
                                                 <span className="metric-value">{seg_glicemia}</span>
-                                                <span className="metric-label">Glucemia</span>
+                                                <span className="metric-label">Glicemia</span>
                                             </div>
                                             <div className="metric-item">
                                                 <FaLungs className="metric-icon" />
@@ -131,6 +131,7 @@ export const HistorySeguimientoPage = () => {
                                             </div>
                                         </div>
                                     </div>
+
                                     <div className="historial-card timeline-card">
                                         <h3 className='summary-title'><FaClock /> Informes del Día</h3>
                                         <div className="timeline-container">

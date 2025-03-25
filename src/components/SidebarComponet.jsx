@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import "../css/side.css";
-import { FaAngleDoubleLeft, FaArrowCircleRight, FaHome, FaHotel, FaUser, FaUsersCog, FaUsers, FaHandshake, FaHospitalUser, FaUserNurse, FaFile, FaBug, FaBuilding } from 'react-icons/fa';
+import { FaAngleDoubleLeft, FaArrowCircleRight, FaHome, FaHotel, FaUser, FaUsersCog, FaUsers, FaHandshake, FaHospitalUser, FaUserNurse, FaFile, FaBug, FaBuilding, FaFileMedicalAlt, FaFileMedical, FaFileContract, FaUserPlus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useAuthStore, useGeriatrico, useSede, useSession } from '../hooks';
 
@@ -39,7 +39,7 @@ export const SideBarComponent = () => {
     }, []);
 
     useEffect(() => {
-        if (!esSuperAdmin) return;
+        if (esSuperAdmin) return;
 
         const fetchSede = async () => {
             try {
@@ -55,6 +55,7 @@ export const SideBarComponent = () => {
         };
         fetchSede();
     }, []);
+
 
     useEffect(() => {
         const fetchSedeEspecifica = async () => {
@@ -91,9 +92,9 @@ export const SideBarComponent = () => {
     //     }
     // };
 
-    const closeAllSubMenus = () => {
-        setSubMenuOpen({});
-    };
+    // const closeAllSubMenus = () => {
+    //     setSubMenuOpen({});
+    // };
 
     // Menú para Super Admin
     if (esSuperAdmin) {
@@ -126,7 +127,12 @@ export const SideBarComponent = () => {
                                     <span>Personas</span>
                                 </Link>
                             </li>
-
+                            <li>
+                                <Link to={'/register'}>
+                                    <FaUserPlus />
+                                    <span>Registrar</span>
+                                </Link>
+                            </li>
                             <li>
                                 <Link to={'/geriatrico/profile'}>
                                     <FaUser className='icon' />
@@ -192,14 +198,14 @@ export const SideBarComponent = () => {
                             </li>
                             <li>
                                 <Link to={'/register'}>
-                                    <FaUsers />
+                                    <FaUserPlus />
                                     <span>Registrar</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link to={'/geriatrico/gestionarPersonas'}>
                                     <FaUsersCog />
-                                    <span>Ver Personas</span>
+                                    <span>Personas</span>
                                 </Link>
                             </li>
                             <li>
@@ -271,7 +277,7 @@ export const SideBarComponent = () => {
                             </li>
                             <li>
                                 <Link to={'/register'}>
-                                    <FaUsers className='icon' />
+                                    <FaUserPlus className='icon' />
                                     <span>Registrar</span>
                                 </Link>
                             </li>
@@ -321,8 +327,14 @@ export const SideBarComponent = () => {
                             </li>
                             <li>
                                 <Link to={'/geriatrico/misTurnos'}>
-                                    <FaFile className='icon' />
+                                    <FaFileContract className='icon' />
                                     <span>Mis Turnos</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/historialTurnosEnfermera'}>
+                                    <FaFileMedicalAlt className='icon' />
+                                    <span>Historial Turnos</span>
                                 </Link>
                             </li>
                             <li>

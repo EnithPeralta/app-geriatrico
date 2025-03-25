@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { SideBarComponent } from '../../components';
+import { useParams } from 'react-router-dom';
 import { useCuidadosEnfermeria, usePaciente } from '../../hooks';
 import Swal from 'sweetalert2';
 import '../../css/cuidados.css';
 
 export const CuidadosEnfermeriaPage = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
     const { obtenerDetallePacienteSede, obtenerAcudientesDePaciente } = usePaciente();
     const { registrarCuidadosEnfermeria, obtenerCuidadosEnfermeria } = useCuidadosEnfermeria();
     const [paciente, setPaciente] = useState(null);
@@ -88,7 +86,7 @@ export const CuidadosEnfermeriaPage = () => {
 
                 if (result.success) {
                     setDatosCuidadosRegistrados(true);
-                    setDatosCuidados(result.data); // Se usa result.data en lugar de result.cuidados
+                    setDatosCuidados(result.data);
                 }
             } catch (error) {
                 console.error("❌ Error al obtener los cuidados de enfermería:", error);

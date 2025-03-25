@@ -31,7 +31,7 @@ export const useTurnos = () => {
             console.error(error.response?.data);
             return {
                 success: false,
-                message: error.response?.data?.message || "Ocurrió un error inesperado.",
+                message: error.response?.data?.error || "Ocurrió un error inesperado.",
                 error: error.response?.data || error.message
             };
         }
@@ -82,7 +82,7 @@ export const useTurnos = () => {
                 },
             });
 
-            console.log("✅ Respuesta del servidor:", response.data);
+            console.log("✅ Respuesta del servidor Turnos: ", response.data);
 
             return {
                 success: true,
@@ -95,12 +95,126 @@ export const useTurnos = () => {
 
             return {
                 success: false,
-                message: error.response?.data?.message || "Ocurrió un error inesperado.",
-                error: error.response?.data || error.message
+                message: error.response?.data?.error.message,
+                error: error.response?.data?.error.message || error.message.data?.error.message
             };
         }
     }
 
+    const verTurnosSedeHistorial = async () => {
+        const token = getToken();
 
-    return { asignarTurnoEnfermeria, verMisTurnosEnfermeria, verTurnosSede };
+        if (!token) {
+            return { success: false, message: "Token de autenticación no encontrado." };
+        }
+
+        try {
+            const response = await geriatricoApi.get(`/turnos/historialsede`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            console.log("✅ Respuesta del servidor Turnos:", response.data);
+
+            return {
+                success: true,
+                message: response.data?.message || "Turnos obtenidos exitosamente.",
+                turnos: response.data?.turnos ?? [], // Usa `??` para evitar problemas con `undefined`
+            };
+
+        } catch (error) {
+            console.error("❌ Error al obtener turnos:", error);
+
+            return {
+                success: false,
+                message: error.response?.data?.message || "Error al obtener los turnos.",
+                error: error.response?.data?.error?.message || error.message || "Error desconocido.",
+            };
+        }
+    };
+
+    const verMisTurnosEnfermeriaHistorial = async () => {
+        const token = getToken();
+        if (!token) {
+            return { success: false, message: "Token de autenticación no encontrado." };
+        }
+    
+        try {
+            const response = await geriatricoApi.get(`/turnos/mihistorial`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+    
+            console.log("✅ Respuesta del servidor:", response.data);
+    
+            return {
+                success: true,
+                message: response.data.message || "Turnos obtenidos exitosamente.",
+                turnos_por_sede: response.data.turnos_por_sede || [],
+            };
+    
+        } catch (error) {
+            console.error("❌ Error al obtener turnos:", error);
+    
+            return {
+                success: false,
+                message: error.response?.data?.message || "Ocurrió un error inesperado.",
+                error: error.response?.data || { message: error.message }
+            };
+        }
+    };
+    
+    const eliminarTurnoEnfermeria = async (tur_id) => {
+        if (!tur_id) {
+            return { success: false, message: "⛔ ID del turno no proporcionado." };
+        }
+
+        const token = getToken();
+        if (!token) {
+            return { success: false, message: "⛔ Token de autenticación no encontrado." };
+        }
+
+        try {
+            const response = await geriatricoApi.delete(`/turnos/eliminar/${tur_id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            console.log("✅ Respuesta del servidor:", response.data);
+
+            return {
+                success: true,
+                message: response.data.message || "✅ Turno eliminado exitosamente.",
+                data: response.data
+            };
+
+        } catch (error) {
+            console.error("❌ Error al eliminar turno:", error);
+
+            // Obtener código de estado y mensaje de error
+            const statusCode = error.response?.status;
+            const errorMessage = error.response?.data?.message || "⛔ Ocurrió un error inesperado.";
+
+            return {
+                success: false,
+                message: errorMessage,
+                statusCode,
+                error: error.response?.data || error.message
+            };
+        }
+    };
+
+
+
+    return {
+        asignarTurnoEnfermeria,
+        verMisTurnosEnfermeria,
+        verTurnosSede,
+        eliminarTurnoEnfermeria,
+        verTurnosSedeHistorial,
+        verMisTurnosEnfermeriaHistorial
+    };
 };

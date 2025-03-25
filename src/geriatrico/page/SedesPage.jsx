@@ -218,8 +218,8 @@ export const SedesPage = () => {
                     ) : (
                         <p>No se encontraron sedes.</p>
                     )}
-                    <div className="grid-item" onClick={() => setIsModalOpen(true)}>
-                        <div className="grid-item-add">
+                    <div className="grid-item">
+                        <div className="grid-item-add"  onClick={() => setIsModalOpen(true)}>
                             <i className="fas fa-circle-plus" />
                             <p>Crear Sedes</p>
                         </div>

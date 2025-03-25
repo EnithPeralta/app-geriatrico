@@ -6,7 +6,6 @@ import { ModalEditPersonComponent } from '../components/ModalEditPersonComponent
 import '../../css/asignar.css'
 import Swal from 'sweetalert2';
 import { LoadingComponet, SideBarComponent } from '../../components';
-import { FaSearch } from 'react-icons/fa';
 
 export const GestionarPersonasPage = () => {
     const { obtenerPersonasRegistradas, obtenerPersonaRoles, updatePerson } = usePersona();

@@ -75,7 +75,7 @@ export const AcudientePacientePage = () => {
                                     paciente.documento?.includes(search)
                                 )
                                 .map((paciente) => (
-                                    <div key={paciente.pac_id} onClick={() => handleHistory(paciente.per_id_paciente)} >
+                                    <div key={paciente.pac_id} onClick={() => handleHistory(paciente.pac_id)} >
                                         <div className="user-details" >
                                             <div className="user-role">{paciente.nombre}</div>
                                             <div className="user-id">{paciente.documento}</div>

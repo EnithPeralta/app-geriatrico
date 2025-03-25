@@ -118,7 +118,7 @@ export const SeguimientoPage = () => {
     }
 
     return (
-        <div className='animate__animated animate__fadeIn animate__faster'>
+        <div className='animate__animated animate__fadeInUp '>
             <div className='main-container'>
                 <div className='content'>
                         <h2 className="">Seguimiento de pacientes</h2>

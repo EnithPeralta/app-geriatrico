@@ -14,7 +14,8 @@ const TurnosFormFields = {
 };
 
 export const TurnoEnfermeriaPage = () => {
-    const { id: enf_id } = useParams(); // Renombramos id para evitar conflicto
+    const { id } = useParams(); // Renombramos id para evitar conflicto
+    const enf_id = parseInt(id);
     const { asignarTurnoEnfermeria } = useTurnos();
 
     const {
@@ -23,7 +24,8 @@ export const TurnoEnfermeriaPage = () => {
         tur_hora_inicio,
         tur_hora_fin,
         tur_tipo_turno,
-        onInputChange
+        onInputChange,
+        onResetForm
     } = useForm(TurnosFormFields);
 
     const handleAsignarTurno = async (e) => {
@@ -49,10 +51,11 @@ export const TurnoEnfermeriaPage = () => {
                     icon: 'success',
                     text: result.message
                 })
+                onResetForm();
             }else{
                 Swal.fire({
-                    icon: 'error',
-                    text: result.message
+                    icon: 'warning',
+                    text: result.error.message
                 })
             }
         } catch (error) {
@@ -88,7 +91,7 @@ export const TurnoEnfermeriaPage = () => {
                             />
                         </div>
                         <div className="form-group">
-                            <label><FaClock /> Turno Día:</label>
+                            <label><FaClock /> Hora de Inicio:</label>
                             <input
                                 type="text"
                                 name="tur_hora_inicio"
@@ -99,7 +102,7 @@ export const TurnoEnfermeriaPage = () => {
                             />
                         </div>
                         <div className="form-group">
-                            <label><FaClock /> Turno Noche:</label>
+                            <label><FaClock /> Hora de Fin:</label>
                             <input
                                 type="text"
                                 name="tur_hora_fin"

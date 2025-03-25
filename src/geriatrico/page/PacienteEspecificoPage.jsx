@@ -8,6 +8,8 @@ import { Tabs } from "../../components/Tabs/Tabs"; // ✅ Manteniendo Tabs para 
 import { CuidadosEnfermeriaPage } from "./CuidadosEnfermeriaPage";
 import { SeguimientoPage } from "./SeguimientoPage";
 import { RolPacienteSedePage } from "./RolPacienteSedePage";
+import { RecomendacionesPage } from "./RecomendacionesPage";
+import { DiagnosticoPage } from "./DiagnosticoPage";
 
 export const PacienteEspecificoPage = () => {
     const { id } = useParams();
@@ -38,14 +40,18 @@ export const PacienteEspecificoPage = () => {
 
     // 📌 Manejar cambio de pestañas y redirección
     const handleTabChange = (index) => {
-        if (!paciente?.per_id) return; // 📌 Evita errores si paciente aún no ha cargado
+        if (!paciente?.pac_id) return; // 📌 Evita errores si paciente aún no ha cargado
 
         if (index === 1) {
-            navigate(`/geriatrico/cuidadosEnfermeria/${paciente?.per_id}`);
+            navigate(`/geriatrico/cuidadosEnfermeria/${paciente?.pac_id}`);
         } else if (index === 2) {
-            navigate(`/geriatrico/seguimientos/${paciente?.per_id}`);
+            navigate(`/geriatrico/seguimientos/${paciente?.pac_id}`);
         } else if (index === 3) {
-            navigate(`/geriatrico/rolPacienteSede/${paciente?.per_id}`);
+            navigate(`/geriatrico/rolPacienteSede/${paciente?.pac_id}`);
+        } else if (index === 4) {
+            navigate(`/geriatrico/recomendaciones/${paciente?.pac_id}`);
+        }else if (index === 5) {
+            navigate(`/geriatrico/diagnostico/${paciente?.pac_id}`);
         }
     };
 
@@ -65,7 +71,7 @@ export const PacienteEspecificoPage = () => {
     // 📌 Configuración de Tabs SOLO para Enfermeros
     const tabs = [
         {
-            title: "Información del Paciente",
+            title: "Información Paciente",
             content: (
                 <>
                     <h2>Información del Paciente</h2>
@@ -103,6 +109,14 @@ export const PacienteEspecificoPage = () => {
             title: "Historia Roles",
             content: <RolPacienteSedePage /> // 📌 Se redirige automáticamente
         },
+        {
+            title: "Recomendaciones",
+            content: <RecomendacionesPage /> // �� Se redirige automáticamente
+        },
+        {
+            title: "Diagnóstico",
+            content: <DiagnosticoPage /> // �� Se redirige automáticamente
+        }
     ];
 
     return (
@@ -123,25 +137,27 @@ export const PacienteEspecificoPage = () => {
                             {/* 📌 Si es ADMIN SEDE (rol_id === 3), mostramos los datos sin Tabs */}
                             {session?.rol_id === 3 ? (
                                 <>
-                                    <h2 className="gestionar-title">Información del Paciente</h2>
-                                    <div className="grid-4-columns">
-                                        {[
-                                            { label: "Nombre Completo", value: paciente?.nombre || "" },
-                                            { label: "Documento", value: paciente?.documento || "" },
-                                            { label: "Edad", value: paciente?.edad || "" },
-                                            { label: "Nombre EPS", value: paciente?.nombre_eps || "" },
-                                            { label: "Peso", value: paciente?.peso || "" },
-                                            { label: "Régimen EPS", value: paciente?.regimen_eps || "" },
-                                            { label: "Grupo Sanguíneo", value: paciente?.rh_grupo_sanguineo || "" },
-                                            { label: "Estatura", value: paciente?.talla || "" },
-                                            { label: "Talla de Camisa", value: paciente?.talla_camisa || "" },
-                                            { label: "Talla de Pantalón", value: paciente?.talla_pantalon || "" }
-                                        ].map((item, index) => (
-                                            <div key={index}>
-                                                <label>{item.label}</label>
-                                                <input className="input" type="text" value={item.value} readOnly />
-                                            </div>
-                                        ))}
+                                    <div className='animate__animated animate__fadeInUp '>
+                                        <h2 className="gestionar-title">Información del Paciente</h2>
+                                        <div className="grid-4-columns">
+                                            {[
+                                                { label: "Nombre Completo", value: paciente?.nombre || "" },
+                                                { label: "Documento", value: paciente?.documento || "" },
+                                                { label: "Edad", value: paciente?.edad || "" },
+                                                { label: "Nombre EPS", value: paciente?.nombre_eps || "" },
+                                                { label: "Peso", value: paciente?.peso || "" },
+                                                { label: "Régimen EPS", value: paciente?.regimen_eps || "" },
+                                                { label: "Grupo Sanguíneo", value: paciente?.rh_grupo_sanguineo || "" },
+                                                { label: "Estatura", value: paciente?.talla || "" },
+                                                { label: "Talla de Camisa", value: paciente?.talla_camisa || "" },
+                                                { label: "Talla de Pantalón", value: paciente?.talla_pantalon || "" }
+                                            ].map((item, index) => (
+                                                <div key={index}>
+                                                    <label>{item.label}</label>
+                                                    <input className="input" type="text" value={item.value} readOnly />
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
 
                                 </>

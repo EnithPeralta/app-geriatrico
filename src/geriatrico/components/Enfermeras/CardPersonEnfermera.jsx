@@ -22,7 +22,7 @@ export const CardPersonEnfermera = ({ enfermera, onClick, onInactivate, onCrearT
                     <i className={`fa-solid ${enfermera.activoSede ? "fa-user-gear asignar" : "fa-user-slash inactive"}`} />
                 </button>
                 {enfermera.activoSede && (
-                    <button className="asignar" onClick={onCrearTurno}>
+                    <button className="turnos" onClick={onCrearTurno}>
                         <i className="fa-solid fa-user-pen i-asignar"></i>
                     </button>
                 )}

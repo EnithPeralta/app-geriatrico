@@ -8,19 +8,16 @@ import Swal from 'sweetalert2';
 export const AcudientePage = () => {
     const { id } = useParams();
     const { obtenerAcudientesDePaciente, inactivarRelacionAcudiente, reactivarRelacionAcudiente } = useAcudiente();
-    const { session, obtenerSesion } = useSession();
+    const { session } = useSession();
     const [acudientes, setAcudientes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showRegisterAcudiente, setShowRegisterAcudiente] = useState(false);
 
-
     useEffect(() => {
         const fetchPaciente = async () => {
             try {
                 const response = await obtenerAcudientesDePaciente(id);
-                console.log("✅ Respuesta de la API Paciente:", response.acudientes);
-
                 if (response.success) {
                     setAcudientes(response.acudientes || []);
                 } else {
@@ -32,53 +29,38 @@ export const AcudientePage = () => {
                 setLoading(false);
             }
         };
-
         fetchPaciente();
     }, [id]);
 
     const handleInactivarRelacionAcudiente = async (pa_id) => {
         const confirm = await Swal.fire({
-            text: "¿Estas seguro de que deseas inactivar la relacion con el acudiente?",
+            text: "¿Estás seguro de que deseas inactivar la relación con el acudiente?",
             icon: "question",
             showCancelButton: true,
-            confirmButtonText: "Si, inactivar",
+            confirmButtonText: "Sí, inactivar",
             cancelButtonText: "Cancelar"
         });
 
         if (confirm.isConfirmed) {
             const result = await inactivarRelacionAcudiente(pa_id);
-            if (result.success) {
-                Swal.fire({
-                    icon: "success",
-                    text: result.message
-                });
-            } else {
-                Swal.fire("Error", result.message, "error");
-            }
+            Swal.fire(result.success ? { icon: "success", text: result.message } : { icon: "error", text: result.message });
         }
     };
 
-    const handlereactivarRelacionAcudiente = async (pa_id) => {
+    const handleReactivarRelacionAcudiente = async (pa_id) => {
         const confirm = await Swal.fire({
-            text: "¿Estas seguro de que deseas reactivar la relacion con el acudiente?",
+            text: "¿Estás seguro de que deseas reactivar la relación con el acudiente?",
             icon: "question",
             showCancelButton: true,
-            confirmButtonText: "Si, reactivar",
+            confirmButtonText: "Sí, reactivar",
             cancelButtonText: "Cancelar"
         });
 
         if (confirm.isConfirmed) {
             const result = await reactivarRelacionAcudiente(pa_id);
-            if (result.success) {
-                Swal.fire({
-                    icon: "success",
-                    text: result.message
-                });
-            } else {
-                Swal.fire("Error", result.message, "error");
-            }
+            Swal.fire(result.success ? { icon: "success", text: result.message } : { icon: "error", text: result.message });
         }
-    }
+    };
 
     return (
         <div className="animate__animated animate__fadeInDown">
@@ -97,45 +79,55 @@ export const AcudientePage = () => {
                         <LoadingComponet />
                     ) : error ? (
                         <p className="error-message">{error}</p>
-                    ) : acudientes.length > 0 ? (
-                        acudientes.map((acudiente) => (
-                            <div key={acudiente.per_id_acudiente} className="user-card-container">
-                                <div className="user-details">
-                                    <div className="status-icon-person">
-                                        {acudiente.acudienteActivo ? (
-                                            <i className="fa-solid fa-circle-check activo"></i>
-                                        ) : (
-                                            <i className="fa-solid fa-circle-xmark inactivo"></i>
-                                        )}
-                                    </div>
-                                    <div className='user-role'>{acudiente.nombre_completo}</div>
-                                    <div className='user-id'>{acudiente.documento}</div>
-                                    <div className='user-id'>{acudiente.parentesco}</div>
-                                    <div className='user-id'>{acudiente.telefono}</div>
-                                    <div className='user-id'>{acudiente.correo}</div>
-                                </div>
-                                {session?.rol_id === 3 && (
-                                    <div className="buttons-asignar">
-                                        <button className={acudiente.acudienteActivo ? 'asignar' : 'inactive'}
-                                            onClick={() => {
-                                                if (acudiente.acudienteActivo) {
-                                                    handleInactivarRelacionAcudiente(acudiente.pa_id);
-                                                } else {
-                                                    handlereactivarRelacionAcudiente(acudiente.pa_id);
-                                                }
-                                            }
-                                            }>
-                                            <i className={`fa-solid ${acudiente.acudienteActivo ? "fa-user-gear asignar" : "fa-user-slash inactive"}`} />
-                                        </button>
-                                    </div>
-                                )
-                                }
-                            </div>
-                        ))
                     ) : (
-                        <p>No se encontraron acudientes</p>
+                        <div className='turnos-container-sede'>
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>Estado</th>
+                                        <th>Nombre</th>
+                                        <th>Documento</th>
+                                        <th>Parentesco</th>
+                                        <th>Teléfono</th>
+                                        <th>Correo</th>
+                                        {session?.rol_id === 3 && <th>Acciones</th>}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {acudientes.length > 0 ? (
+                                        acudientes.map((acudiente) => (
+                                            <tr key={acudiente.per_id_acudiente}>
+                                                <td>
+                                                    {acudiente.acudienteActivo ? "Activo" : "Inactivo"}
+                                                </td>
+                                                <td>{acudiente.nombre_completo}</td>
+                                                <td>{acudiente.documento}</td>
+                                                <td>{acudiente.parentesco}</td>
+                                                <td>{acudiente.telefono}</td>
+                                                <td>{acudiente.correo}</td>
+                                                {session?.rol_id === 3 && (
+                                                    <td>
+                                                        <button className={acudiente.acudienteActivo ? 'asignar' : 'inactive'}
+                                                            onClick={() => {
+                                                                acudiente.acudienteActivo
+                                                                    ? handleInactivarRelacionAcudiente(acudiente.pa_id)
+                                                                    : handleReactivarRelacionAcudiente(acudiente.pa_id);
+                                                            }}>
+                                                            <i className={`fa-solid ${acudiente.acudienteActivo ? "fa-user-gear asignar" : "fa-user-slash inactive"}`} />
+                                                        </button>
+                                                    </td>
+                                                )}
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="7" className="text-center">No se encontraron acudientes</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     )}
-
                 </div>
                 {showRegisterAcudiente && (
                     <ModalRegisterAcudiente

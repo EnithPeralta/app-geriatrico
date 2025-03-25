@@ -103,23 +103,33 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
             }
 
             // 3️⃣ Verificar si tiene el rol de Acudiente y si está activo
-            const rolAcudiente = rolesPersona.persona.rolesSede.find(rol => rol.rol_nombre === "Acudiente");
-            const tieneRolAcudiente = !!rolAcudiente;
-            const rolInactivo = tieneRolAcudiente && !rolAcudiente.activoSede;
+            const rolAcudienteEnSede = rolesPersona.persona.rolesSede.find(
+                rol => rol.rol_nombre === "Acudiente" && rol.activoRolSede
+            );
+
+            console.log("Rol Acudiente encontrado:", rolAcudienteEnSede);
+
+            const tieneRolAcudiente = !!rolAcudienteEnSede;
+            console.log("Tiene rol acudiente?", tieneRolAcudiente);
+            const rolInactivo = tieneRolAcudiente && !rolAcudienteEnSede?.activoRolSede;
 
             console.log("Tiene rol acudiente?", tieneRolAcudiente, "Está inactivo?", rolInactivo);
 
             // 4️⃣ Si el rol está inactivo, reasignarlo
-            if (rolInactivo) {
+            if (!tieneRolAcudiente || rolInactivo) {
                 setShowSelectRoles(true);
+                console.log("Reasignando el rol de Acudiente...", tieneRolAcudiente, rolInactivo);
                 const reactivacionExitosa = await handleAssignSedes(
                     result.per_id,
-                    rolAcudiente.rol_id,
+                    rolAcudienteEnSede?.rol_id || datosAcudiente.rol_id,
                     datosAcudiente.sp_fecha_inicio,
                     datosAcudiente.sp_fecha_fin
                 );
-
-                if (!reactivacionExitosa) {
+                onResetForm();
+                if (reactivacionExitosa) {
+                    return Swal.fire({ icon: "success", text: reactivacionExitosa.message });
+                }
+                else if (!reactivacionExitosa) {
                     return Swal.fire({ icon: "error", text: "No se pudo reactivar el rol. Registro cancelado." });
                 }
             }
@@ -136,8 +146,10 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
                     result.per_id,
                     datosAcudiente.rol_id,
                     datosAcudiente.sp_fecha_inicio,
-                    datosAcudiente.sp_fecha_fin
+                    datosAcudiente.sp_fecha_fin,
+                    pacienteSeleccionado.se_id // ← Pasar el ID de la sede correcta
                 );
+                onResetForm();
 
                 if (!asignacionExitosa) {
                     return Swal.fire({ icon: "error", text: "No se pudo asignar el rol. Registro cancelado." });
@@ -159,6 +171,7 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
                 }));
                 setAcudienteDocumento("");
                 setParentesco("");
+                onResetForm();
             } else {
                 console.error(response.message);
             }
@@ -238,7 +251,7 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
                             </button>
                         </div>
                     </form>
-                    {showPersona && (
+                    {showPersona && pacienteSeleccionado.pac_id === null && (
                         <ModalRegistrarPersonas
                             acudienteDocumento={acudienteDocumento}
                             handleAssignSedes={handleAssignSedes}

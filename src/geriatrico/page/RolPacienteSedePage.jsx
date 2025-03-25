@@ -25,34 +25,37 @@ export const RolPacienteSedePage = () => {
   }, [id]); // Agregar id como dependencia para que el efecto se ejecute cuando cambie
 
   return (
-    <div className="turnos-container-sede">
-      <h2>Roles del paciente en la sede</h2>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Rol</th>
-            <th>Fecha inicio</th>
-            <th>Fecha fin</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          {roles.length > 0 ? (
-            roles.map((rol, index) => (
-              <tr key={index}>
-                <td>{rol.rol}</td>
-                <td>{rol.fechaInicio}</td>
-                <td>{rol.fechaFin ? rol.fechaFin : "Indefinido"}</td>
-                <td>{rol.activoSede ? "Activo" : "Inactivo"}</td>
-              </tr>
-            ))
-          ) : (
+    <div className="animate__animated animate__fadeInUp content">
+
+      <div className="turnos-container-sede">
+        <h2>Roles del paciente en la sede</h2>
+        <table className="table">
+          <thead>
             <tr>
-              <td colSpan="4">No hay roles asignados</td>
+              <th>Rol</th>
+              <th>Fecha inicio</th>
+              <th>Fecha fin</th>
+              <th>Estado</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {roles.length > 0 ? (
+              roles.map((rol, index) => (
+                <tr key={index}>
+                  <td>{rol.rol}</td>
+                  <td>{rol.fechaInicio}</td>
+                  <td>{rol.fechaFin ? rol.fechaFin : "Indefinido"}</td>
+                  <td>{rol.activoSede ? "Activo" : "Inactivo"}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4">No hay roles asignados</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

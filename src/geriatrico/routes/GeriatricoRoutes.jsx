@@ -1,6 +1,35 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import { AcudientePacientePage, AcudientePage, AdminSuperPage, CuadroTurnosEnfermeraPage, CuidadosEnfermeriaPage, EnfermerasPage, GeriatricosPage, GestionarPersonasPage, GestionPersonaGeriatricoPage, HistorialPacientePage, HistorySeguimientoPage, HistoyGeriatricoPage, HomePage, InformeEnfemeriaPage, PacienteEspecificoPage, PacientesPage, ProfilePage, RolEnfermeraPage, RolesPage, RolPacienteSedePage, SedeEspecificaPage, SedesPage, SeguimientoPage, TurnoEnfermeriaPage, TurnoSedePage } from '../page'
+import {
+    AcudientePacientePage,
+    AcudientePage,
+    AdminSuperPage,
+    CuadroTurnosEnfermeraPage,
+    CuidadosEnfermeriaPage,
+    DiagnosticoPage,
+    EnfermerasPage,
+    GeriatricosPage,
+    GestionarPersonasPage,
+    GestionPersonaGeriatricoPage,
+    HistorialPacientePage,
+    HistorySeguimientoPage,
+    HistoryTurnosEnfermeraPage,
+    HistoryTurnosSedePage,
+    HistoyGeriatricoPage,
+    HomePage,
+    InformeEnfemeriaPage,
+    PacienteEspecificoPage,
+    PacientesPage,
+    ProfilePage,
+    RecomendacionesPage,
+    RolesPage,
+    RolPacienteSedePage,
+    SedeEspecificaPage,
+    SedesPage,
+    SeguimientoPage,
+    TurnoEnfermeriaPage,
+    TurnoSedePage
+} from '../page'
 
 export const GeriatricoRoutes = () => {
     return (
@@ -19,6 +48,8 @@ export const GeriatricoRoutes = () => {
             <Route path='misPacientes' element={<AcudientePacientePage />} />
             <Route path='misTurnos' element={<CuadroTurnosEnfermeraPage />} />
             <Route path='turnoSede' element={<TurnoSedePage />} />
+            <Route path="historialTurnoSede" element={<HistoryTurnosSedePage />} />
+            <Route path="historialTurnosEnfermera" element={<HistoryTurnosEnfermeraPage />} />
             <Route path="pacienteEspecifico/:id" element={<PacienteEspecificoPage />} />
             <Route path="acudiente/:id" element={<AcudientePage />} />
             <Route path="cuidadosEnfermeria/:id" element={<CuidadosEnfermeriaPage />} />
@@ -28,7 +59,8 @@ export const GeriatricoRoutes = () => {
             <Route path="crearTurno/:id" element={<TurnoEnfermeriaPage />} />
             <Route path="rolPacienteSede/:id" element={<RolPacienteSedePage />} />
             <Route path="historialPaciente/:id" element={<HistorialPacientePage />} />
-            <Route path="rolEnfermera" element={<RolEnfermeraPage />} />
+            <Route path="recomendaciones/:id" element={<RecomendacionesPage />} />
+            <Route path="diagnostico/:id" element={<DiagnosticoPage />} />
             <Route path="informesEnfermeria" element={<InformeEnfemeriaPage />} />
         </Routes>
     )

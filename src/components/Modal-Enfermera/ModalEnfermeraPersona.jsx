@@ -14,7 +14,7 @@ const registerFormFields = {
     per_correo: '',
     per_foto: ''
 };
-export const ModalEnfermeraPersona = ({ enfermeraDocumento, handleAssignSedes, selectedRoles, enf_codigo, handleRoleChange, setEnfCodigo }) => {
+export const ModalEnfermeraPersona = ({ enfermeraDocumento, handleAssignSedes, selectedRoles, enf_codigo, handleRoleChange, setEnfCodigo,onClose }) => {
     const { startRegister } = useAuthStore();
     const { startRegisterEnfermera } = useEnfermera();
 
@@ -34,6 +34,7 @@ export const ModalEnfermeraPersona = ({ enfermeraDocumento, handleAssignSedes, s
         sp_fecha_fin,
         rol_id
     } = useForm(registerFormFields);
+
 
 
     const handleEnfermera = async (idPersona) => {
@@ -119,6 +120,8 @@ export const ModalEnfermeraPersona = ({ enfermeraDocumento, handleAssignSedes, s
 
 
 
+
+
     return (
         <>
             <div className='modal-overlay'>
@@ -176,6 +179,7 @@ export const ModalEnfermeraPersona = ({ enfermeraDocumento, handleAssignSedes, s
                                 <input type="text" name="enf_codigo" value={enf_codigo} onChange={(e) => setEnfCodigo(e.target.value)} required />
                             </div>
                             <button type='submit' className='save-button'>Registrar</button>
+                            <button type='button' className='cancel-button' onClick={onClose}>Cerrar</button>
                         </form>
                     </div>
                 </div>

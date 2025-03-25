@@ -44,7 +44,13 @@ export * from './TurnoEnfermeriaPage';
  //TurnoSedePage.jsx
  export * from './RolPacienteSedePage';
  //RolPacienteSedePage.jsx
- export * from './RolEnfermeraPage';
- //RolEnfermeraPage.jsx
  export * from './HistorialPacientePage';
  //HistorialPacientePage.jsx
+ export * from './HistoryTurnosSedePage';
+ //HistoryTurnosSedePage.jsx
+ export * from './HistoryTurnosEnfermeraPage';
+ //HistoryTurnosEnfermeraPage.jsx
+ export * from './RecomendacionesPage';
+ //RecomendacionesPage.jsx
+ export * from './DiagnosticoPage';
+ //DiagnosticoPage.jsx

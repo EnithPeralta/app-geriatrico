@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useEnfermera, useGeriatrico, useGeriatricoPersona, useSedesRol, useTurnos } from "../../hooks";
+import { useEnfermera, useGeriatrico, useGeriatricoPersona, useSedesRol } from "../../hooks";
 import "../../css/paciente.css";
 import { LoadingComponet, SideBarComponent } from "../../components";
 import { ModalRegisterEnfermera } from "../components/Enfermeras/ModalRegisterEnfermera";
@@ -208,7 +208,7 @@ export const EnfermerasPage = () => {
                         enfermerasFiltradas={enfermerasFiltradas}
                         activeCard={activeCard}
                         handleCardClick={handleCardClick}
-                        handleInactivarVinculacion={handleInactivarRolesSede}
+                        handleInactivarEnfermera={handleInactivarRolesSede}
                         handleCrearTurno={handleCrearTurno}
                         roles={roles}
                     />
