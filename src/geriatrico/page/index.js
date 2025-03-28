@@ -54,3 +54,5 @@ export * from './TurnoEnfermeriaPage';
  //RecomendacionesPage.jsx
  export * from './DiagnosticoPage';
  //DiagnosticoPage.jsx
+ export * from './RolesPorGeriatricoPage';
+ //RolesPorGeriatricoPage.jsx

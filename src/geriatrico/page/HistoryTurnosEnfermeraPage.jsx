@@ -7,16 +7,52 @@ export const HistoryTurnosEnfermeraPage = () => {
   const { verMisTurnosEnfermeriaHistorial } = useTurnos();
   const [turnosHistorial, setTurnosHistorial] = useState([]);
   const [fechaFiltro, setFechaFiltro] = useState("")
+  const [sedeNombre, setSedeNombre] = useState("");
+  const [geriatrico, setGeriatrico] = useState(null);
+  const [enfermeras, setEnfermeras] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [sedeResult, enfermerasResult] = await Promise.all([
+          homeMiGeriatrico(),
+          obtenerEnfermerasSede(),
+        ]);
+
+        if (sedeResult?.success) {
+          setGeriatrico(sedeResult.geriatrico);
+        }
+
+        if (enfermerasResult?.success && Array.isArray(enfermerasResult.data)) {
+          setEnfermeras(enfermerasResult.data);
+        } else {
+          setError(enfermerasResult.message || "No se encontraron enfermeras.");
+        }
+
+      } catch (err) {
+        setError("Error al obtener los datos.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
 
   useEffect(() => {
     const fetchTurnosEnfermeriaHistorial = async () => {
       const response = await verMisTurnosEnfermeriaHistorial();
       if (response.success) {
-        console.log("Historial de turnos obtenido:", response.turnos_por_sede);
         const turnosArray = response.turnos_por_sede.flatMap(sede => sede.turnos);
         setTurnosHistorial(turnosArray);
-        console.log("Turnos guardados en estado:", turnosArray);
+        if (response.turnos_por_sede.length > 0) {
+          setSedeNombre(response.turnos_por_sede[0].sede_nombre);
+        }
       } else {
         console.log(response.message);
       }
@@ -38,7 +74,8 @@ export const HistoryTurnosEnfermeraPage = () => {
       <div className="main-container">
         <SideBarComponent />
         <div className="content">
-          <h2 className='h1'><FaFileMedical /> Historial De Turnos</h2>
+          <h2 className='h4'><FaFileMedical /> Historial De Mis Turnos</h2>
+
           <div className="filters">
             <input
               type="date"
@@ -48,6 +85,8 @@ export const HistoryTurnosEnfermeraPage = () => {
             />
           </div>
           <div className="turnos-container-sede">
+            {sedeNombre && <h3 className="h4">{sedeNombre}</h3>}
+
             <table className="table">
               <thead>
                 <tr>

@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import '../css/goback.css'
+import { FaLongArrowAltLeft} from "react-icons/fa";
 
 export const GoBackComponet = () => {
   const navigate = useNavigate();
@@ -9,6 +10,8 @@ export const GoBackComponet = () => {
   };
 
   return (
-    <button onClick={handleGoBack} className="btn-x">←</button>
+    <button onClick={handleGoBack} className="btn-x">
+      <FaLongArrowAltLeft />
+    </button>
   );
 };

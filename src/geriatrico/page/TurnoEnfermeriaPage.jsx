@@ -93,37 +93,24 @@ export const TurnoEnfermeriaPage = () => {
                         <div className="form-group">
                             <label><FaClock /> Hora de Inicio:</label>
                             <input
-                                type="text"
+                                type="time"
                                 name="tur_hora_inicio"
                                 value={tur_hora_inicio}
                                 onChange={onInputChange}
-                                placeholder="Ej: 08:00 AM - 02:00 PM"
+                                placeholder="Ej: 08:00 AM "
                                 required
                             />
                         </div>
                         <div className="form-group">
                             <label><FaClock /> Hora de Fin:</label>
                             <input
-                                type="text"
+                                type="time"
                                 name="tur_hora_fin"
                                 value={tur_hora_fin}
                                 onChange={onInputChange}
-                                placeholder="Ej: 05:00 PM - 09:00 PM"
+                                placeholder="Ej: 05:00 PM"
                                 required
                             />
-                        </div>
-                        <div className="form-group">
-                            <label><FaClock /> Tipo de Turno:</label>
-                            <select
-                                name="tur_tipo_turno"
-                                value={tur_tipo_turno}
-                                onChange={onInputChange}
-                                required
-                            >
-                                <option value="" hidden>Seleccione...</option>
-                                <option value="Diurno">Diurno</option>
-                                <option value="Nocturno">Nocturno</option>
-                            </select>
                         </div>
                         <button type="submit" className="save-button">
                         Asignar Turno

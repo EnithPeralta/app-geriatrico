@@ -4,7 +4,6 @@ import { setError, setLoading, setPerson } from "../store/geriatrico";
 import { getToken } from "../helpers";
 
 export const usePersona = () => {
-    const { persona } = useSelector((state) => state.person); // Mejorar el tipado aquí si es posible
     const dispatch = useDispatch();
 
     const getAuthenticatedPersona = async () => {
@@ -131,7 +130,7 @@ export const usePersona = () => {
     };
 
     // Funcion para buscar si una persona ya esta vinculada a un geriatrico
-    const buscarVincularPersona = async ({ documento, ge_id }) => {
+    const buscarVincularPersona = async ({ documento }) => {
         const token = getToken();
 
         if (!token) {
@@ -226,12 +225,12 @@ export const usePersona = () => {
 
     const updatePerson = async (per_id, data) => {
         console.log("Datos enviados:", data);
-    
+
         const token = getToken();
         if (!token) {
             return { success: false, message: "Token de autenticación no encontrado" };
         }
-    
+
         try {
             // Mapeo de claves para que coincidan con los nombres esperados en el backend
             const mapping = {
@@ -242,12 +241,12 @@ export const usePersona = () => {
                 genero: "per_genero",
                 foto: "per_foto"
             };
-    
+
             // Transformar las claves del objeto de entrada
             const datosMapeados = Object.fromEntries(
                 Object.entries(data).map(([key, value]) => [mapping[key] || key, value])
             );
-    
+
             // Construcción de FormData
             const formData = new FormData();
             for (const [key, value] of Object.entries(datosMapeados)) {
@@ -267,7 +266,7 @@ export const usePersona = () => {
                     formData.append(key, value);
                 }
             }
-    
+
             // Enviar la solicitud al backend
             const response = await geriatricoApi.put(`/personas/${per_id}`, formData, {
                 headers: {
@@ -275,9 +274,9 @@ export const usePersona = () => {
                     "Content-Type": "multipart/form-data"
                 }
             });
-    
+
             console.log("Respuesta completa del servidor:", response.data);
-    
+
             if (response.data?.persona) {
                 console.log("Persona actualizada con éxito", response.data);
                 return { success: true, message: response.data.message, persona: response.data.persona };
@@ -290,11 +289,13 @@ export const usePersona = () => {
             return { success: false, message: error.response?.data?.message || "Error al actualizar la persona" };
         }
     };
-    
 
-
-
-
-
-    return { persona, getAuthenticatedPersona, updatePerfil, obtenerPersonasRegistradas, buscarVincularPersona, obtenerPersonaRoles, updatePerson };
+    return {
+        getAuthenticatedPersona,
+        updatePerfil,
+        obtenerPersonasRegistradas,
+        buscarVincularPersona,
+        obtenerPersonaRoles,
+        updatePerson
+    };
 };

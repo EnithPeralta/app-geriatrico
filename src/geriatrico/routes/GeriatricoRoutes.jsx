@@ -23,6 +23,7 @@ import {
     ProfilePage,
     RecomendacionesPage,
     RolesPage,
+    RolesPorGeriatricoPage,
     RolPacienteSedePage,
     SedeEspecificaPage,
     SedesPage,
@@ -48,9 +49,10 @@ export const GeriatricoRoutes = () => {
             <Route path='misPacientes' element={<AcudientePacientePage />} />
             <Route path='misTurnos' element={<CuadroTurnosEnfermeraPage />} />
             <Route path='turnoSede' element={<TurnoSedePage />} />
-            <Route path="historialTurnoSede" element={<HistoryTurnosSedePage />} />
             <Route path="historialTurnosEnfermera" element={<HistoryTurnosEnfermeraPage />} />
+            <Route path="historialTurnoSede/:id" element={<HistoryTurnosSedePage />} />
             <Route path="pacienteEspecifico/:id" element={<PacienteEspecificoPage />} />
+            <Route path="rolesPorGeriatrico/:id" element={<RolesPorGeriatricoPage />} />
             <Route path="acudiente/:id" element={<AcudientePage />} />
             <Route path="cuidadosEnfermeria/:id" element={<CuidadosEnfermeriaPage />} />
             <Route path="seguimientos/:id" element={<SeguimientoPage />} />

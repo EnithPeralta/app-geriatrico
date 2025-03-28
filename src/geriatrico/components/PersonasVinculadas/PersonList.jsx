@@ -1,6 +1,6 @@
 import React from 'react';
 import { CardPerson } from './CardPerson';
-import { RolesDisplay } from './RolesDisplay';
+import { RolesDisplayVinculada } from './RolesDisplayVinculada';
 
 export const PersonList = ({
     personasFiltradas,
@@ -10,7 +10,7 @@ export const PersonList = ({
     openAssignCard,
     handleInactivarVinculacion,
     handleReactivarVinculacion,
-    roles
+    rolesPersonas
 }) => {
     return (
         <div>
@@ -36,7 +36,7 @@ export const PersonList = ({
                     {/* Mostrar RolesDisplay solo si la tarjeta está activa */}
                     {activeCard === persona.per_id && (
                         <div style={{ marginTop: "10px" }}>
-                            <RolesDisplay roles={roles} persona={persona} />
+                            <RolesDisplayVinculada rolesPersonas={rolesPersonas} person={persona} />
                         </div>
                     )}
                 </div>

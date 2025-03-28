@@ -5,7 +5,7 @@ import '../../css/geriatrico.css';
 import { useNavigate } from "react-router-dom";
 import 'animate.css';
 import { LoadingComponet, ModalCrearGeriatrico, ModalGeriatrico, SideBarComponent, ModalEditarGeriatrico } from "../../components";
-import { FaEye, FaFile, FaPencilAlt } from "react-icons/fa";
+import { FaEye, FaFile } from "react-icons/fa";
 
 export const GeriatricosPage = () => {
     const { obtenerGeriatricos, crearGeriatrico, actualizarGeriatrico, inactivarGeriatrico, reactivarGeriatrico } = useGeriatrico();
@@ -50,7 +50,6 @@ export const GeriatricosPage = () => {
             console.error("No se encontró el ID del geriátrico al editar:", geriatrico);
             return;
         }
-
         setSelectedGeriatrico(geriatrico);
         setIsEditModalOpen(true);
     };
@@ -58,10 +57,12 @@ export const GeriatricosPage = () => {
     const handleSaveGeriatrico = async (nuevoGeriatrico) => {
         const result = await crearGeriatrico(nuevoGeriatrico);
         if (result.success) {
-            setGeriatricos([...geriatricos, result.geriatrico]);
+            setGeriatricos(prev => [...prev, result.geriatrico]);
+            setIsCreateModalOpen(false);
         }
         return result;
     };
+
 
     const handleUpdateGeriatrico = async (ge_id, datosActualizados) => {
         console.log("Datos recibidos en handleUpdateGeriatrico -> ID:", ge_id, "Datos:", datosActualizados);
@@ -74,8 +75,8 @@ export const GeriatricosPage = () => {
         const result = await actualizarGeriatrico(ge_id, datosActualizados);
 
         if (result.success) {
-            setGeriatricos((prevGeriatricos) =>
-                prevGeriatricos.map((g) => (g.ge_id === ge_id ? result.geriatrico : g))
+            setGeriatricos(prevGeriatricos =>
+                prevGeriatricos.map(g => (g.ge_id === ge_id ? result.geriatrico : g))
             );
             setSelectedGeriatrico(result.geriatrico);
             setIsEditModalOpen(false);
@@ -95,11 +96,10 @@ export const GeriatricosPage = () => {
         if (confirm.isConfirmed) {
             const result = await inactivarGeriatrico(ge_id);
             if (result.success) {
-                Swal.fire({
-                    icon: "success",
-                    text: "El geriátrico ha sido inactivado correctamente.",
-                });
-                setGeriatricos((prev) => prev.filter(g => g.ge_id !== ge_id)); // Remueve el geriátrico de la lista
+                Swal.fire({ icon: "success", text: result.message });
+                setGeriatricos(prev =>
+                    prev.map(g => (g.ge_id === ge_id ? { ...g, ge_activo: false } : g))
+                );
             } else {
                 Swal.fire("Error", result.message, "error");
             }
@@ -119,15 +119,20 @@ export const GeriatricosPage = () => {
             const result = await reactivarGeriatrico(ge_id);
 
             if (result.success) {
-                Swal.fire({
-                    icon: "success",
-                    text: "El geriátrico ha sido reactivado correctamente."
-                });
-                setGeriatricoInactive((prev) => prev.filter(g => g.ge_id !== ge_id)); // Remueve el geriátrico de la lista
+                Swal.fire({ icon: "success", text: "El geriátrico ha sido reactivado correctamente." });
+                setGeriatricos(prev =>
+                    prev.map(g => (g.ge_id === ge_id ? { ...g, ge_activo: true } : g))
+                );
             } else {
                 Swal.fire("Error", result.message, "error");
             }
         }
+    };
+
+    const handleRolesGeriatrico = (geriatrico) => {
+        if (!geriatrico || !geriatrico.ge_id) return;
+        navigate(`/geriatrico/rolesPorGeriatrico/${geriatrico.ge_id}`);
+        console.log("Roles geriátrico:", geriatrico);
     };
 
     const handleHistorialGeriatrico = (geriatrico) => {
@@ -172,7 +177,7 @@ export const GeriatricosPage = () => {
                     {filteredGeriatricos.length > 0 ? (
                         filteredGeriatricos.map((geriatrico) => (
                             <div key={geriatrico.ge_nit} >
-                                <div className="grid-item">
+                                <div className="grid-item" onClick={() => handleRolesGeriatrico(geriatrico)}>
                                     <img
                                         src={geriatrico.ge_logo || "/public/Admin.jpg"}
                                         alt="Logo"

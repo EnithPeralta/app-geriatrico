@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { FaUserAltSlash } from "react-icons/fa";
 import Swal from "sweetalert2";
-import { useGeriatricoPersonaRol } from "../hooks";
+import { useSedesRol } from "../../../hooks";
 
-export const RolesDisplayComponet = ({ rolesPersonas, person, getId }) => {
-    const { inactivarRolGeriatrico } = useGeriatricoPersonaRol();
+export const RolesDisplayVinculada = ({ rolesPersonas, person }) => {
+    const { inactivarRolAdminSede, inactivarRolesSede } = useSedesRol();
     if (!rolesPersonas) {
         console.warn("rolesPersonas no está definido.");
         return null;
@@ -25,17 +25,17 @@ export const RolesDisplayComponet = ({ rolesPersonas, person, getId }) => {
         console.log("Estado de activeRol actualizado:", activeRol);
     }, [activeRol]);
 
-    const handleInactivarRolGeriatrico = async (event) => {
-        event.preventDefault(); 
+    const handleInactivarRolAdminSede = async () => {
 
-    
         const per_id = Number(person.per_id);
-        const ge_id = Number(getId) 
-        const rol_id = rolesPersonas.rolesGeriatrico?.[0]?.rol_id;
+        const se_id = rolesPersonas.sedes?.[0]?.se_id;
+        const rol_id = rolesPersonas.sedes?.[0]?.roles?.[0]?.rol_id;
+
+        console.log("rol_id:", rol_id);
 
         // Verificar que per_id, ge_id y rol_id sean números válidos
-        if (isNaN(per_id) || isNaN(ge_id) || isNaN(rol_id)) {
-            console.error("❌ Parámetros inválidos para inactivar rol", { per_id, ge_id, rol_id });
+        if (isNaN(per_id) || isNaN(se_id) || isNaN(rol_id)) {
+            console.error("❌ Parámetros inválidos para inactivar rol", { per_id, se_id, rol_id });
             Swal.fire({
                 icon: "error",
                 text: "Parámetros inválidos para inactivar el rol.",
@@ -45,7 +45,7 @@ export const RolesDisplayComponet = ({ rolesPersonas, person, getId }) => {
 
         // Confirmación del usuario
         const confirmacion = await Swal.fire({
-            text: "¿Deseas inactivar el rol de Administrador Geriátrico?",
+            text: "¿Deseas inactivará el rol de Administrador Sede?",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Sí, inactivar",
@@ -56,7 +56,7 @@ export const RolesDisplayComponet = ({ rolesPersonas, person, getId }) => {
 
         try {
             // Llamar a la función para inactivar el rol
-            const resultado = await inactivarRolGeriatrico({ per_id, ge_id, rol_id });
+            const resultado = await inactivarRolAdminSede({ per_id, se_id, rol_id });
 
             // Mostrar el resultado
             Swal.fire({
@@ -71,6 +71,42 @@ export const RolesDisplayComponet = ({ rolesPersonas, person, getId }) => {
             });
         }
     };
+
+    const handleInactivarRolesSede = async () => {
+
+        const per_id = Number(person.per_id);
+        const se_id = rolesPersonas.sedes?.[0]?.se_id;
+        const rol_id = rolesPersonas.sedes?.[0]?.roles?.[0]?.rol_id;
+
+        // Confirmación del usuario
+        const confirmacion = await Swal.fire({
+            text: `¿Deseas inactivar el rol de Paciente, Enfermera(O), Colaborador`,
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Sí, inactivar",
+            cancelButtonText: "Cancelar",
+        });
+
+        if (!confirmacion.isConfirmed) return;
+
+        try {
+            // Llamar a la función para inactivar el rol
+            const resultado = await inactivarRolesSede({ per_id, se_id, rol_id });
+
+            // Mostrar el resultado
+            Swal.fire({
+                icon: resultado.success ? "success" : "error",
+                text: resultado.message || (resultado.success ? "Rol inactivado exitosamente" : "No se pudo inactivar el rol"),
+            });
+        } catch (error) {
+            console.error("❌ Error al inactivar rol geriátrico:", error);
+            Swal.fire({
+                icon: "error",
+                text: "Hubo un error al inactivar el rol. Intenta nuevamente.",
+            });
+        }
+    };
+
 
 
     const handleGeriatricoChange = (event, rol_nombre) => {
@@ -120,15 +156,16 @@ export const RolesDisplayComponet = ({ rolesPersonas, person, getId }) => {
 
     console.log("Periodo Activo Geriátrico:", periodoActivoGeriatrico);
 
-
     const periodoActivoSede = rolesPersonas.sedes
-        ?.find(sede => sede.se_nombre === activeSede)
+        ?.find(sede => sede.se_nombre === activeSede)  // Filtra por el nombre de la sede
         ?.roles
-        ?.find(rol => rol.rol_nombre === activeRol)  // Buscar el rol activo en la sede seleccionada
+        ?.find(rol => rol.rol_nombre === activeRol)  // Filtra por el nombre del rol
         ?.periodos
-        ?.find(p => p.rol_activo !== undefined) || null;
-
+        ?.find(p => p.activo !== undefined); // Asegúrate de que el periodo tiene un valor para `activo`
     console.log("periodoActivoSede", periodoActivoSede);
+
+
+
 
     return isModalOpen ? (
         <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
@@ -183,9 +220,6 @@ export const RolesDisplayComponet = ({ rolesPersonas, person, getId }) => {
                                     </p>
                                     <p><strong>Fecha de Inicio:</strong> {periodoActivoGeriatrico?.fechaInicio || "No disponible"}</p>
                                     <p><strong>Fecha de Fin:</strong> {periodoActivoGeriatrico?.fechaFin || "No disponible"}</p>
-                                    <button className="inactive" onClick={() => handleInactivarRolGeriatrico(activeTab)}>
-                                        <FaUserAltSlash />
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -218,6 +252,7 @@ export const RolesDisplayComponet = ({ rolesPersonas, person, getId }) => {
                                         {rol.rol_nombre}
                                     </button>
                                 ))}
+
                         </div>
                     )}
 
@@ -228,7 +263,7 @@ export const RolesDisplayComponet = ({ rolesPersonas, person, getId }) => {
                                 <p><strong>Sede:</strong> {activeSede || "No seleccionado"}</p>
                                 <p>
                                     <strong>Estado: </strong>
-                                    {periodoActivoSede?.rol_activo ? (
+                                    {periodoActivoSede?.activo ? (
                                         <i className="fa-solid fa-circle-check activo"></i>
                                     ) : (
                                         <i className="fa-solid fa-circle-xmark inactivo"></i>
@@ -241,6 +276,19 @@ export const RolesDisplayComponet = ({ rolesPersonas, person, getId }) => {
                             </div>
                         </div>
                     )}
+                    {periodoActivoSede?.activo && activeSede && rolesPersonas.sedes?.[0]?.roles?.[0]?.rol_nombre !== "Acudiente" && (
+                        <button
+                            className="inactive"
+                            onClick={() =>
+                                periodoActivoSede?.activo & activeSede && rolesPersonas.sedes?.[0]?.roles?.[0]?.rol_nombre !== "Acudiente"
+                                    ? handleInactivarRolAdminSede(activeSede)
+                                    : handleInactivarRolesSede(activeSede)
+                            }
+                        >
+                            <FaUserAltSlash />
+                        </button>
+                    )}
+
                 </div>
             </div>
         </div>

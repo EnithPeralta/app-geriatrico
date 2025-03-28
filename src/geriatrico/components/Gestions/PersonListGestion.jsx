@@ -1,4 +1,4 @@
-import { RolesDisplayComponet } from "../../../components";
+import { DisplayAsignar } from "../../../components/DisplayAsignar";
 import { PersonCardGestion } from "./PersonCardGestion";
 
 export const PersonListGestion = ({
@@ -7,7 +7,7 @@ export const PersonListGestion = ({
     handleCardClick,
     openEditModal,
     openAssignCard,
-    roles
+    geriatrico
 }) => {
     return (
         <div>
@@ -29,11 +29,11 @@ export const PersonListGestion = ({
                                 onAssign={(e) => {
                                     e.stopPropagation();
                                     openAssignCard(persona);
-                                }} 
+                                }}
                             />
                             {activeCard === persona.id && (
                                 <div style={{ marginTop: "10px" }}>
-                                    <RolesDisplayComponet roles={roles} />
+                                    <DisplayAsignar geriatrico={geriatrico} />
                                 </div>
                             )}
                         </div>

@@ -1,6 +1,6 @@
-import { data } from "react-router-dom";
 import geriatricoApi from "../api/geriatricoApi";
 import { getToken } from "../helpers";
+import { formatTo12Hour } from "../utils/Hora";
 
 export const useTurnos = () => {
     const asignarTurnoEnfermeria = async ({ enf_id, tur_fecha_inicio, tur_fecha_fin, tur_hora_inicio, tur_hora_fin, tur_tipo_turno }) => {
@@ -8,10 +8,19 @@ export const useTurnos = () => {
         if (!token) {
             return { success: false, message: "Token de autenticación no encontrado." };
         }
+        const formattedHoraInicio = formatTo12Hour(tur_hora_inicio);
+        const formattedHoraFin = formatTo12Hour(tur_hora_fin);
+
 
         try {
             const response = await geriatricoApi.post(`/turnos/asignar/${enf_id}`,
-                { tur_fecha_inicio, tur_fecha_fin, tur_hora_inicio, tur_hora_fin, tur_tipo_turno },
+                {
+                    tur_fecha_inicio,
+                    tur_fecha_fin,
+                    tur_hora_inicio: formattedHoraInicio,
+                    tur_hora_fin: formattedHoraFin,
+                    tur_tipo_turno
+                },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -55,7 +64,7 @@ export const useTurnos = () => {
             return {
                 success: true,
                 message: response.data.message || "Turnos obtenidos exitosamente.",
-                turnos: response.data.turnos_por_sede || [], // Extraer los turnos agrupados
+                turnos: response.data || [], // Extraer los turnos agrupados
             };
 
         } catch (error) {
@@ -101,7 +110,7 @@ export const useTurnos = () => {
         }
     }
 
-    const verTurnosSedeHistorial = async () => {
+    const verTurnosSedeHistorialEnfermera = async (enf_id) => {
         const token = getToken();
 
         if (!token) {
@@ -109,7 +118,7 @@ export const useTurnos = () => {
         }
 
         try {
-            const response = await geriatricoApi.get(`/turnos/historialsede`, {
+            const response = await geriatricoApi.get(`/turnos/historialsede/${enf_id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -139,25 +148,25 @@ export const useTurnos = () => {
         if (!token) {
             return { success: false, message: "Token de autenticación no encontrado." };
         }
-    
+
         try {
             const response = await geriatricoApi.get(`/turnos/mihistorial`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-    
+
             console.log("✅ Respuesta del servidor:", response.data);
-    
+
             return {
                 success: true,
                 message: response.data.message || "Turnos obtenidos exitosamente.",
                 turnos_por_sede: response.data.turnos_por_sede || [],
             };
-    
+
         } catch (error) {
             console.error("❌ Error al obtener turnos:", error);
-    
+
             return {
                 success: false,
                 message: error.response?.data?.message || "Ocurrió un error inesperado.",
@@ -165,7 +174,7 @@ export const useTurnos = () => {
             };
         }
     };
-    
+
     const eliminarTurnoEnfermeria = async (tur_id) => {
         if (!tur_id) {
             return { success: false, message: "⛔ ID del turno no proporcionado." };
@@ -193,7 +202,6 @@ export const useTurnos = () => {
 
         } catch (error) {
             console.error("❌ Error al eliminar turno:", error);
-
             // Obtener código de estado y mensaje de error
             const statusCode = error.response?.status;
             const errorMessage = error.response?.data?.message || "⛔ Ocurrió un error inesperado.";
@@ -207,6 +215,47 @@ export const useTurnos = () => {
         }
     };
 
+    const actualizarTurnoEnfermeria = async ({ tur_id, tur_fecha_inicio, tur_fecha_fin, tur_hora_inicio, tur_hora_fin, tur_tipo_turno }) => {
+        const token = getToken();
+        if (!token) {
+            return { success: false, message: "Token de autenticación no encontrado." };
+        }
+
+        // Convertimos la hora a formato 12H antes de enviarla
+        const formattedHoraInicio = formatTo12Hour(tur_hora_inicio);
+        const formattedHoraFin = formatTo12Hour(tur_hora_fin);
+
+        try {
+            const response = await geriatricoApi.put(`/turnos/actualizar/${tur_id}`, {
+                tur_fecha_inicio,
+                tur_fecha_fin,
+                tur_hora_inicio: formattedHoraInicio, // Formato 12H
+                tur_hora_fin: formattedHoraFin, // Formato 12H
+                tur_tipo_turno
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            console.log("✅ Respuesta del servidor:", response.data);
+
+            return {
+                success: true,
+                message: response.data.message || "Turno actualizado exitosamente.",
+                data: response.data
+            };
+
+        } catch (error) {
+            console.error("❌ Error al actualizar turno:", error);
+
+            return {
+                success: false,
+                message: error.response?.data?.message || "Ocurrió un error inesperado.",
+                error: error.response?.data || error.message
+            };
+        }
+    };
 
 
     return {
@@ -214,7 +263,8 @@ export const useTurnos = () => {
         verMisTurnosEnfermeria,
         verTurnosSede,
         eliminarTurnoEnfermeria,
-        verTurnosSedeHistorial,
-        verMisTurnosEnfermeriaHistorial
+        verTurnosSedeHistorialEnfermera,
+        verMisTurnosEnfermeriaHistorial,
+        actualizarTurnoEnfermeria
     };
 };

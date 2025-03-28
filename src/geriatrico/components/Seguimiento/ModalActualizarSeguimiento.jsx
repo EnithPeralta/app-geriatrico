@@ -87,7 +87,8 @@ export const ModalActualizarSeguimiento = ({ id, setShowModal }) => {
                 icon: 'success',
                 text: result.message
             });
-            setShowModal(false); // Cerrar el modal tras la actualización
+            setShowModal(false);
+
         } else {
             console.error("❌ Error al actualizar el seguimiento:", result.message);
             Swal.fire({

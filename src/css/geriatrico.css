@@ -151,6 +151,7 @@
     max-width: 400px; /* Ajusta el ancho máximo */
     width: 70%; /* Para que ocupe el ancho disponible en la columna */
     margin-left: 30px;
+    cursor: pointer;
   }
 
   .grid-item img {
@@ -331,7 +332,8 @@
 .modal-field input[type="email"],
 .modal-field input[type="password"],
 .modal-field input[type="file"],
-.modal-field input[type="select"] {
+.modal-field input[type="select"],
+.modal-field textarea {
   width: 100%;
   padding: 8px;
   border: 1px solid #cbd5e0;

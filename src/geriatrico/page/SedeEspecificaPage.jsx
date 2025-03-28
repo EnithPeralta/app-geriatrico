@@ -20,7 +20,6 @@ export const SedeEspecificaPage = () => {
 
                 const result = await obtenerSedesHome();
                 console.log("📡 Respuesta de la API:", result);
-
                 
                 if (result.success && result.sede && result.geriatrico) {
                     console.log()

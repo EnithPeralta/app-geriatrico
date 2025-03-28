@@ -50,13 +50,13 @@ export const useDiagnostico = () => {
                 }
             );
             console.log("✅ Respuesta del servidor:", data);
-    
+
             return {
                 success: true,
                 message: data.message || "Diagnóstico obtenido con éxito.",
                 data: data.datos || {}
             };
-    
+
         } catch (error) {
             console.error("❌ Error al obtener diagnóstico:", error);
             return {
@@ -66,9 +66,42 @@ export const useDiagnostico = () => {
             };
         }
     };
-    
+
+    const actualizarDiagnostico = async ({ pac_id, diag_fecha, diag_descripcion }) => {
+        console.log("🔄 Actualizando diagnóstico...", pac_id);
+        const token = getToken();
+        if (!token) {
+            return { success: false, message: "Token de autenticación no encontrado." };
+        }
+        try {
+            const { data } = await geriatricoApi.put(
+                `/diagnosticos/paciente/${pac_id}`,
+                { diag_fecha, diag_descripcion },
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                }
+            );
+            console.log("✅ Respuesta del servidor:", data);
+
+            return {
+                success: true,
+                message: data.message || "Diagnóstico actualizado con éxito.",
+                data: data.datos || {}
+            };
+
+        } catch (error) {
+            console.error("❌ Error al actualizar diagnóstico:", error);
+            return {
+                success: false,
+                message: error.response?.data?.message || "Ocurrió un error inesperado.",
+                error: error.response?.data || error.message
+            };
+        }
+    };
+
     return {
         registrarDiagnostico,
-        obtenerDiagnostico
+        obtenerDiagnostico,
+        actualizarDiagnostico
     };
 };

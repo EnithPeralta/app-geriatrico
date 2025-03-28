@@ -12,7 +12,7 @@
     background: #dddddd;
     background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23f3f4f5" fill-opacity="1" d="M0,224L80,234.7C160,245,320,267,480,256C640,245,800,203,960,192C1120,181,1280,203,1360,213.3L1440,224L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path></svg>');
     background-size: cover; /* Opcional, para asegurar que el fondo cubra toda la pantalla */
-  background-attachment: fixed; /* Opcional, para que el fondo no se mueva al hacer scroll */
+    background-attachment: fixed; /* Opcional, para que el fondo no se mueva al hacer scroll */
     padding: 1.5rem; /* Reduce el padding para pantallas más pequeñas */
     margin: 5.5rem auto; /* Ajusta el margen para centrar */
     border-radius: 20px;
@@ -88,7 +88,7 @@
 
 .actions-rol {
     position: absolute;
-    top: -15px; /* Ajustar la posición */
+    top: 2px; /* Ajustar la posición */
     right: 5px;
     display: flex;
     gap: 5px;
@@ -124,18 +124,6 @@
     font-size: 15px;
 }
 
-/* Modal Crear */
-.rol-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 10px;
-    background: #e9e9e9;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    width: 100%;
-}
 
 .rol-input {
     padding: 10px;
@@ -152,24 +140,7 @@
     outline: none;
 }
 
-.rol-form button {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
 
-/* Modal Editar */
-.rol-form-edit {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    max-width: 400px;
-    width: 100%;
-}
 
 /* Media Queries */
 @media (max-width: 768px) {

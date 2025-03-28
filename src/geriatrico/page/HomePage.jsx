@@ -35,24 +35,23 @@ export const HomePage = () => {
     }, []); // Se ejecuta solo una vez al montar el componente
 
     useEffect(() => {
-        if (!rolSeleccionado || !rolSeleccionado.rol_id) return;
+        const rolStorage = localStorage.getItem("rol_id");
+        if (!rolStorage || !rolSeleccionado || !rolSeleccionado.rol_id) {
+            console.warn("⚠️ No hay rol seleccionado o se eliminó. No se redirige.");
+            return;
+        }
 
         console.log("🎯 Verificando rol seleccionado:", rolSeleccionado);
 
-        if (rolSeleccionado.rol_id === 3) {
-            if (!rolSeleccionado.se_id) {
-                console.warn("⚠️ No se encontró se_id. Esperando actualización...");
-                return;
-            }
-            console.log("🔀 Redirigiendo a /geriatrico/sedeEspecifica...");
+        if (rolSeleccionado.rol_id === 3 && rolSeleccionado.se_id) {
             navigate(`/geriatrico/sedeEspecifica`);
         } else if (rolSeleccionado.rol_id === 2) {
             console.log("🔀 Redirigiendo a /geriatrico/sedes...");
             navigate(`/geriatrico/sedes`);
-        }else if (rolSeleccionado.rol_id ===5) {
+        }else if (rolSeleccionado.rol_id === 5) {
             console.log("🔀 Redirigiendo a /geriatrico/pacientes...");
             navigate(`/geriatrico/pacientes`);
-        }else if (rolSeleccionado.rol_id ===6) {
+        }else if (rolSeleccionado.rol_id === 6) {
             console.log("🔀 Redirigiendo a /geriatrico/misPacientes...");
             navigate(`/geriatrico/misPacientes`);
         }

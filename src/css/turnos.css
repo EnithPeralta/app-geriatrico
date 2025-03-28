@@ -107,6 +107,9 @@
   background-color: #f1f1f1;
 }
 
+.btn{
+gap: 5px;
+}
 
 .btn-delete {
   background-color: #e63946;
@@ -121,4 +124,34 @@
 
 .btn-delete:hover {
   background-color: #d62828;
+}
+
+.btn-edit {
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.btn-edit:hover {
+  background-color: #376580;
+}
+
+.btn-history{
+  background-color: #42e177;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.btn-history:hover {
+  background-color: #38c66d;
 }

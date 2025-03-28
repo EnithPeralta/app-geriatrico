@@ -48,7 +48,6 @@ export const useRoles = () => {
         const token = getToken();
         if (!token) {
             const errorMessage = "No hay token disponible";
-            console.error(errorMessage);
             dispatch(setSedeError(errorMessage));
             return { success: false, message: errorMessage, rol: null };
         }
@@ -84,7 +83,6 @@ export const useRoles = () => {
         const token = getToken();
         if (!token) {
             const errorMessage = "No hay token disponible";
-            console.error(errorMessage);
             dispatch(setSedeError(errorMessage));
             return { success: false, message: errorMessage, rol: null };
         }
@@ -122,7 +120,6 @@ export const useRoles = () => {
         const token = getToken();
         if (!token) {
             const errorMessage = "No hay token disponible";
-            console.error(errorMessage);
             dispatch(setSedeError(errorMessage));
             return { success: false, message: errorMessage, rol: null };
         }
@@ -180,8 +177,6 @@ export const useRoles = () => {
         const rolIdNum = Number(rol_id); // Convertir a número
         const geIdNum = ge_id ? Number(ge_id) : undefined; // Convertir si existe
         const seIdNum = se_id ? Number(se_id) : undefined; // Convertir si existe
-
-        console.log("🟢 Recibidos:", { rolIdNum, seIdNum, geIdNum });
 
         dispatch(startSeleccion());
 
@@ -255,7 +250,6 @@ export const useRoles = () => {
 
         if (!token) {
             const errorMessage = "No hay token disponible";
-            console.error(errorMessage);
             dispatch(setSedeError(errorMessage));
             return { success: false, message: errorMessage, data: [] };
         }

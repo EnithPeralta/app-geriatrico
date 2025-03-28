@@ -30,25 +30,29 @@ export const ModalCrearRol = ({ isOpen, onClose, onSave }) => {
             <div className="modal" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-content-geriatrico">
                     {error && <p className="error-message">{error}</p>}
-                    <form onSubmit={handleSubmit} className="rol-form-edit">
+                    <form onSubmit={handleSubmit}>
                         <h2 className="rol-name">Crear Nuevo Rol</h2>
-                        <input
-                            placeholder="Nombre del Rol"
-                            className="rol-input"
-                            type="text"
-                            value={rolNombre}
-                            onChange={(e) => setRolNombre(e.target.value)}
-                            required
-                        />
-                        <textarea
-                            className="rol-input"
-                            value={rolDescripcion}
-                            onChange={(e) => setRolDescripcion(e.target.value)}
-                            placeholder="Descripción del Rol"
-                            rows={3}
-                            required
-                        />
-                        <div className="rol-buttons">
+                        <div className="modal-field">
+                            <input
+                                placeholder="Nombre del Rol"
+                                className="rol-input"
+                                type="text"
+                                value={rolNombre}
+                                onChange={(e) => setRolNombre(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="modal-field">
+                            <textarea
+                                className="rol-input"
+                                value={rolDescripcion}
+                                onChange={(e) => setRolDescripcion(e.target.value)}
+                                placeholder="Descripción del Rol"
+                                rows={3}
+                                required
+                            />
+                        </div>
+                        <div className="modal-buttons">
                             <button className="create" type="submit" disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</button>
                             <button className="cancel" type="button" onClick={onClose} disabled={loading}>Cancelar</button>
                         </div>

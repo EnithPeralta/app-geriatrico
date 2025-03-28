@@ -53,3 +53,112 @@
     justify-content: center;
   }
   
+  .modal-container {
+    background: #fff;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 2rem;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    font-size: 1.5rem;
+  }
+  .tabs-container-geriatrico {
+    margin-top: 1.5rem;
+  }
+  
+  .geriatrico-tabs,
+  .sede-tabs,
+  .role-tabs {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .geriatrico-tab,
+  .sede-tab,
+  .role-tab {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    white-space: nowrap; 
+    position: relative;
+    outline: none; 
+    box-shadow: none;
+  }
+  
+  .geriatrico-tab::after,
+  .sede-tab::after,
+  .role-tab::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #0090BC;
+    transform: scale(0);
+    transition: transform 0.2s;
+  }
+  
+  .geriatrico-tab.active::after,
+  .sede-tab.active::after,
+  .role-tab.active::after {
+    transform: scale(1);
+  }
+  
+  .geriatrico-tab {
+  
+    color: #555;
+    background:none;
+  }
+  
+  .sede-tab {
+  
+    color: #555;
+    background:none;
+  }
+  
+  .role-tab {
+  
+    color: #555;
+    background:none;
+  }
+  
+  .geriatrico-tab.active,
+  .sede-tab.active,
+  .role-tab.active {
+    background: transparent;
+    color: #0090BC;
+  }
+  
+  .role-details {
+    margin-top: 1.5rem;
+  }
+  
+  .detail-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  

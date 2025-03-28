@@ -40,7 +40,7 @@ export const GestionPersonaGeriatricoPage = () => {
         foto: "",
     });
 
-    const [roles, setRoles] = useState({ rolesGeriatrico: [], rolesSede: [] });
+    const [rolesPersonas, setRolesPersonas] = useState([]);
 
     useEffect(() => {
         const fetchSede = async () => {
@@ -100,26 +100,19 @@ export const GestionPersonaGeriatricoPage = () => {
                 const response = await obtenerPersonaRolesMiGeriatricoSede(persona.per_id);
                 console.log("Respuesta de la API:", response);
 
-                if (response.success) {
-                    // Assuming the response contains the persona object
-                    const { rolesGeriatrico, rolesSede } = response.persona; // Destructure roles from persona
-                    setRoles({
-                        rolesGeriatrico: rolesGeriatrico || [],
-                        rolesSede: rolesSede || []
-                    });
+                // Verificar si la respuesta tiene los datos esperados
+                if (response && response.success && response.data && response.data.persona) {
+                    setRolesPersonas(response.data.persona); // Usar la propiedad correcta
                 } else {
-                    throw new Error(response.message || "Error al obtener los roles.");
+                    console.error(response.message);
                 }
+                console.log(`Roles para ${persona.per_nombre}:`, response);
+
             } catch (error) {
                 console.error("Error al obtener roles:", error);
-                Swal.fire({
-                    icon: "error",
-                    text: error.message || "Error al obtener los roles."
-                });
             }
         }
     };
-
     const openAssignCard = (persona) => {
         setShowAssignCard(true);
         setSelectedPersona(persona);
@@ -503,7 +496,7 @@ export const GestionPersonaGeriatricoPage = () => {
                             openAssignCard={openAssignCard}
                             handleInactivarVinculacion={handleInactivarVinculacion}
                             handleReactivarVinculacion={handleReactivarVinculacion}
-                            roles={roles}
+                            rolesPersonas={rolesPersonas}
                         />
 
                         {showAssignCard && selectedPersona?.per_id && (

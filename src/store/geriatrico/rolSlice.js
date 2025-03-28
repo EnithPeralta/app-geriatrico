@@ -22,7 +22,10 @@ export const rolSlice = createSlice({
             state.error = action.payload;
             state.loading = false;
         },
+        resetRol: (state) => {
+            state.rolSeleccionado = null; // 🔥 Resetea el rol
+        },
     },
 });
 
-export const { startSeleccion, setRolSeleccionado, setRolError } = rolSlice.actions;
+export const { startSeleccion, setRolSeleccionado, setRolError, resetRol } = rolSlice.actions;

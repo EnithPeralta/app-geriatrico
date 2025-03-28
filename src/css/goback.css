@@ -1,17 +1,23 @@
-.btn-x {
+ .btn-x {
     position: absolute;
-    left: 4%;
-    top: 5%;
+    left: 2%;
+    top: 6.5%;
     background: #009ee2;
     color: white;
     padding: 4px 4px;
     font-weight: 600;  
     font-size: 15px;  
+    border: none;
     border-radius: 8px; 
     text-decoration: none;
     cursor: pointer;
     width: 2%;
     height:4%;
+    transition: background-color 0.3s ease;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    z-index: 10;
   }
   
   .btn-x:hover {
@@ -24,3 +30,10 @@
     transform: scale(0.95);
   }
   
+  @media (max-width: 768px) {
+    .btn-x {
+      left: 10%;
+      top: 5%;
+    }
+
+  }

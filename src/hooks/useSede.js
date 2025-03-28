@@ -8,38 +8,40 @@ export const useSede = () => {
 
     const obtenerSedesGeriatrico = async () => {
         dispatch(startSede());
-
+    
         const token = getToken();
-
+        console.log("🔑 Token obtenido:", token);
+    
         if (!token) {
             const errorMessage = "Token de autenticación no encontrado";
+            console.error(errorMessage);
             dispatch(setSedeError(errorMessage));
             return { success: false, message: errorMessage, sedes: [] };
         }
-
+    
         try {
             const { data } = await geriatricoApi.get("/sedes/sedesGeriatrico", {
-                credentials: "include",
                 headers: { Authorization: `Bearer ${token}` },
             });
-
+    
             console.log("✅ Respuesta del servidor:", data);
-
+    
             if (!data.sedes || !Array.isArray(data.sedes)) {
                 throw new Error("Formato de respuesta inválido");
             }
-
+    
             dispatch(setSede(data.sedes));
-
+    
             return { success: true, message: data.message || "Sedes obtenidas exitosamente", sedes: data.sedes };
         } catch (error) {
             console.error("❌ Error al obtener sedes:", error);
             const errorMessage = error.response?.data?.error || "Error al obtener las sedes";
             dispatch(setSedeError(errorMessage));
-
+    
             return { success: false, message: errorMessage, sedes: [] };
         }
     };
+    
 
     const createSede = async ({ se_nombre, se_telefono, se_direccion, cupos_totales, cupos_ocupados, se_foto }) => {
         dispatch(startSede());
@@ -121,39 +123,37 @@ export const useSede = () => {
         }
     };
 
-    const obtenerSedesInactive = async () => {
-        const token = getToken();
+    // const obtenerSedesInactive = async () => {
+    //     const token = getToken();
 
-        if (!token) {
-            const errorMessage = "Token de autenticación no encontrado";
-            dispatch(setSedeError(errorMessage)); // ✅ Ahora dispatch viene como argumento
-            return { success: false, message: errorMessage, sedes: [] };
-        }
+    //     if (!token) {
+    //         const errorMessage = "Token de autenticación no encontrado";
+    //         dispatch(setSedeError(errorMessage)); // ✅ Ahora dispatch viene como argumento
+    //         return { success: false, message: errorMessage, sedes: [] };
+    //     }
 
-        try {
-            const { data } = await geriatricoApi.get("/sedes/inactivas", {
-                credentials: "include",
-                headers: { Authorization: `Bearer ${token}` },
-            });
+    //     try {
+    //         const { data } = await geriatricoApi.get("/sedes/inactivas", {
+    //             headers: { Authorization: `Bearer ${token}` },
+    //         });
 
-            console.log("✅ Respuesta del servidor:", data);
+    //         console.log("✅ Respuesta del servidor:", data);
 
-            if (!data.sedes || !Array.isArray(data.sedes)) {
-                throw new Error("Formato de respuesta inválido");
-            }
+    //         if (!data.sedes || !Array.isArray(data.sedes)) {
+    //             throw new Error("Formato de respuesta inválido");
+    //         }
 
-            dispatch(setSede(data.sedes)); // ✅ Guardamos en el estado global
+    //         dispatch(setSede(data.sedes)); // ✅ Guardamos en el estado global
 
-            return { success: true, message: data.message || "Sedes obtenidas exitosamente", sedes: data.sedes };
-        } catch (error) {
-            console.error("❌ Error al obtener sedes:", error);
-            const errorMessage = error.response?.data?.error || "Error al obtener las sedes";
-            dispatch(setSedeError(errorMessage));
+    //         return { success: true, message: data.message || "Sedes obtenidas exitosamente", sedes: data.sedes };
+    //     } catch (error) {
+    //         console.error("❌ Error al obtener sedes:", error);
+    //         const errorMessage = error.response?.data?.error || "Error al obtener las sedes";
+    //         dispatch(setSedeError(errorMessage));
 
-            return { success: false, message: errorMessage, sedes: [] };
-        }
-    };
-
+    //         return { success: false, message: errorMessage, sedes: [] };
+    //     }
+    // };
 
     const actualizarSede = async (se_id, datosSede) => {
         dispatch(startSede());
@@ -282,7 +282,6 @@ export const useSede = () => {
             const { data } = await geriatricoApi.get("/sedes/homeSede", {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            console.log("data", data)
     
     
             // Desestructurar la respuesta del servidor
@@ -342,5 +341,5 @@ export const useSede = () => {
             return { success: false, message: errorMessage, sede: null };
         }
     }; 
-    return { obtenerSedesGeriatrico, obtenerSedesInactive, createSede, actualizarSede, reactivarSedes, inactivarSedes, obtenerSedesHome, obtenerDetalleSede };
+    return { obtenerSedesGeriatrico, createSede, actualizarSede, reactivarSedes, inactivarSedes, obtenerSedesHome, obtenerDetalleSede };
 };

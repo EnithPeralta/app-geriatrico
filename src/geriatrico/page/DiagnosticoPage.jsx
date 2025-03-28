@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import '../../css/diagnostico.css';
-import { useDiagnostico, usePaciente } from '../../hooks';
+import { useDiagnostico, usePaciente, useSession } from '../../hooks';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 export const DiagnosticoPage = () => {
     const { id } = useParams();
     const { obtenerDetallePacienteSede } = usePaciente();
-    const { obtenerDiagnostico, registrarDiagnostico } = useDiagnostico();
+    const { obtenerSesion, session } = useSession();
+    const { obtenerDiagnostico, registrarDiagnostico,actualizarDiagnostico } = useDiagnostico();
     const [diagnostico, setDiagnostico] = useState({
         pac_id: Number(id),
         diag_fecha: '',
@@ -19,6 +20,7 @@ export const DiagnosticoPage = () => {
 
     // Obtener datos del paciente
     useEffect(() => {
+        obtenerSesion();
         const fetchPaciente = async () => {
             try {
                 const response = await obtenerDetallePacienteSede(id);
@@ -71,10 +73,17 @@ export const DiagnosticoPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("Paciente ID obtenido:", paciente.pac_id);
-
+    
         const pacId = Number(paciente.pac_id);
+        if (!pacId || isNaN(pacId)) {
+            Swal.fire({
+                icon: 'warning',
+                text: 'El ID del paciente es inválido.'
+            });
+            return;
+        }
         console.log("📡 Datos a enviar:", pacId, diagnostico);
-
+    
         if (!pacId) {
             Swal.fire({
                 icon: 'warning',
@@ -82,14 +91,21 @@ export const DiagnosticoPage = () => {
             });
             return;
         }
-
+    
         // Creamos la payload combinando el objeto diagnostico y el pac_id
         const payload = {
             ...diagnostico,
             pac_id: pacId
         };
         try {
-            const response = await registrarDiagnostico(payload);
+            let response;
+            if (diagnosticoRegistrado) {
+                console.log("🔄 Actualizando diagnóstico...");
+                response = await actualizarDiagnostico(payload); // Asegúrate de que el payload sea correcto
+            } else {
+                console.log("📋 Registrando nueva recomendación...");
+                response = await registrarDiagnostico(payload); // Corregido el tipo de mensaje
+            }
             console.log("Respuesta del servidor:", response);
             if (response.success) {
                 Swal.fire({ icon: 'success', text: response.message });
@@ -97,9 +113,12 @@ export const DiagnosticoPage = () => {
                 Swal.fire({ icon: 'error', text: response.message });
             }
         } catch (err) {
-            console.error("❌ Error al registrar el diagnóstico:", err);
+            console.error("❌ Error al registrar o actualizar el diagnóstico:", err); // Mensaje de error más claro
+            Swal.fire({ icon: 'error', text: 'Ocurrió un error inesperado. Intenta nuevamente.' });
         }
     };
+    
+    
 
     return (
         <div className="animate__animated animate__fadeInUp">
@@ -128,10 +147,15 @@ export const DiagnosticoPage = () => {
                             />
                         </div>
                     </div>
-                    <div>
-                        <button type="submit" className="save-button">
+                    {session.rol_id === 3 && session.rol_id !== 5 && (
+                        <button
+                            type="submit"
+                            className="save-button"
+                        >
                             {diagnosticoRegistrado ? 'Actualizar' : 'Registrar'}
                         </button>
+                    )}
+                    <div>
                     </div>
                 </form>
             </div>

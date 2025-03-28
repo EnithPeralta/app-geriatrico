@@ -26,7 +26,7 @@ export const useGeriatrico = () => {
 
             // Crear FormData con la clave correcta esperada por el backend
             const formData = new FormData();
-            formData.set("ge_logo", ge_logo); // El backend espera 'ge_logo' en req.file
+            formData.set("ge_logo", ge_logo);
             formData.set("ge_nombre", ge_nombre);
             formData.set("ge_nit", ge_nit);
             formData.set("ge_color_principal", ge_color_principal);

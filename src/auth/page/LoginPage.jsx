@@ -65,8 +65,10 @@ export const LoginPage = () => {
 
       // ✅ Guardamos el rol si hay uno solo
       seleccionarRol(rolAsignado);
-
-      if (rolAsignado.rol_id === 5) {
+      if (rolAsignado.rol_id === 2) {
+        navigate("/geriatrico/sedes");
+        return;
+      } else if (rolAsignado.rol_id === 5) {
         navigate("/geriatrico/pacientes");
         return;
       } else if (rolAsignado.rol_id === 3) {
@@ -75,18 +77,6 @@ export const LoginPage = () => {
       } else if (rolAsignado.rol_id === 6) {
         navigate("/geriatrico/misPacientes");
         return;
-      }
-
-      // 🚀 Redirección basada en el tipo de rol
-      switch (rolAsignado.tipo) {
-        case "geriatrico":
-          navigate("/geriatrico/sedes");
-          break;
-        case "sedes":
-          navigate("/geriatrico/sedeEspecifica");
-          break;
-        default:
-          navigate("/geriatrico/home"); // Redirección por defecto
       }
     } catch (error) {
       Swal.fire({ icon: "error", text: "Hubo un problema al obtener los roles." });
@@ -97,7 +87,6 @@ export const LoginPage = () => {
     e.preventDefault();
 
     const response = await startLogin({ per_usuario, per_password });
-    console.log(response);
 
     if (!response || !response.success) {
       Swal.fire({

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { useAcudiente, useGeriatricoPersona, usePersona, useSedesRol } from '../../../hooks';
 import { ModalRegistrarPersonas, SelectField } from '../../../components';
+import { SelectRolAcudiente } from '../../../components/SelectRolAcudiente';
 
 export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
     const { asignarRolesSede } = useSedesRol();
@@ -11,6 +12,8 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
     // Estados del formulario
     const [acudienteDocumento, setAcudienteDocumento] = useState('');
     const [parentesco, setParentesco] = useState('');
+    const [personaEncontrada, setPersonaEncontrada] = useState(null);
+
     const [pacienteSeleccionado, setPacienteSeleccionado] = useState({ pac_id: pacienteId });
     const [mensaje, setMensaje] = useState(null);
     const [error, setError] = useState(null);
@@ -37,6 +40,14 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
         setDatosAcudiente(prev => ({ ...prev, rol_id: rolId })); // Actualizar rol_id en datosAcudiente
         console.log(rolId);
     };
+
+    const validarRol = async (per_id) => {
+        console.log("🔍 Verificando roles para la persona con ID:", per_id);
+        const rolesPersona = await obtenerPersonaRolesMiGeriatricoSede(per_id);
+        console.log("👀 Roles obtenidos:", rolesPersona);
+        return rolesPersona?.persona?.rolesSede?.some(rol => rol.rol_nombre === "Enfermera(O)") || false;
+    };
+
 
     const handleAssignSedes = async (per_id, rol_id, sp_fecha_inicio, sp_fecha_fin) => {
         try {
@@ -85,76 +96,48 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
 
         try {
             // 1️⃣ Buscar a la persona por documento
-            const result = await buscarVincularPersona({ documento: acudienteDocumento });
-            console.log("Persona buscada:", result);
+            let result = personaEncontrada;
+            if (!personaEncontrada) {
+                const fetchedPersona = await buscarVincularPersona({ documento: acudienteDocumento });
+                if (!fetchedPersona) return;
 
-            if (result.message) {
-                setShowPersona(true);
-                console.log(result.message);
+                if (fetchedPersona !== personaEncontrada) {
+                    setPersonaEncontrada(fetchedPersona);
+                    result = fetchedPersona;
+                }
             }
+            console.log(result);
+            if (result?.action === "error") {
+                setShowPersona(true);
+                setDatosAcudiente(prev => ({ ...prev, per_id: result.per_id }));
+                await Swal.fire({ icon: 'info', text: result.message });
 
-            // 2️⃣ Obtener roles actuales de la persona en el geriátrico
-            const rolesPersona = await obtenerPersonaRolesMiGeriatricoSede(result.per_id);
-            console.log("Roles de la persona:", rolesPersona);
+                if (datosAcudiente.rol_id) {
+                    const asignado = await handleAssignSedes(
+                        result.per_id,
+                        datosAcudiente.rol_id,
+                        datosAcudiente.sp_fecha_inicio,
+                        datosAcudiente.sp_fecha_fin
+                    );
 
-            if (!rolesPersona?.persona?.rolesSede) {
-                console.error("Error: rolesPersona o rolesSede no están definidos.", rolesPersona);
+                    if (asignado) {
+                        await registrarAcudiente({ per_id: result.per_id, enf_codigo: enfCodigo });
+                    }
+                }
                 return;
             }
 
-            // 3️⃣ Verificar si tiene el rol de Acudiente y si está activo
-            const rolAcudienteEnSede = rolesPersona.persona.rolesSede.find(
-                rol => rol.rol_nombre === "Acudiente" && rol.activoRolSede
-            );
-
-            console.log("Rol Acudiente encontrado:", rolAcudienteEnSede);
-
-            const tieneRolAcudiente = !!rolAcudienteEnSede;
-            console.log("Tiene rol acudiente?", tieneRolAcudiente);
-            const rolInactivo = tieneRolAcudiente && !rolAcudienteEnSede?.activoRolSede;
-
-            console.log("Tiene rol acudiente?", tieneRolAcudiente, "Está inactivo?", rolInactivo);
-
-            // 4️⃣ Si el rol está inactivo, reasignarlo
-            if (!tieneRolAcudiente || rolInactivo) {
+            if (result.message) {
                 setShowSelectRoles(true);
-                console.log("Reasignando el rol de Acudiente...", tieneRolAcudiente, rolInactivo);
-                const reactivacionExitosa = await handleAssignSedes(
-                    result.per_id,
-                    rolAcudienteEnSede?.rol_id || datosAcudiente.rol_id,
-                    datosAcudiente.sp_fecha_inicio,
-                    datosAcudiente.sp_fecha_fin
-                );
-                onResetForm();
-                if (reactivacionExitosa) {
-                    return Swal.fire({ icon: "success", text: reactivacionExitosa.message });
-                }
-                else if (!reactivacionExitosa) {
-                    return Swal.fire({ icon: "error", text: "No se pudo reactivar el rol. Registro cancelado." });
-                }
+                return;
+            }
+            if (!await validarRol(result.per_id)) {
+                setShowSelectRoles(true);
+                if (!await handleAssignSedes(result.per_id, datosEnfermera.rol_id, datosEnfermera.sp_fecha_inicio, datosEnfermera.sp_fecha_fin)) return;
+            } else {
+                await Swal.fire({ icon: 'info', text: "La persona ya tiene el rol de enfermera asignado." });
             }
 
-            // 5️⃣ Si NO tiene el rol, asignarlo normalmente
-            if (!tieneRolAcudiente) {
-                setShowSelectRoles(true);
-
-                if (!datosAcudiente.rol_id) {
-                    return Swal.fire({ icon: "warning", text: "Seleccione un rol antes de continuar." });
-                }
-
-                const asignacionExitosa = await handleAssignSedes(
-                    result.per_id,
-                    datosAcudiente.rol_id,
-                    datosAcudiente.sp_fecha_inicio,
-                    datosAcudiente.sp_fecha_fin,
-                    pacienteSeleccionado.se_id // ← Pasar el ID de la sede correcta
-                );
-                onResetForm();
-
-                if (!asignacionExitosa) {
-                    return Swal.fire({ icon: "error", text: "No se pudo asignar el rol. Registro cancelado." });
-                }
-            }
 
             // 6️⃣ Registrar el acudiente después de la validación del rol
             const response = await registrarAcudiente({
@@ -163,21 +146,13 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
                 pa_parentesco: parentesco,
             });
 
-            if (response.success) {
-                console.log(response.message);
-                setPacienteSeleccionado(prev => ({
-                    ...prev,
-                    acudiente: response.acudiente,
-                }));
-                setAcudienteDocumento("");
-                setParentesco("");
-                onResetForm();
-            } else {
-                console.error(response.message);
-            }
+            await Swal.fire({
+                icon: response?.success ? 'success' : 'error',
+                text: response?.message || "Error al registrar acudiente."
+            });
+            onResetForm();
         } catch (error) {
-            console.error("Error en handleRegisterAcudiente:", error);
-            console.log("Ocurrió un error inesperado al registrar el acudiente.");
+            console.error("❌ Error capturado en useSedesRol:", error);
         }
     };
 
@@ -212,7 +187,7 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
 
                         {showSelectRoles && (
                             <>
-                                <SelectField
+                                <SelectRolAcudiente
                                     label="Rol"
                                     name="rol_id"
                                     value={selectedRoles || ""}
@@ -251,7 +226,7 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
                             </button>
                         </div>
                     </form>
-                    {showPersona && pacienteSeleccionado.pac_id === null && (
+                    {showPersona &&
                         <ModalRegistrarPersonas
                             acudienteDocumento={acudienteDocumento}
                             handleAssignSedes={handleAssignSedes}
@@ -261,8 +236,9 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
                             parentesco={parentesco}
                             setParentesco={setParentesco}
                             selectedRoles={selectedRoles}
+                            onClose={onClose}
                         />
-                    )}
+                    }
                 </div>
             </div>
         </div>

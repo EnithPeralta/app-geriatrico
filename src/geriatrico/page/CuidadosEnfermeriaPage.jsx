@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useCuidadosEnfermeria, usePaciente } from '../../hooks';
+import { useCuidadosEnfermeria, usePaciente, useSession } from '../../hooks';
 import Swal from 'sweetalert2';
 import '../../css/cuidados.css';
 
 export const CuidadosEnfermeriaPage = () => {
     const { id } = useParams();
-    const { obtenerDetallePacienteSede, obtenerAcudientesDePaciente } = usePaciente();
-    const { registrarCuidadosEnfermeria, obtenerCuidadosEnfermeria } = useCuidadosEnfermeria();
+    const { obtenerDetallePacienteSede } = usePaciente();
+    const { obtenerSesion, session } = useSession();
+    const { registrarCuidadosEnfermeria, obtenerCuidadosEnfermeria, actualizarCuidadosEnfermeria } = useCuidadosEnfermeria();
     const [paciente, setPaciente] = useState(null);
     const [error, setError] = useState(null);
     const [datosCuidadosRegistrados, setDatosCuidadosRegistrados] = useState(false);
@@ -49,6 +50,7 @@ export const CuidadosEnfermeriaPage = () => {
     });
     // Cargar datos del paciente y verificar si hay cuidados registrados
     useEffect(() => {
+                obtenerSesion();
         const fetchPaciente = async () => {
             try {
                 const response = await obtenerDetallePacienteSede(id);
@@ -139,8 +141,15 @@ export const CuidadosEnfermeriaPage = () => {
                 return;
             }
 
-            const result = await registrarCuidadosEnfermeria(pacId, datosCuidados); // Separamos pac_id y datosCuidados
-            console.log("📡 Respuesta del servidor:", result);
+
+            let result;
+            if (datosCuidadosRegistrados) {
+                console.log("🔄 Actualizando cuidados existentes...");
+                result = await actualizarCuidadosEnfermeria(pacId, datosCuidados);
+            } else {
+                console.log("➕ Registrando nuevos cuidados...");
+                result = await registrarCuidadosEnfermeria(pacId, datosCuidados);
+            }
 
             if (result.success) {
                 Swal.fire({ icon: 'success', text: result.message });
@@ -174,6 +183,7 @@ export const CuidadosEnfermeriaPage = () => {
                                 </label>
                             </div>
                         </div>
+
                         {/* Checkbox Fecha Fin*/}
                         <div className="cuidado-item">
                             <span>Fecha final</span>
@@ -223,136 +233,96 @@ export const CuidadosEnfermeriaPage = () => {
                         <div className="cuidado-item">
                             <span>Presion Arterial</span>
                             <div className="options">
-                                <label className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_pa_m"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados?.cue_pa_m === "S"}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Mañana
-                                <label className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_pa_t"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados?.cue_pa_t === "S"}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Tarde
-                                <label className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_pa_n"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados?.cue_pa_n === "S"}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Noche
+                                {[
+                                    { name: 'cue_pa_m', label: 'Mañana' },
+                                    { name: 'cue_pa_t', label: 'Tarde' },
+                                    { name: 'cue_pa_n', label: 'Noche' }
+                                ].map(({ name, label }, index) => (
+                                    <div key={index} className="checkbox-group" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                        <label className="container-checkbox" style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                            <input
+                                                type="checkbox"
+                                                name={name}
+                                                onChange={handleCheckboxChange}
+                                                checked={datosCuidados[name] === "S"}
+                                            />
+                                            <div className="checkmark"></div>
+                                        </label>
+                                        <span>{label}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
-
-                        {/*Frecuencia Cardiaca */}
                         <div className="cuidado-item">
                             <span>Frecuencia Cardiaca</span>
                             <div className="options">
-                                <label className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_fc_m"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados?.cue_fc_m === "S"}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Mañana
-                                <label title="Frecuencia Cardiaca" className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_fc_t"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados?.cue_fc_t === "S"}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Tarde
-                                <label title="Frecuencia Respiratoria" className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_fc_n"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados?.cue_fc_n === "S"}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Noche
+                                {[
+                                    { name: 'cue_fc_m', label: 'Mañana' },
+                                    { name: 'cue_fc_t', label: 'Tarde' },
+                                    { name: 'cue_fc_n', label: 'Noche' }
+                                ].map(({ name, label }, index) => (
+                                    <div key={index} className="checkbox-group" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                        <label className="container-checkbox" style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                            <input
+                                                type="checkbox"
+                                                name={name}
+                                                onChange={handleCheckboxChange}
+                                                checked={datosCuidados[name] === "S"}
+                                            />
+                                            <div className="checkmark"></div>
+                                        </label>
+                                        <span>{label}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
-                        {/* Frecuencia Respiratoria */}
                         <div className="cuidado-item">
                             <span>Frecuencia Respiratoria</span>
                             <div className="options">
-                                <label className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_fr_m"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados?.cue_fr_m === "S"}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Mañana
-                                <label className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_fr_t"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados?.cue_fr_t === "S"}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Tarde
-                                <label className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_fr_n"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados?.cue_fr_n === "S"}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Noche
+                                {[
+                                    { name: 'cue_fr_m', label: 'Mañana' },
+                                    { name: 'cue_fr_t', label: 'Tarde' },
+                                    { name: 'cue_fr_n', label: 'Noche' }
+                                ].map(({ name, label }, index) => (
+                                    <div key={index} className="checkbox-group" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                        <label className="container-checkbox" style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                            <input
+                                                type="checkbox"
+                                                name={name}
+                                                onChange={handleCheckboxChange}
+                                                checked={datosCuidados[name] === "S"}
+                                            />
+                                            <div className="checkmark"></div>
+                                        </label>
+                                        <span>{label}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
-                        {/* Temperatura */}
                         <div className="cuidado-item">
                             <span>Temperatura</span>
                             <div className="options">
-                                <label className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_t_m"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados?.cue_t_m === "S"}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Mañana
-                                <label className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_t_t"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados?.cue_t_t === "S"}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Tarde
-                                <label className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_t_n"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados?.cue_t_n === "S"}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Noche
+                                {[
+                                    { name: 'cue_t_m', label: 'Mañana' },
+                                    { name: 'cue_t_t', label: 'Tarde' },
+                                    { name: 'cue_t_n', label: 'Noche' }
+                                ].map(({ name, label }, index) => (
+                                    <div key={index} className="checkbox-group" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                        <label className="container-checkbox" style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                            <input
+                                                type="checkbox"
+                                                name={name}
+                                                onChange={handleCheckboxChange}
+                                                checked={datosCuidados[name] === "S"}
+                                            />
+                                            <div className="checkmark"></div>
+                                        </label>
+                                        <span>{label}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
@@ -368,108 +338,59 @@ export const CuidadosEnfermeriaPage = () => {
                                         checked={datosCuidados?.cue_control_glicemia === "S"}
                                     />
                                     <div className="checkmark"></div>
-                                </label>
+                                </label>Si
+                                <label className="container-checkbox">
+                                    <input
+                                        type="checkbox"
+                                        name="cue_control_glicemia"
+                                        onChange={handleCheckboxChange}
+                                        checked={datosCuidados?.cue_control_glicemia === "N"}
+                                    />
+                                    <div className="checkmark"></div>
+                                </label>No
                             </div>
                         </div>
 
-                        {/* Control de peso */}
-                        {/* Control de peso */}
                         <div className="cuidado-item">
                             <span>Control de peso</span>
                             <div className="options">
-                                <label className="container-checkbox">
-                                    <input
-                                        type="radio"
-                                        name="cue_control_peso"
-                                        onChange={handleChange}
-                                        value="mañana"
-                                        checked={datosCuidados.cue_control_peso === "mañana"}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Mañana
-
-                                <label className="container-checkbox">
-                                    <input
-                                        type="radio"
-                                        name="cue_control_peso"
-                                        onChange={handleChange}
-                                        value="tarde"
-                                        checked={datosCuidados.cue_control_peso === "tarde"}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Tarde
-
-                                <label className="container-checkbox">
-                                    <input
-                                        type="radio"
-                                        name="cue_control_peso"
-                                        onChange={handleChange}
-                                        value="noche"
-                                        checked={datosCuidados.cue_control_peso === "noche"}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Noche
-
-                                <label className="container-checkbox">
-                                    <input
-                                        type="radio"
-                                        name="cue_control_peso"
-                                        onChange={handleChange}
-                                        value="no aplica"
-                                        checked={datosCuidados.cue_control_peso === "no aplica"}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> No aplica
+                                {["mañana", "tarde", "noche", "no aplica"].map((value, index) => (
+                                    <div key={index} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                        <label className="container-checkbox">
+                                            <input
+                                                type="radio"
+                                                name="cue_control_peso"
+                                                value={value}
+                                                checked={datosCuidados.cue_control_peso === value}
+                                                onChange={handleChange}
+                                            />
+                                            <div className="checkmark"></div>
+                                        </label>
+                                        <span>{value.charAt(0).toUpperCase() + value.slice(1)}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
-                        {/* Control de talla (Corregido) */}
+
                         <div className="cuidado-item">
                             <span>Control de talla</span>
                             <div className="options">
-                                <label className="container-checkbox">
-                                    <input
-                                        type="radio"
-                                        name="cue_control_talla"
-                                        onChange={handleChange}
-                                        value="mañana"
-                                        checked={datosCuidados.cue_control_talla === "mañana"} // Corregido
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Mañana
-
-                                <label className="container-checkbox">
-                                    <input
-                                        type="radio"
-                                        name="cue_control_talla"
-                                        onChange={handleChange}
-                                        value="tarde"
-                                        checked={datosCuidados.cue_control_talla === "tarde"} // Corregido
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Tarde
-
-                                <label className="container-checkbox">
-                                    <input
-                                        type="radio"
-                                        name="cue_control_talla"
-                                        onChange={handleChange}
-                                        value="noche"
-                                        checked={datosCuidados.cue_control_talla === "noche"} // Corregido
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Noche
-
-                                <label className="container-checkbox">
-                                    <input
-                                        type="radio"
-                                        name="cue_control_talla"
-                                        onChange={handleChange}
-                                        value="no aplica"
-                                        checked={datosCuidados.cue_control_talla === "no aplica"} // Corregido
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> No aplica
+                                {["mañana", "tarde", "noche", "no aplica"].map((value, index) => (
+                                    <div key={index} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                        <label className="container-checkbox">
+                                            <input
+                                                type="radio"
+                                                name="cue_control_talla"
+                                                value={value}
+                                                checked={datosCuidados.cue_control_talla === value}
+                                                onChange={handleChange}
+                                            />
+                                            <div className="checkmark"></div>
+                                        </label>
+                                        <span>{value.charAt(0).toUpperCase() + value.slice(1)}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
@@ -478,35 +399,27 @@ export const CuidadosEnfermeriaPage = () => {
                         <div className="cuidado-item">
                             <span>Control de posición</span>
                             <div className="options">
-                                <label className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_control_posicion_m"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados.cue_control_posicion_m === 'S'}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label>Mañana
-                                <label className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_control_posicion_t"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados.cue_control_posicion_t === 'S'}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Tarde
-                                <label className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_control_posicion_n"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados.cue_control_posicion_n === 'S'}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label> Noche
+                                {[
+                                    { name: 'cue_control_posicion_m', label: 'Mañana' },
+                                    { name: 'cue_control_posicion_t', label: 'Tarde' },
+                                    { name: 'cue_control_posicion_n', label: 'Noche' }
+                                ].map(({ name, label }, index) => (
+                                    <div key={index} className="checkbox-group" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                        <label className="container-checkbox" style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                            <input
+                                                type="checkbox"
+                                                name={name}
+                                                onChange={handleCheckboxChange}
+                                                checked={datosCuidados[name] === "S"}
+                                            />
+                                            <div className="checkmark"></div>
+                                        </label>
+                                        <span>{label}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
+
 
                         {/* Curaciones */}
                         <div className="cuidado-item">
@@ -514,13 +427,22 @@ export const CuidadosEnfermeriaPage = () => {
                             <div className="options">
                                 <label className="container-checkbox">
                                     <input
-                                        type="radio"
+                                        type="checkbox"
+                                        name="cue_curaciones"
+                                        onChange={handleCheckboxChange}
+                                        checked={datosCuidados?.cue_curaciones === "S"}
+                                    />
+                                    <div className="checkmark"></div>
+                                </label>Si
+                                <label className="container-checkbox">
+                                    <input
+                                        type="checkbox"
                                         name="cue_curaciones"
                                         onChange={handleCheckboxChange}
                                         checked={datosCuidados?.cue_curaciones === "N"}
                                     />
                                     <div className="checkmark"></div>
-                                </label>
+                                </label>No
                             </div>
                         </div>
 
@@ -545,13 +467,22 @@ export const CuidadosEnfermeriaPage = () => {
                             <div className="options">
                                 <label className="container-checkbox">
                                     <input
-                                        type="radio"
+                                        type="checkbox"
+                                        name="cue_liq_administrados"
+                                        onChange={handleCheckboxChange}
+                                        checked={datosCuidados.cue_liq_administrados === 'S'}
+                                    />
+                                    <div className="checkmark"></div>
+                                </label>Si
+                                <label className="container-checkbox">
+                                    <input
+                                        type="checkbox"
                                         name="cue_liq_administrados"
                                         onChange={handleCheckboxChange}
                                         checked={datosCuidados.cue_liq_administrados === 'N'}
                                     />
                                     <div className="checkmark"></div>
-                                </label>
+                                </label>No
                             </div>
                         </div>
 
@@ -582,7 +513,16 @@ export const CuidadosEnfermeriaPage = () => {
                                         checked={datosCuidados.cue_liq_eliminados === 'S'}
                                     />
                                     <div className="checkmark"></div>
-                                </label>
+                                </label>Si
+                                <label className="container-checkbox">
+                                    <input
+                                        type="checkbox"
+                                        name="cue_liq_eliminados"
+                                        onChange={handleCheckboxChange}
+                                        checked={datosCuidados.cue_liq_eliminados === 'N'}
+                                    />
+                                    <div className="checkmark"></div>
+                                </label>No
                             </div>
                         </div>
 
@@ -600,61 +540,41 @@ export const CuidadosEnfermeriaPage = () => {
                                 </label>
                             </div>
                         </div>
+
                         {/* Administrar medicamentos */}
-                        <div className='cuidado-item'>
+                        <div className="cuidado-item">
                             <span>Administrar medicamentos</span>
                             <div className="options">
-                                <label className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_med_m"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados.cue_med_m === 'S'}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label>Manana
-                                <label className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_med_t"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados.cue_med_t === 'S'}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label>Tarde
-                                <label className="container-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        name="cue_med_n"
-                                        onChange={handleCheckboxChange}
-                                        checked={datosCuidados.cue_med_n === 'S'}
-                                    />
-                                    <div className="checkmark"></div>
-                                </label>Noche
-                            </div>
-                        </div>
-                        {/* Otros cuidados */}
-                        <div className='cuidado-item'>
-                            <span>Otros cuidados</span>
-                            <div className="options">
-                                <label className="container-checkbox-text">
-                                    <input
-                                        type="text"
-                                        name="otros_cuidados"
-                                        onChange={handleChange}
-                                        value={datosCuidados.otros_cuidados}
-                                    />
-                                </label>
+                                {[
+                                    { name: '"cue_med_m', label: 'Mañana' },
+                                    { name: '"cue_med_t', label: 'Tarde' },
+                                    { name: '"cue_med_n', label: 'Noche' }
+                                ].map(({ name, label }, index) => (
+                                    <div key={index} className="checkbox-group" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                        <label className="container-checkbox" style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                            <input
+                                                type="checkbox"
+                                                name={name}
+                                                onChange={handleCheckboxChange}
+                                                checked={datosCuidados[name] === "S"}
+                                            />
+                                            <div className="checkmark"></div>
+                                        </label>
+                                        <span>{label}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
                 </div>
-                <button
-                    onClick={handleRegistrarCuidadoEnfermeria}
-                    className="save-button"
-                >
-                    {datosCuidadosRegistrados ? "Actualizar" : "Registrar"}
-                </button>
+                {session.rol_id === 3 && session.rol_id !== 5 && (
+                    <button
+                        onClick={handleRegistrarCuidadoEnfermeria}
+                        className="save-button"
+                    >
+                        {datosCuidadosRegistrados ? "Actualizar" : "Registrar"}
+                    </button>
+                )}
 
             </div>
         </div>

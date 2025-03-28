@@ -57,25 +57,26 @@ export const ModalEditarPaciente = ({ paciente, cerrarModal }) => {
             pac_edad: Number(datosPaciente.pac_edad),
         };
         console.log("📤 Enviando datos para actualizar paciente:", datosFormateados);
-    
+
         try {
             const result = await actualizarDetallePaciente(datosFormateados.per_id, datosFormateados);
-    
+
             if (result.success) {
                 Swal.fire({
                     icon: "success",
                     text: result.message,
                 });
-            
-                setDatosPaciente({
+
+                setDatosPaciente((prev) => ({
+                    ...prev,
                     ...result.paciente,
                     pac_edad: Number(result.paciente.pac_edad),
-                });
-            
+                }));
+                
                 console.log("✅ Datos del paciente actualizados:", result.paciente);
             }
-    
-            cerrarModal();            
+
+            cerrarModal();
         } catch (error) {
             console.error("🚨 Error inesperado al editar paciente:", error);
             Swal.fire({
@@ -84,7 +85,7 @@ export const ModalEditarPaciente = ({ paciente, cerrarModal }) => {
             });
         }
     };
-    
+
 
 
 
@@ -169,10 +170,10 @@ export const ModalEditarPaciente = ({ paciente, cerrarModal }) => {
                             />
                         </div>
                         <div className="modal-buttons">
-                            <button type="submit" className="btn btn-success">
+                            <button type="submit" className="save-button">
                                 Guardar
                             </button>
-                            <button type="button" className="btn btn-danger" onClick={cerrarModal}>
+                            <button type="button" className="cancel-button" onClick={cerrarModal}>
                                 Cancelar
                             </button>
                         </div>

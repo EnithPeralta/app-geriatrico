@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { useAcudiente, usePaciente, useSeguimiento, useSession } from '../../hooks';
+import { useAcudiente, useDiagnostico, usePaciente, useRecomendaciones, useSeguimiento, useSession } from '../../hooks';
 import { useParams, useNavigate } from 'react-router-dom';
 import { LoadingComponet, SideBarComponent } from '../../components';
 import { PInformation } from '../layout';
-import { FaCalendarDay, FaCameraRetro, FaClock, FaEdit, FaFileMedicalAlt, FaHandHoldingMedical, FaHeartbeat, FaIdCard, FaLungs, FaNotesMedical, FaStethoscope, FaSyringe, FaThermometerHalf, FaUser, FaUserNurse, FaWeight } from 'react-icons/fa';
+import { FaBriefcaseMedical, FaCalendarDay, FaCameraRetro, FaClock, FaEdit, FaFileMedicalAlt, FaHandHoldingMedical, FaHeartbeat, FaLungs, FaNotesMedical, FaStethoscope, FaSyringe, FaThermometerHalf, FaUser, FaUserMd, FaUserNurse, FaWeight } from 'react-icons/fa';
 import { ModalActualizarSeguimiento } from '../components/Seguimiento/ModalActualizarSeguimiento';
 
 export const HistorySeguimientoPage = () => {
     const { id } = useParams();
+    const pac_id = parseInt(id);
     const navigate = useNavigate();
     const { session } = useSession();
-    const { obtenerDetallePacienteSede } = usePaciente();
     const { obtenerAcudientesDePaciente } = useAcudiente();
     const { obtenerHistorialSeguimientos } = useSeguimiento();
+    const { obtenerDiagnostico } = useDiagnostico();
+    const { obtenerRecomendaciones } = useRecomendaciones();
 
     const [paciente, setPaciente] = useState(null);
     const [error, setError] = useState(null);
@@ -20,28 +22,17 @@ export const HistorySeguimientoPage = () => {
     const [showModal, setShowModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedId, setSelectedId] = useState(null);
+    const [diagnostico, setDiagnostico] = useState(null);
+    const [recomendacion, setRecomendacion] = useState(null);
+
+
+
 
     useEffect(() => {
-        const fetchPaciente = async () => {
-            try {
-                const response = await obtenerDetallePacienteSede(id);
-                if (response.success) {
-                    setPaciente(response.paciente);
-                } else {
-                    setError(response.message);
-                }
-            } catch (err) {
-                setError("Error al obtener los datos del paciente.");
-            }
-        };
-        fetchPaciente();
-    }, [id]);
-
-    useEffect(() => {
-        if (!paciente?.pac_id) return;
         const fetchSeguimiento = async () => {
             try {
-                const result = await obtenerHistorialSeguimientos(paciente.pac_id);
+                const result = await obtenerHistorialSeguimientos(id);
+                console.log(result);
                 if (result.success) {
                     setHistorialSeguimiento(result.data);
                 } else {
@@ -52,12 +43,52 @@ export const HistorySeguimientoPage = () => {
             }
         };
         fetchSeguimiento();
-    }, [paciente]);
+    }, [id]);
+
+    useEffect(() => {
+        const fetchRecomendacion = async () => {
+            try {
+                const response = await obtenerRecomendaciones(pac_id);
+                console.log("Recomendaciones obtenidas:", response);
+                if (response.success) {
+                    // Si `data` es un objeto, lo convertimos en un array para evitar problemas con map()
+                    setRecomendacion(Array.isArray(response.data) ? response.data : [response.data]);
+                } else {
+                    console.error(response.message);
+                }
+            } catch (err) {
+                console.error("Error al obtener las recomendaciones.");
+            }
+        };
+        fetchRecomendacion();
+    }, [id]);
+
+    useEffect(() => {
+        const fetchDiagnostico = async () => {
+            try {
+                const response = await obtenerDiagnostico(pac_id);
+                console.log("Diagnóstico obtenido:", response);
+                if (response.success) {
+                    // Si `data` es un objeto, lo convertimos en un array para evitar problemas con map()
+                    setDiagnostico(Array.isArray(response.data) ? response.data : [response.data]);
+                } else {
+                    console.error(response.message);
+                }
+            } catch (err) {
+                console.error("Error al obtener el diagnóstico.");
+            }
+        };
+        fetchDiagnostico();
+    }, [id]);
 
 
-    const filteredHistorial = historialSeguimiento.filter(({ seg_fecha }) => {
-        const fechaCompleta = new Date(seg_fecha).toISOString().split("T")[0];
-        return fechaCompleta.includes(searchTerm);
+
+    const historialAplanado = historialSeguimiento.flatMap(item => item.seguimientos);
+
+    // Filtramos por la fecha ingresada en el searchTerm
+    const filteredHistorial = historialAplanado.filter(({ seg_fecha }) => {
+        if (!seg_fecha) return false; // Evita errores si es undefined
+        return seg_fecha.includes(searchTerm);
     });
 
     const handleAcudiente = async () => {
@@ -131,33 +162,52 @@ export const HistorySeguimientoPage = () => {
                                             </div>
                                         </div>
                                     </div>
-
                                     <div className="historial-card timeline-card">
-                                        <h3 className='summary-title'><FaClock /> Informes del Día</h3>
+                                        <h3 className='summary-title'><FaUserMd />Recomendaciones</h3>
                                         <div className="timeline-container">
+
+                                            {recomendacion && recomendacion.length > 0 ? (
+                                                recomendacion.map(({ rec_id, rec_otras, rec_fecha }) => (
+                                                    <div key={rec_id} className="timeline-item">
+                                                        <div className="timeline-marker">
+                                                        </div>
+                                                        <div className="timeline-content">
+                                                            <div className="timeline-header">
+                                                                <span className="timeline-hour">{rec_fecha}</span>
+                                                            </div>
+                                                            <p className="timeline-detail">{rec_otras}</p>
+
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <p>No hay recomendaciones registradas.</p>
+                                            )
+                                            }
                                         </div>
                                     </div>
                                     {/* Tarjeta de Informe Médico */}
                                     <div className="historial-card report-card">
-                                        <h3 className='summary-title'><FaFileMedicalAlt /> Diagnostico</h3>
-                                        <div className="report-section">
-                                            <h4><FaStethoscope /> Observaciones</h4>
-                                            {/* <p>{dailyData.informe.observaciones}</p> */}
-                                        </div>
-                                        <div className="report-section">
-                                            <h4><FaNotesMedical /> Recomendaciones</h4>
-                                            {/* <p>{dailyData.informe.recomendaciones}</p> */}
-                                        </div>
-                                        <div className="report-section">
-                                            <h4><FaSyringe /> Medicación Prescrita</h4>
-                                            {/* <ul>
-                                                                                        {dailyData.informe.medicamentos.map((med, index) => (
-                                                                                            <li key={index}><FontAwesomeIcon /> {med}</li>
-                                                                                        ))}
-                                                                                    </ul> */}
-                                        </div>
+                                        <h3 className='summary-title'><FaFileMedicalAlt /> Diagnóstico</h3>
+                                        {diagnostico && diagnostico.length > 0 ? (
+                                            diagnostico.map(({ diag_id, diag_descripcion, diag_fecha
+                                            }) => (
+                                                <div key={diag_id} >
+                                                    <div className="report-section">
+                                                        <h4><FaCalendarDay /> Fecha</h4>
+                                                        <p>{diag_fecha
+                                                        }</p>
+                                                    </div>
+                                                    <div className="report-section">
+                                                        <h4><FaBriefcaseMedical /> Descripcion</h4>
+                                                        <p>{diag_descripcion}</p>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p>No hay diagnóstico registrado.</p>
+                                        )}
                                     </div>
-
                                 </div>
                                 <div className='button-container'>
                                     <button className='save-button' onClick={() => { setSelectedId(seg_id); setShowModal(true); }}>
@@ -170,7 +220,10 @@ export const HistorySeguimientoPage = () => {
                         <LoadingComponet />
                     )}
                 </div>
-                {showModal && <ModalActualizarSeguimiento id={selectedId} setShowModal={setShowModal} />}
+                {showModal && <ModalActualizarSeguimiento
+                    id={selectedId}
+                    setShowModal={setShowModal}
+                />}
             </div>
         </div>
     );

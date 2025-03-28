@@ -125,7 +125,6 @@ export const useSedesRol = () => {
             );
 
             console.log("✅ Respuesta del servidor:", data);
-            console.log("---------------------------------");
 
             return {
                 success: true,

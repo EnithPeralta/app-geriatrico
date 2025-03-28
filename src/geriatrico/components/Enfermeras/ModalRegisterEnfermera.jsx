@@ -15,7 +15,7 @@ export const ModalRegisterEnfermera = ({ onClose }) => {
     const { asignarRolesSede } = useSedesRol();
     const { obtenerPersonaRolesMiGeriatricoSede } = useGeriatricoPersona();
     const { buscarVincularPersona } = usePersona();
-    
+
     const [personaEncontrada, setPersonaEncontrada] = useState(null);
     const [datosEnfermera, setDatosEnfermera] = useState(RolesForm);
     const [enfermeraDocumento, setEnfermeraDocumento] = useState('');
@@ -134,7 +134,9 @@ export const ModalRegisterEnfermera = ({ onClose }) => {
                     <form onSubmit={handleSubmit}>
                         <div className='modal-field'>
                             <label>Documento:</label>
-                            <input type='text' value={enfermeraDocumento} onChange={(e) => setEnfermeraDocumento(e.target.value)} />
+                            <input type='text'
+                                className="modal-input"
+                                value={enfermeraDocumento} onChange={(e) => setEnfermeraDocumento(e.target.value)} />
                         </div>
                         <div className='modal-field'>
                             <label>Código:</label>
@@ -158,7 +160,15 @@ export const ModalRegisterEnfermera = ({ onClose }) => {
                             <button type="button" className='cancel-button' onClick={onClose}>Cancelar</button>
                         </div>
                     </form>
-                    {showModalEnfermera && <ModalEnfermeraPersona onClose={onClose} />}
+                    {showModalEnfermera && <ModalEnfermeraPersona
+                        onClose={onClose}
+                        enf_codigo={enfCodigo}
+                        enfermeraDocumento={enfermeraDocumento}
+                        handleAssignSedes={handleAssignSedes}
+                        handleRoleChange={handleRoleChange}
+                        selectedRoles={selectedRoles}
+                        setEnfCodigo={setEnfCodigo}
+                    />}
                 </div>
             </div>
         </div>

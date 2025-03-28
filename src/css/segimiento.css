@@ -80,19 +80,6 @@ min-height: 100vh;}
   }
   
   
-  .save-button {
-    background-color: #009ee2;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .save-button:hover {
-    background-color: #007acc;
-  }
-  
   .history-card{
     background-color: #efefef;
     border-radius: 10px;

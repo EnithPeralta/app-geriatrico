@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useRoles } from '../../hooks';
 import '../../css/roles.css';
-import { LoadingComponet, SideBarComponent } from '../../components';
 import { GoBackComponet } from '../../components/GoBackComponent';
 import { ModalCrearRol } from '../components/Modal-Rol/ModalCrearRol';
 import { ModalEditarRol } from '../components/Modal-Rol/ModalEditarRol';
@@ -34,7 +33,8 @@ export const RolesPage = () => {
     const handleSaveRol = async (nuevoRol) => {
         const result = await crearRol(nuevoRol);
         if (result.success) {
-            setRoles([...roles, result.rol]);
+            setRoles(prev =>[...prev, result.rol]);
+            setIsCreateModalOpen(false);
         }
         return result;
     };
@@ -42,7 +42,9 @@ export const RolesPage = () => {
     const handleUpdateRol = async (rolActualizado) => {
         const result = await actualizarRol(rolActualizado);
         if (result.success) {
-            setRoles(roles.map((rol) => (rol.rol_id === rolActualizado.rol_id ? result.rol : rol)));
+            setRoles(
+                roles.map((rol) => (rol.rol_id === rolActualizado.rol_id ? result.rol : rol))
+            );
         }
         return result;
     };
@@ -52,7 +54,6 @@ export const RolesPage = () => {
             <GoBackComponet />
             <div className="animate__animated animate__fadeInDown">
                 <div className="content-rol">
-                    {error && <p className="error-message">{error}</p>}
                     <div className="grid-rol">
                         {roles.length > 0 ? (
                             roles.map((rol) => (
@@ -74,7 +75,7 @@ export const RolesPage = () => {
                                 </div>
                             ))
                         ) : (
-                            <LoadingComponet />
+                            <p className="no-roles-message">No hay roles disponibles.</p>
                         )}
                         <div className="card-rol" onClick={() => setIsCreateModalOpen(true)}>
                             <div className="rol-info-container">

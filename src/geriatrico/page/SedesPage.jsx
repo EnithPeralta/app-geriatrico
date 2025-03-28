@@ -9,7 +9,7 @@ import { SedeModal } from '../../components/ModalSedes/SedeModal';
 import { SedeDetalle } from '../../components/ModalSedes/SedeDetalle';
 
 export const SedesPage = () => {
-    const { obtenerSedesGeriatrico, inactivarSedes, obtenerDetalleSede, reactivarSedes } = useSede();
+    const { obtenerSedesGeriatrico, obtenerDetalleSede, reactivarSedes, inactivarSedes } = useSede();
     const { homeMiGeriatrico } = useGeriatrico();
     const [sedes, setSedes] = useState([]);
     const [error, setError] = useState(null);
@@ -19,7 +19,6 @@ export const SedesPage = () => {
     const [sedeToEdit, setSedeToEdit] = useState(null);
     const [selectedSede, setSelectedSede] = useState(null);
     const [geriatrico, setGeriatrico] = useState(null);
-    const [sedesInactive, setSedesInactive] = useState([]);
     const dispatch = useDispatch();
     const rolSeleccionado = useSelector(state => state.roles?.rolSeleccionado ?? null);
     const [loaded, setLoaded] = useState(false);
@@ -39,9 +38,7 @@ export const SedesPage = () => {
             try {
                 setLoaded(true);
                 setError(null);
-
                 const result = await homeMiGeriatrico();
-                console.log("📡 Respuesta de la API:", result);
                 if (result.success && result.geriatrico) {
                     setGeriatrico(result.geriatrico);
                 } else {
@@ -53,8 +50,8 @@ export const SedesPage = () => {
                 setLoaded(false);
             }
         };
-        fetchSede();
-    }, []);
+        if (!geriatrico) fetchSede();
+    }, [geriatrico]);
 
 
     useEffect(() => {
@@ -94,20 +91,23 @@ export const SedesPage = () => {
             confirmButtonText: "Sí, Inactivar",
             cancelButtonText: "Cancelar"
         });
-
+    
         if (confirm.isConfirmed) {
             try {
                 const result = await inactivarSedes(se_id);
                 if (result.success) {
                     Swal.fire({
                         icon: "success",
-                        text: "La sede ha sido inactivada correctamente.",
+                        text: result.message,
                     });
-                    setSedes(prev => prev.filter(s => s.se_id !== se_id));
+                    setSedes(prev =>
+                        prev.map(s => (s.se_id === se_id ? { ...s, se_activo: false } : s)) // Corrección aquí
+                    );
                 } else {
                     Swal.fire(result.message, "error");
                 }
             } catch {
+                console.log("Error al inactivar la sede");
                 Swal.fire("No se pudo inactivar la sede", "error");
             }
         }
@@ -115,24 +115,30 @@ export const SedesPage = () => {
 
     const handleReactivarSedes = async (se_id) => {
         const confirm = await Swal.fire({
-            text: "¿Estás seguro de que deseas reactivar este sedes?",
+            text: "¿Estás seguro de que deseas reactivar esta sede?",
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Sí, reactivar",
             cancelButtonText: "Cancelar"
         });
-
+    
         if (confirm.isConfirmed) {
-            const result = await reactivarSedes(se_id);
-
-            if (result.success) {
-                Swal.fire({
-                    icon: "success",
-                    text: "La sede ha sido reactivado correctamente."
-                });
-                setSedesInactive((prev) => prev.filter(s => s.se_id !== se_id));
-            } else {
-                Swal.fire(result.message, "error");
+            try {
+                const result = await reactivarSedes(se_id);
+                if (result.success) {
+                    Swal.fire({
+                        icon: "success",
+                        text: result.message
+                    });
+                    setSedes(prev =>
+                        prev.map(s => (s.se_id === se_id ? { ...s, se_activo: true } : s)) // Corrección aquí
+                    );
+                } else {
+                    Swal.fire(result.message, "error");
+                }
+            } catch {
+                console.log("Error al reactivar la sede");
+                Swal.fire("No se pudo reactivar la sede", "error");
             }
         }
     };
@@ -219,7 +225,7 @@ export const SedesPage = () => {
                         <p>No se encontraron sedes.</p>
                     )}
                     <div className="grid-item">
-                        <div className="grid-item-add"  onClick={() => setIsModalOpen(true)}>
+                        <div className="grid-item-add" onClick={() => setIsModalOpen(true)}>
                             <i className="fas fa-circle-plus" />
                             <p>Crear Sedes</p>
                         </div>

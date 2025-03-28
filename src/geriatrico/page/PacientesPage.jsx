@@ -60,9 +60,9 @@ export const PacientesPage = () => {
     );
 
     return (
-        <div className="main-container" style={{ backgroundColor: geriatrico?.color_principal }}>
+        <div className="main-container" >
             <SideBarComponent />
-            <div className="content-area">
+            <div className="content-area" style={{ backgroundColor: geriatrico?.color_principal }}>
                 <h2 className="gestionar-title">Pacientes</h2>
                 <div className="search-container">
                     <input

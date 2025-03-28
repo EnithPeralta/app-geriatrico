@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 import { useAuthStore, useEnfermera, useForm, useGeriatricoPersonaRol, usePaciente, usePersona, useSedesRol, useSession } from '../../hooks';
-import { CheckboxField, InputField, ModalEnfermera, ModalRegistrarPaciente, SelectField } from '../../components';
+import { CheckboxField, InputField, ModalEnfermera, ModalRegistrarPaciente, SelectField, SelectSede } from '../../components';
 import { SelectGeriatrico } from '../../components/SelectGeriatrico/SelectGeriatrico';
-import { AssignRoleUtil } from '../../utils';
 import { ModalAdminSede } from '../../components/AsignarSede/ModalAdminSede';
 
 const registerFormFields = {
@@ -39,6 +38,7 @@ export const RegisterComponent = () => {
     const [showSelectRoles, setShowSelectRoles] = useState(false);
     const [showModalEnfermera, setShowModalEnfermera] = useState(false);
     const [showExtraAdminGeriaFields, setShowExtraAdminGeriaFields] = useState(false);
+    const [showExtraAdminSedeFields, setShowExtraAdminSedeFields] = useState(false);
     const [fechaInicio, setFechaInicio] = useState("");
     const [assigning, setAssigning] = useState(false);
     const [fechaFin, setFechaFin] = useState("");
@@ -276,12 +276,17 @@ export const RegisterComponent = () => {
         setSelectedRoles(value);
         setSelectedSedes(value);
         setShowExtraAdminGeriaFields(value === 2);
+        setShowExtraAdminSedeFields(value === 3);
         setShowExtraFields(value === 4);
         setShowModalEnfermera(value === 5);
     };
 
     const handleGeriatricoChange = (event) => {
         setSelectedGeriatrico(Number(event.target.value)); // Convertir a número por seguridad
+    };
+
+    const handleSedeChange = (event) => {
+        setSelectedSedes(Number(event.target.value)); // Convertir a número por seguridad
     };
 
     const handlePacientes = async (datosPaciente) => {
@@ -530,6 +535,15 @@ export const RegisterComponent = () => {
                         {showExtraAdminGeriaFields && (
                             <div>
                                 <SelectGeriatrico label="Geriátrico" name="ge_id" value={selectedGeriatrico} onChange={handleGeriatricoChange} />
+                                <InputField label="Fecha inicio" type="date" name="gp_fecha_inicio" value={gp_fecha_inicio} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
+                                <InputField label="Fecha fin" type="date" name="gp_fecha_fin" value={gp_fecha_fin} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
+                            </div>
+                        )}
+
+                        {/* Se activan los campos adicionales SOLO si el usuario tiene rol 3 (AdminSede) */}
+                        {showExtraAdminSedeFields && (
+                            <div>
+                                <SelectSede label="Sede" name="se_id" value={selectedSedes} onChange={handleSedeChange} />
                                 <InputField label="Fecha inicio" type="date" name="gp_fecha_inicio" value={gp_fecha_inicio} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
                                 <InputField label="Fecha fin" type="date" name="gp_fecha_fin" value={gp_fecha_fin} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
                             </div>

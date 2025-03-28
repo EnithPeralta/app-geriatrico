@@ -55,11 +55,14 @@ export const ModalEditPersonComponent = ({ editedPersona, onClose, setPersonas }
         }));
     };
 
+    console.log("Datos enviados:", editedPersona.documento);
+
+
     const handleEditSubmit = async (event) => {
         event.preventDefault();
 
         if (!personaEditada) return;
-
+        console.log("Datos enviados corregidos:", personaEditada);
         const result = await updatePerson(personaEditada.id, personaEditada);
 
         console.log("Respuesta del servidor:", result);

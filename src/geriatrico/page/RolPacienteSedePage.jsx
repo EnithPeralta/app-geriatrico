@@ -28,11 +28,10 @@ export const RolPacienteSedePage = () => {
     <div className="animate__animated animate__fadeInUp content">
 
       <div className="turnos-container-sede">
-        <h2>Roles del paciente en la sede</h2>
+        <h2>Historial</h2>
         <table className="table">
           <thead>
             <tr>
-              <th>Rol</th>
               <th>Fecha inicio</th>
               <th>Fecha fin</th>
               <th>Estado</th>
@@ -42,7 +41,6 @@ export const RolPacienteSedePage = () => {
             {roles.length > 0 ? (
               roles.map((rol, index) => (
                 <tr key={index}>
-                  <td>{rol.rol}</td>
                   <td>{rol.fechaInicio}</td>
                   <td>{rol.fechaFin ? rol.fechaFin : "Indefinido"}</td>
                   <td>{rol.activoSede ? "Activo" : "Inactivo"}</td>

@@ -16,7 +16,7 @@ export const HistoyGeriatricoPage = () => {
             setLoading(true);
             setError(null);
             const response = await obtenerHistorialRoles({ ge_id: id });
-            console.log("�� Respuesta de la API:", response);
+            console.log("📌 Respuesta de la API:", response);
             if (response.success) {
                 setHistorial(response.data);
             } else {
@@ -30,10 +30,28 @@ export const HistoyGeriatricoPage = () => {
         }
     }, [id]);
 
-    const filtrarHistorial = historial.filter(persona =>
-        searchTerm === "" ||
-        persona.gp_fecha_vinculacion.includes(searchTerm)
-    );
+    // 🔍 Filtrado seguro por rango de fechas
+    const filtrarHistorial = historial.filter((persona) => {
+        if (!searchTerm.trim()) return true; // Si el campo de búsqueda está vacío, mostrar todo
+
+        const searchDate = new Date(searchTerm);
+        if (isNaN(searchDate)) return false; // Evita errores si searchTerm no es una fecha válida
+
+        const tieneFechaEnRango = (roles) =>
+            roles.some(({ fechaInicio, fechaFin }) => {
+                if (!fechaInicio || !fechaFin) return false;
+                
+                const startDate = new Date(fechaInicio);
+                const endDate = new Date(fechaFin);
+
+                return searchDate >= startDate && searchDate <= endDate;
+            });
+
+        return (
+            tieneFechaEnRango(persona.rolesGeriatrico) ||
+            tieneFechaEnRango(persona.rolesSede)
+        );
+    });
 
     if (loading) return <LoadingComponet />;
     if (error) return (
@@ -52,7 +70,8 @@ export const HistoyGeriatricoPage = () => {
             <div className="history-card">
                 <h4 className="h4">No hay historial de roles disponible.</h4>
             </div>
-        </div>)
+        </div>
+    );
 
     return (
         <div className='animate__animated animate__fadeIn animate__faster'>
@@ -62,11 +81,11 @@ export const HistoyGeriatricoPage = () => {
                     <div className='gestionar'>
                         <h4 className='h4'>Historial</h4>
                         <input
-                            type="text"
-                            placeholder="Buscar por fecha (día, mes, año)"
+                            type="date"
+                            placeholder="Buscar por fecha"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="search-input-geriatrico"
+                            className="search-input"
                         />
                     </div>
                     {filtrarHistorial.map((persona, index) => (
@@ -75,82 +94,45 @@ export const HistoyGeriatricoPage = () => {
                                 <h4 className="h4">Datos Personales</h4>
                                 <div className="segimiento-item">
                                     <label>Nombre:</label>
-                                    <input
-                                        type="text"
-                                        value={persona.per_nombre}
-                                        readOnly
-                                    />
+                                    <input type="text" value={persona.per_nombre} readOnly />
                                 </div>
                                 <div className="segimiento-item">
                                     <label>Teléfono:</label>
-                                    <input
-                                        type="text"
-                                        value={persona.per_telefono}
-                                        readOnly
-                                    />
+                                    <input type="text" value={persona.per_telefono} readOnly />
                                 </div>
                                 <div className="segimiento-item">
                                     <label>Correo:</label>
-                                    <input
-                                        type="text"
-                                        value={persona.per_correo}
-                                        readOnly
-                                    />
+                                    <input type="text" value={persona.per_correo} readOnly />
                                 </div>
                                 <div className="segimiento-item">
                                     <label>Fecha Vinculación:</label>
-                                    <input
-                                        type="text"
-                                        value={persona.gp_fecha_vinculacion}
-                                        readOnly
-                                    />
+                                    <input type="text" value={persona.gp_fecha_vinculacion} readOnly />
                                 </div>
-
                                 <div className="segimiento-item">
                                     <label>Estado:</label>
-                                    <input
-                                        type="text"
-                                        value={persona.gp_activo ? "Activo" : "Inactivo"}
-                                        readOnly
-                                    />
+                                    <input type="text" value={persona.gp_activo ? "Activo" : "Inactivo"} readOnly />
                                 </div>
 
                                 <h4 className="h4">Roles en Geriátrico</h4>
                                 {persona.rolesGeriatrico.length > 0 ? (
-                                    <div >
+                                    <div>
                                         {persona.rolesGeriatrico.map((rol) => (
                                             <div key={rol.rol_id}>
                                                 <div className="segimiento-item">
                                                     <label>Nombre</label>
-                                                    <input
-                                                        type="text"
-                                                        value={rol.rol_nombre}
-                                                        readOnly
-                                                    />
+                                                    <input type="text" value={rol.rol_nombre} readOnly />
                                                 </div>
                                                 <div className="segimiento-item">
                                                     <label>Estado</label>
-                                                    <input
-                                                        type="text"
-                                                        value={rol.rol_activo ? "Activo" : "Inactivo"}
-                                                        readOnly
-                                                    />
+                                                    <input type="text" value={rol.rol_activo ? "Activo" : "Inactivo"} readOnly />
                                                 </div>
                                                 <div className="segimiento-item">
                                                     <label>Fecha de Inicio</label>
-                                                    <input
-                                                        type="text"
-                                                        value={rol.fechaInicio}
-                                                        readOnly
-                                                    />
+                                                    <input type="text" value={rol.fechaInicio} readOnly />
                                                 </div>
                                                 <div className="segimiento-item">
                                                     <label>Fecha de Fin</label>
-                                                    <input
-                                                        type="text"
-                                                        value={rol.fechaFin || "Presente"}
-                                                        readOnly
-                                                    />
+                                                    <input type="text" value={rol.fechaFin || "Presente"} readOnly />
                                                 </div>
                                             </div>
                                         ))}
@@ -166,19 +148,11 @@ export const HistoyGeriatricoPage = () => {
                                             <div key={index}>
                                                 <div className="segimiento-item">
                                                     <label>Nombre</label>
-                                                    <input
-                                                        type="text"
-                                                        value={rol.rol_nombre}
-                                                        readOnly
-                                                    />
+                                                    <input type="text" value={rol.rol_nombre} readOnly />
                                                 </div>
                                                 <div className="segimiento-item">
                                                     <label>Estado</label>
-                                                    <input
-                                                        type="text"
-                                                        value={rol.rol_activo ? "Activo" : "Inactivo"}
-                                                        readOnly
-                                                    />
+                                                    <input type="text" value={rol.rol_activo ? "Activo" : "Inactivo"} readOnly />
                                                 </div>
                                             </div>
                                         ))}

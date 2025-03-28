@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import { usePaciente, useRecomendaciones } from '../../hooks';
+import { usePaciente, useRecomendaciones, useSession } from '../../hooks';
 import Swal from 'sweetalert2';
 
 
 export const RecomendacionesPage = () => {
     const { id } = useParams();
+    const { obtenerSesion, session } = useSession();
     const { obtenerDetallePacienteSede } = usePaciente();
-    const { registrarRecomendacion, obtenerRecomendaciones } = useRecomendaciones();
+    const { registrarRecomendacion, obtenerRecomendaciones, actualizarRecomendacion } = useRecomendaciones();
     const [recomendacion, setRecomendacion] = useState({
         pac_id: Number(id),
         rec_fecha: '',
@@ -27,6 +28,7 @@ export const RecomendacionesPage = () => {
     const [recomendacionRegistrada, setRecomendacionRegistrada] = useState(false);
 
     useEffect(() => {
+        obtenerSesion();
         const fetchPaciente = async () => {
             try {
                 const response = await obtenerDetallePacienteSede(id);
@@ -90,10 +92,10 @@ export const RecomendacionesPage = () => {
     const handleRegistrarRecomendacion = async (e) => {
         e.preventDefault();
         console.log("Paciente ID obtenido:", paciente.pac_id);
-    
+
         const pacId = Number(paciente.pac_id); // Convertimos el ID a número
         console.log("📡 Datos a enviar:", pacId, recomendacion);
-    
+
         if (!pacId) {
             Swal.fire({
                 icon: 'warning',
@@ -101,17 +103,24 @@ export const RecomendacionesPage = () => {
             });
             return;
         }
-    
+
         // Creamos la payload combinando el objeto recomendacion y el pac_id
         const payload = {
             ...recomendacion,
             pac_id: pacId
         };
-    
+
         try {
-            const result = await registrarRecomendacion(payload);
+            let result;
+            if (recomendacionRegistrada) {
+                console.log("🔄 Actualizando recomendación...");
+                result = await actualizarRecomendacion(payload);
+            } else {
+                console.log("➕ Registrando nueva recomendación...");
+                result = await registrarRecomendacion(payload);
+            }
             console.log("📡 Respuesta del servidor:", result);
-    
+
             if (result.success) {
                 Swal.fire({ icon: 'success', text: result.message });
             } else {
@@ -121,7 +130,7 @@ export const RecomendacionesPage = () => {
             console.error('Error al registrar recomendación:', error);
         }
     };
-    
+
 
     return (
         <div className="animate__animated animate__fadeInUp">
@@ -277,12 +286,14 @@ export const RecomendacionesPage = () => {
                                 </div>
                             </div>
                         </div>
-                        <button
-                            type="submit"
-                            className="save-button"
-                        >
-                            {recomendacionRegistrada ? "Actualizar" : "Registrar"}
-                        </button>
+                        {session.rol_id === 3 && session.rol_id !== 5 && (
+                            <button
+                                type="submit"
+                                className="save-button"
+                            >
+                                {recomendacionRegistrada ? "Actualizar" : "Registrar"}
+                            </button>
+                        )}
                     </form>
                 </div>
             </div>

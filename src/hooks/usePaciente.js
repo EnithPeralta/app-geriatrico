@@ -43,7 +43,6 @@ export const usePaciente = () => {
         }
     };
     
-
     const obtenerPacientesSede = async () => {
         const token = getToken();
         

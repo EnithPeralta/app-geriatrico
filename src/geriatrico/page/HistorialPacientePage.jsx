@@ -3,7 +3,7 @@ import { useDiagnostico, useSeguimiento, useRecomendaciones } from '../../hooks'
 import { useParams } from 'react-router-dom';
 import '../../css/history.css';
 import { SideBarComponent } from '../../components';
-import { FaBriefcaseMedical, FaCalendarDay, FaCameraRetro, FaClock, FaFileMedicalAlt, FaHandHoldingMedical, FaHeartbeat, FaIdCard, FaIdCardAlt, FaLungs, FaNotesMedical, FaStethoscope, FaSyringe, FaThermometerHalf, FaUserMd, FaUserNurse, FaWeight } from 'react-icons/fa';
+import { FaBriefcaseMedical, FaCalendarDay, FaCameraRetro, FaClock, FaFileMedicalAlt, FaHandHoldingMedical, FaHeartbeat, FaIdCard, FaIdCardAlt, FaLungs, FaNotesMedical, FaRuler, FaRulerVertical, FaStethoscope, FaSyringe, FaThermometerHalf, FaUserMd, FaUserNurse, FaWeight } from 'react-icons/fa';
 
 export const HistorialPacientePage = () => {
     const { id } = useParams();
@@ -78,12 +78,16 @@ export const HistorialPacientePage = () => {
     }, [id]);
 
 
+    // Aplanamos el array para obtener todos los seguimientos en un solo nivel
+    const historialAplanado = historialSeguimiento.flatMap(item => item.seguimientos);
 
-
-    const filteredHistorial = historialSeguimiento.filter(({ seg_fecha }) => {
-        const fechaCompleta = new Date(seg_fecha).toISOString().split("T")[0];
-        return fechaCompleta.includes(searchTerm);
+    // Filtramos por la fecha ingresada en el searchTerm
+    const filteredHistorial = historialAplanado.filter(({ seg_fecha }) => {
+        if (!seg_fecha) return false; // Evita errores si es undefined
+        return seg_fecha.includes(searchTerm);
     });
+
+
 
     return (
         <div className="animate__animated animate__fadeInUp">
@@ -102,7 +106,7 @@ export const HistorialPacientePage = () => {
                             />
                         </div>
                         {filteredHistorial.length > 0 ? (
-                            filteredHistorial.map(({ seg_id, seg_fecha, seg_foto, seg_glicemia, seg_peso, seg_talla, seg_temp, otro, enfermera }) => (
+                            filteredHistorial.map(({ seg_id, seg_fecha, seg_foto, seg_glicemia, seg_peso, seg_talla, seg_temp, otro, seg_fc, seg_fr, enfermera }) => (
                                 <div key={seg_id} className="daily-container">
                                     <h4 className="daily-title"><FaCalendarDay /> {seg_fecha}</h4>
                                     <div className="daily-card">
@@ -130,7 +134,7 @@ export const HistorialPacientePage = () => {
                                                     <span className="metric-label">Glucemia</span>
                                                 </div>
                                                 <div className="metric-item">
-                                                    <FaLungs className="metric-icon" />
+                                                    <FaRulerVertical className="metric-icon" />
                                                     <span className="metric-value">{seg_talla}</span>
                                                     <span className="metric-label">Talla</span>
                                                 </div>
@@ -144,10 +148,20 @@ export const HistorialPacientePage = () => {
                                                     <span className="metric-value">{seg_temp}</span>
                                                     <span className="metric-label">Temperatura</span>
                                                 </div>
+                                                <div className="metric-item">
+                                                    <FaHeartbeat className="metric-icon" />
+                                                    <span className="metric-value">{seg_fc}</span>
+                                                    <span className="metric-label">Cardiaca</span>
+                                                </div>
+                                                <div className="metric-item">
+                                                    <FaLungs className="metric-icon" />
+                                                    <span className="metric-value">{seg_fr}</span>
+                                                    <span className="metric-label">Respiratoria</span>
+                                                </div>
                                             </div>
                                         </div>
                                         {/* Tarjeta de línea de tiempo diaria */}
-                                        <div className="historial-card timeline-card">
+                                        {/* <div className="historial-card timeline-card">
                                             <h3 className='summary-title'><FaUserNurse />Enfermera de Seguimiento</h3>
                                             <div className="report-section">
                                                 <h4><FaIdCard /> {enfermera?.persona?.per_documento}</h4>
@@ -155,7 +169,7 @@ export const HistorialPacientePage = () => {
                                             <div className="report-section">
                                                 <h4><FaUserMd /> {enfermera?.persona?.per_nombre_completo}</h4>
                                             </div>
-                                        </div>
+                                        </div> */}
 
                                         {/* Tarjeta de línea de tiempo diaria */}
                                         <div className="historial-card timeline-card">
@@ -170,8 +184,9 @@ export const HistorialPacientePage = () => {
                                                             <div className="timeline-content">
                                                                 <div className="timeline-header">
                                                                     <span className="timeline-hour">{rec_fecha}</span>
-                                                                    <span className="timeline-type">{rec_otras}</span>
                                                                 </div>
+                                                                <p className="timeline-detail">{rec_otras}</p>
+
                                                             </div>
                                                         </div>
                                                     ))

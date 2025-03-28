@@ -50,9 +50,50 @@ export const useGeriatricoPersonaRol = () => {
     }
   };
 
-  
+  const inactivarRolGeriatrico = async ({ per_id, ge_id, rol_id }) => {
+    const token = getToken();
+    if (!token) {
+      return {
+        success: false,
+        message: "Token de autenticación no encontrado",
+      };
+    }
+
+    try {
+      const { data } = await geriatricoApi.post(
+        `/geriatricopersonarol/inactivarRolGeriatrico`,
+        { per_id, ge_id, rol_id }, // Enviar datos en el cuerpo
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Respuesta de la API:", data);
+
+      return {
+        success: true,
+        message: data.message || "Rol inactivado exitosamente",
+        data: data.data, // Retorna los datos de la respuesta
+        rolNombre: data.rolNombre || "Desconocido",
+        geriatrico: data.geriatrico || {},
+      };
+    } catch (error) {
+      console.error("Error al inactivar el rol:", error);
+
+      return {
+        success: false,
+        message:
+          error.response?.data?.message || "Error al inactivar el rol",
+        error: error.response?.data?.error || error.message,
+      };
+    }
+  };
 
   return {
     asignarRolGeriatrico,
+    inactivarRolGeriatrico
   };
 };

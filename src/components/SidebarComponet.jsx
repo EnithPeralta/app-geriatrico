@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import "../css/side.css";
-import { FaAngleDoubleLeft, FaArrowCircleRight, FaHome, FaHotel, FaUser, FaUsersCog, FaUsers, FaHandshake, FaHospitalUser, FaUserNurse, FaFile, FaBug, FaBuilding, FaFileMedicalAlt, FaFileMedical, FaFileContract, FaUserPlus } from 'react-icons/fa';
+import { FaAngleDoubleLeft, FaArrowCircleRight, FaHome, FaHotel, FaUser, FaUsersCog, FaUsers, FaHandshake, FaHospitalUser, FaUserNurse, FaBuilding, FaFileMedicalAlt, FaFileContract, FaUserPlus, FaUserCog } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useAuthStore, useGeriatrico, useSede, useSession } from '../hooks';
+import { useNavigate } from "react-router-dom";
+import { resetRol } from '../store/geriatrico';
+import { useDispatch } from 'react-redux';
+
 
 
 export const SideBarComponent = () => {
@@ -11,22 +15,23 @@ export const SideBarComponent = () => {
     const { homeMiGeriatrico } = useGeriatrico();
     const { obtenerSedesHome } = useSede()
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [subMenuOpen, setSubMenuOpen] = useState({});
     const [esSuperAdmin, setEsSuperAdmin] = useState(false);
     const [adminGeriatrico, setAdminGeriatrico] = useState(false);
     const [adminSede, setAdminSede] = useState(false);
     const [enfermera, setEnfermera] = useState(false);
     const [acudiente, setAcudiente] = useState(false);
     const [geriatrico, setGeriatrico] = useState(null);
+    const navigate = useNavigate();
     const [sede, setSede] = useState([]);
     const [error, setError] = useState(null);
     const fetchedRef = useRef(false);
+    const dispatch = useDispatch();
+
 
     useEffect(() => {
         if (!fetchedRef.current) {
             const fetchSesion = async () => {
                 const sesion = await obtenerSesion();
-                console.log("Sesion obtenida:", sesion);
                 setEsSuperAdmin(sesion?.esSuperAdmin || false);
                 setAdminGeriatrico(sesion?.rol_id === 2);
                 setAdminSede(sesion?.rol_id === 3);
@@ -54,14 +59,16 @@ export const SideBarComponent = () => {
             }
         };
         fetchSede();
-    }, []);
+    }, [esSuperAdmin]);
 
 
     useEffect(() => {
         const fetchSedeEspecifica = async () => {
-            if (esSuperAdmin) return;
+            if (esSuperAdmin || adminGeriatrico) return;
+
             try {
                 const result = await obtenerSedesHome();
+                console.log("📡 Respuesta de la API:", result);
                 if (result.success && result.sede && result.geriatrico) {
                     setSede(result.sede);  // Aseguramos que `sede` es un objeto válido
                     setGeriatrico(result.geriatrico);
@@ -74,29 +81,12 @@ export const SideBarComponent = () => {
         };
 
         fetchSedeEspecifica();
-    }, []);
-
-
+    }, [esSuperAdmin, adminGeriatrico]);
 
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
     };
 
-    // const toggleSubMenu = (buttonId) => {
-    //     if (!subMenuOpen[buttonId]) {
-    //         closeAllSubMenus();
-    //     }
-    //     setSubMenuOpen((prev) => ({ ...prev, [buttonId]: !prev[buttonId] }));
-    //     if (!sidebarOpen) {
-    //         setSidebarOpen(true);
-    //     }
-    // };
-
-    // const closeAllSubMenus = () => {
-    //     setSubMenuOpen({});
-    // };
-
-    // Menú para Super Admin
     if (esSuperAdmin) {
         return (
             <div className="main-container">
@@ -128,6 +118,12 @@ export const SideBarComponent = () => {
                                 </Link>
                             </li>
                             <li>
+                                <Link to={'/geriatrico/roles'}>
+                                    <FaUserCog className='icon' />
+                                    <span>Roles</span>
+                                </Link>
+                            </li>
+                            <li>
                                 <Link to={'/register'}>
                                     <FaUserPlus />
                                     <span>Registrar</span>
@@ -139,12 +135,7 @@ export const SideBarComponent = () => {
                                     <span>Perfil</span>
                                 </Link>
                             </li>
-                            <li>
-                                <Link to={'/geriatrico/roles'}>
-                                    <FaUsersCog className='icon' />
-                                    <span>Roles</span>
-                                </Link>
-                            </li>
+
                             <li>
                                 <div onClick={startLogout}>
                                     <a>
@@ -165,7 +156,6 @@ export const SideBarComponent = () => {
         );
     }
 
-    // Menú para Admin Geriátrico
     if (adminGeriatrico) {
         return (
             <div className="main-container">
@@ -178,12 +168,17 @@ export const SideBarComponent = () => {
                                     <FaAngleDoubleLeft />
                                 </button>
                             </li>
-                            <li>
-                                <Link to={'/geriatrico/home'}>
-                                    <FaHome />
+                            <li onClick={() => {
+                                localStorage.removeItem("rol_id"); // 🔥 Borra el rol de localStorage
+                                dispatch(resetRol()); // 🔥 Resetea el rol en Redux
+                                navigate("/geriatrico/home"); // 🔀 Redirige
+                            }}>
+                                <Link>
+                                    <FaHome className="icon" />
                                     <span>Inicio</span>
                                 </Link>
                             </li>
+
                             <li>
                                 <Link to={'/geriatrico/sedes'}>
                                     <FaHotel />
@@ -220,7 +215,7 @@ export const SideBarComponent = () => {
                     </nav>
 
                     {/* Contenedor del contenido principal */}
-                    <div className="content">
+                    <div className="content" >
                         {/* Aquí se carga el contenido principal para Super Admin */}
                     </div>
                 </div>
@@ -240,12 +235,18 @@ export const SideBarComponent = () => {
                                     <FaAngleDoubleLeft />
                                 </button>
                             </li>
-                            <li>
-                                <Link to={'/geriatrico/home'}>
-                                    <FaHome className='icon' />
+
+                            <li onClick={() => {
+                                localStorage.removeItem("rol_id"); // 🔥 Borra el rol de localStorage
+                                dispatch(resetRol()); // 🔥 Resetea el rol en Redux
+                                navigate("/geriatrico/home"); // 🔀 Redirige
+                            }}>
+                                <Link>
+                                    <FaHome className="icon" />
                                     <span>Inicio</span>
                                 </Link>
                             </li>
+
                             <li>
                                 <Link to={'/geriatrico/profile'}>
                                     <FaUser className='icon' />
@@ -299,11 +300,11 @@ export const SideBarComponent = () => {
                     </nav>
 
                     {/* Contenedor del contenido principal */}
-                    <div className="content">
+                    <div className="content" >
                         {/* Aquí se carga el contenido principal para Super Admin */}
                     </div>
                 </div>
-            </div>
+            </div >
         );
     }
 
@@ -319,12 +320,18 @@ export const SideBarComponent = () => {
                                     <FaAngleDoubleLeft />
                                 </button>
                             </li>
-                            <li>
-                                <Link to={'/geriatrico/home'}>
-                                    <FaHome className='icon' />
+
+                            <li onClick={() => {
+                                localStorage.removeItem("rol_id"); // 🔥 Borra el rol de localStorage
+                                dispatch(resetRol()); // 🔥 Resetea el rol en Redux
+                                navigate("/geriatrico/home"); // 🔀 Redirige
+                            }}>
+                                <Link>
+                                    <FaHome className="icon" />
                                     <span>Inicio</span>
                                 </Link>
                             </li>
+
                             <li>
                                 <Link to={'/geriatrico/misTurnos'}>
                                     <FaFileContract className='icon' />
@@ -334,19 +341,19 @@ export const SideBarComponent = () => {
                             <li>
                                 <Link to={'/geriatrico/historialTurnosEnfermera'}>
                                     <FaFileMedicalAlt className='icon' />
-                                    <span>Historial Turnos</span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to={'/geriatrico/profile'}>
-                                    <FaUser className='icon' />
-                                    <span>Perfil</span>
+                                    <span>Mi Historial</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link to={'/geriatrico/pacientes'}>
                                     <FaHospitalUser className='icon' />
                                     <span>Pacientes</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/profile'}>
+                                    <FaUser className='icon' />
+                                    <span>Perfil</span>
                                 </Link>
                             </li>
                             <li>
@@ -361,7 +368,7 @@ export const SideBarComponent = () => {
                     </nav>
 
                     {/* Contenedor del contenido principal */}
-                    <div className="content">
+                    <div className="content" style={{ backgroundColor: geriatrico?.colores?.principal }}>
                         {/* Aquí se carga el contenido principal para Super Admin */}
                     </div>
                 </div>
@@ -381,9 +388,14 @@ export const SideBarComponent = () => {
                                     <FaAngleDoubleLeft />
                                 </button>
                             </li>
-                            <li>
-                                <Link to={'/geriatrico/home'}>
-                                    <FaHome className='icon' />
+
+                            <li onClick={() => {
+                                localStorage.removeItem("rol_id"); // 🔥 Borra el rol de localStorage
+                                dispatch(resetRol()); // 🔥 Resetea el rol en Redux
+                                navigate("/geriatrico/home"); // 🔀 Redirige
+                            }}>
+                                <Link>
+                                    <FaHome className="icon" />
                                     <span>Inicio</span>
                                 </Link>
                             </li>

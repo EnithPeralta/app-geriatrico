@@ -113,12 +113,6 @@ export const useEnfermera = () => {
         }
     };
     
-
-    
-
-    
-
-
     return {
         // Propiedades
         status, user, errorMessage,

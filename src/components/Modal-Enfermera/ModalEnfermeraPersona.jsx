@@ -1,7 +1,7 @@
 import React from 'react'
 import { useAuthStore, useEnfermera, useForm } from '../../hooks';
 import Swal from 'sweetalert2';
-import { SelectField } from '../SelectField/SelectField';
+import { SelectRolEnfermera } from '../SelectRolEnfermera';
 
 const registerFormFields = {
     per_password: '',
@@ -14,7 +14,7 @@ const registerFormFields = {
     per_correo: '',
     per_foto: ''
 };
-export const ModalEnfermeraPersona = ({ enfermeraDocumento, handleAssignSedes, selectedRoles, enf_codigo, handleRoleChange, setEnfCodigo,onClose }) => {
+export const ModalEnfermeraPersona = ({ enfermeraDocumento, handleAssignSedes, selectedRoles, enf_codigo, handleRoleChange, setEnfCodigo, onClose }) => {
     const { startRegister } = useAuthStore();
     const { startRegisterEnfermera } = useEnfermera();
 
@@ -46,10 +46,10 @@ export const ModalEnfermeraPersona = ({ enfermeraDocumento, handleAssignSedes, s
             console.log(response);
             if (response.success) {
                 Swal.fire({
-                    icon:'success',
-                    title:response.message,
+                    icon: 'success',
+                    title: response.message,
                 });
-            } 
+            }
         } catch (error) {
             console.error("❌ Error al registrar enfermera:", error.response.data.message);
             Swal.fire({
@@ -127,16 +127,69 @@ export const ModalEnfermeraPersona = ({ enfermeraDocumento, handleAssignSedes, s
             <div className='modal-overlay'>
                 <div className='modal'>
                     <div className='modal-content-geriatrico'>
-                        <h2>Registrar Persona</h2>
                         <form onSubmit={registerSubmit}>
-                            <input type='text' name='per_nombre_completo' value={per_nombre_completo} onChange={onInputChange} placeholder='Nombre Completo' required />
-                            <input type='text' name='per_documento' value={per_documento || enfermeraDocumento} onChange={onInputChange} placeholder='Documento' required />
-                            <input type='text' name='per_correo' value={per_correo} onChange={onInputChange} placeholder='Correo' />
-                            <input type='text' name='per_usuario' value={per_usuario} onChange={onInputChange} placeholder='Usuario' required />
-                            <input type={isPasswordVisible ? 'text' : 'password'} name='per_password' value={per_password} onChange={onInputChange} placeholder='Contraseña' required />
-                            <input type={isPasswordVisible ? 'text' : 'password'} name='confirm_password' value={confirm_password} onChange={onInputChange} placeholder='Confirmar Contraseña' required />
-                            <input type='text' name='per_telefono' value={per_telefono} onChange={onInputChange} placeholder='Teléfono' />
-                            <div className='input-container-register'>
+                            <div className='modal-field'>
+                                <label>Nombre Completo</label>
+                                <input type='text'
+                                    className="modal-input"
+                                    name='per_nombre_completo'
+                                    value={per_nombre_completo}
+                                    onChange={onInputChange}
+                                    required />
+                            </div>
+                            <div className='modal-field'>
+                                <label>Documento</label>
+                                <input type='text'
+                                    name='per_documento'
+                                    value={per_documento || enfermeraDocumento}
+                                    onChange={onInputChange}
+                                    required
+                                />
+                            </div>
+                            <div className='modal-field'>
+                                <label>Correo</label>
+                                <input type='text'
+                                    name='per_correo'
+                                    value={per_correo}
+                                    onChange={onInputChange}
+                                    required />
+                            </div>
+                            <div className='modal-field'>
+                                <label>Usuario</label>
+                                <input
+                                    type='text'
+                                    name='per_usuario'
+                                    value={per_usuario}
+                                    onChange={onInputChange}
+                                    required />
+                            </div>
+                            <div className='modal-field'>
+                                <label>Contraseña</label>
+                                <input
+                                    type={isPasswordVisible ? 'text' : 'password'}
+                                    name='per_password' value={per_password}
+                                    onChange={onInputChange}
+                                    required
+                                />
+                            </div>
+                            <div className='modal-field'>
+                                <label>Confirmar Contraseña</label>
+                                <input
+                                    type={isPasswordVisible ? 'text' : 'password'}
+                                    name='confirm_password' value={confirm_password}
+                                    onChange={onInputChange}
+                                    required />
+                            </div>
+                            <div className='modal-field'>
+                                <label>Teléfono</label>
+                                <input type='text'
+                                    name='per_telefono'
+                                    value={per_telefono}
+                                    onChange={onInputChange}
+                                    required
+                                />
+                            </div>
+                            <div className='modal-field'>
                                 <label>Género</label>
                                 <select id='per_genero' name='per_genero' value={per_genero} onChange={onInputChange} className='custom-select-container'>
                                     <option hidden>Seleccione una opción</option>
@@ -145,8 +198,14 @@ export const ModalEnfermeraPersona = ({ enfermeraDocumento, handleAssignSedes, s
                                     <option value='O'>Otro</option>
                                 </select>
                             </div>
-                            <input type='file' name='per_foto' onChange={(e) => onInputChange({ target: { name: 'per_foto', value: e.target.files[0] } })} />
-                            <SelectField
+                            <div className='modal-field'>
+                                <label>Foto</label>
+                                <input type='file'
+                                    name='per_foto'
+                                    onChange={(e) => onInputChange({ target: { name: 'per_foto', value: e.target.files[0] } })}
+                                />
+                            </div>
+                            <SelectRolEnfermera
                                 label="Rol"
                                 name="rol_id"
                                 value={selectedRoles || ""}
@@ -178,8 +237,11 @@ export const ModalEnfermeraPersona = ({ enfermeraDocumento, handleAssignSedes, s
                                 <label>Código</label>
                                 <input type="text" name="enf_codigo" value={enf_codigo} onChange={(e) => setEnfCodigo(e.target.value)} required />
                             </div>
-                            <button type='submit' className='save-button'>Registrar</button>
-                            <button type='button' className='cancel-button' onClick={onClose}>Cerrar</button>
+                            <div className='modal-buttons'>
+                                <button type='submit' className='save-button'>Registrar</button>
+                                <button type='button' className='cancel-button' onClick={onClose}>Cerrar</button>
+                            </div>
+
                         </form>
                     </div>
                 </div>
