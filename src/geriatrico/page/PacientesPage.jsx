@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useGeriatrico, usePaciente } from "../../hooks";
-import "../../css/paciente.css";
 import { useNavigate } from "react-router-dom";
 import { LoadingComponet, SideBarComponent } from "../../components";
 

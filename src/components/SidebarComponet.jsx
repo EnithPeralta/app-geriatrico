@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import "../css/side.css";
-import { FaAngleDoubleLeft, FaArrowCircleRight, FaHome, FaHotel, FaUser, FaUsersCog, FaUsers, FaHandshake, FaHospitalUser, FaUserNurse, FaBuilding, FaFileMedicalAlt, FaFileContract, FaUserPlus, FaUserCog } from 'react-icons/fa';
+import { FaAngleDoubleLeft, FaArrowCircleRight, FaHome, FaHotel, FaUser, FaUsersCog, FaUsers, FaHandshake, FaHospitalUser, FaUserNurse, FaBuilding, FaFileMedicalAlt, FaFileContract, FaUserPlus, FaUserCog, FaCapsules } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useAuthStore, useGeriatrico, useSede, useSession } from '../hooks';
 import { useNavigate } from "react-router-dom";
@@ -251,6 +251,12 @@ export const SideBarComponent = () => {
                                 <Link to={'/geriatrico/profile'}>
                                     <FaUser className='icon' />
                                     <span>Perfil</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/inventarioSede'}>
+                                    <FaCapsules className='icon' />
+                                    <span>Inventario</span>
                                 </Link>
                             </li>
                             <li>

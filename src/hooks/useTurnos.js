@@ -252,8 +252,18 @@ export const useTurnos = () => {
             return {
                 success: false,
                 message: error.response?.data?.message || "Ocurrió un error inesperado.",
-                error: error.response?.data || error.message
+                error: error.response?.data || error.message,
+                conflito: [
+                    ...(error.response?.data?.conflictos?.enEstaSede?.map(conflicto =>
+                        `📍 Sede: ${conflicto.sede}\n📅 Inicio: ${conflicto.fecha_inicio} ${conflicto.hora_inicio}\n📅 Fin: ${conflicto.fecha_fin} ${conflicto.hora_fin}`
+                    ) || ["✅ Sin conflictos en esta sede."]),
+
+                    ...(error.response?.data?.conflictos?.enOtraSede?.map(conflicto =>
+                        `📍 Sede (Otra): ${conflicto.sede}\n📅 Inicio: ${conflicto.fecha_inicio} ${conflicto.hora_inicio}\n📅 Fin: ${conflicto.fecha_fin} ${conflicto.hora_fin}`
+                    ) || ["✅ Sin conflictos en otra sede."])
+                ].join("\n\n"),
             };
+
         }
     };
 

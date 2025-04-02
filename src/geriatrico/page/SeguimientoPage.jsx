@@ -62,23 +62,23 @@ export const SeguimientoPage = () => {
 
     const capturePhoto = async () => {
         if (!webcamRef.current) return;
-    
+
         const imageSrc = webcamRef.current.getScreenshot();
         if (!imageSrc) {
             console.error("❌ No se pudo capturar la imagen.");
             return;
         }
-    
+
         setPreview(imageSrc);
         setFotoTomada(true);
-    
+
         try {
             const response = await fetch(imageSrc);
             const blob = await response.blob();
-    
+
             // Redimensionar la imagen antes de enviarla
             const resizedBlob = await resizeImage(blob, 800, 600, 0.7); // 800x600px, calidad 70%
-    
+
             const reader = new FileReader();
             reader.onloadend = () => {
                 setDatosSeguimiento(prev => ({
@@ -91,7 +91,7 @@ export const SeguimientoPage = () => {
             console.error("❌ Error al convertir la imagen en archivo:", error);
         }
     };
-    
+
     // Función para redimensionar imagen
     const resizeImage = (blob, maxWidth, maxHeight, quality) => {
         return new Promise((resolve, reject) => {
@@ -100,27 +100,27 @@ export const SeguimientoPage = () => {
             img.onload = () => {
                 const canvas = document.createElement("canvas");
                 const ctx = canvas.getContext("2d");
-    
+
                 let width = img.width;
                 let height = img.height;
-    
+
                 // Ajustar tamaño proporcionalmente
                 if (width > maxWidth || height > maxHeight) {
                     const ratio = Math.min(maxWidth / width, maxHeight / height);
                     width = width * ratio;
                     height = height * ratio;
                 }
-    
+
                 canvas.width = width;
                 canvas.height = height;
                 ctx.drawImage(img, 0, 0, width, height);
-    
+
                 canvas.toBlob(blob => resolve(blob), "image/jpeg", quality);
             };
             img.onerror = error => reject(error);
         });
     };
-    
+
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -182,13 +182,15 @@ export const SeguimientoPage = () => {
     const handleHistory = () => {
         navigate(`/geriatrico/historial/${paciente?.pac_id}`);
     };
-    
+
 
     return (
         <div className='animate__animated animate__fadeInUp'>
             <div className='main-container'>
                 <div className='content'>
-                    <h2>Seguimiento de pacientes</h2>
+                    <div className='report-header'>
+                        <h2 className="h4">Seguimiento de pacientes</h2>
+                    </div>
                     <div className='button-container'>
                         <button className='save-button' onClick={handleHistory}>Historial</button>
                     </div>
@@ -201,7 +203,7 @@ export const SeguimientoPage = () => {
                             ) : !fotoTomada ? (
                                 <>
                                     <Webcam ref={webcamRef} audio={false} screenshotFormat="image/png" width={350} height={350} />
-                                    <button type="button"  className='save-button' onClick={capturePhoto}>Tomar Foto</button>
+                                    <button type="button" className='save-button' onClick={capturePhoto}>Tomar Foto</button>
                                 </>
                             ) : (
                                 <div>
@@ -219,7 +221,7 @@ export const SeguimientoPage = () => {
                         {preview && (
                             <div>
                                 <img src={preview} alt="Vista previa" width={200} style={{ marginTop: "10px" }} />
-                                <button type="button" onClick={resetSelection}>Eliminar</button>
+                                <button type="button" onClick={resetSelection} className='cancel-button'>Eliminar</button>
                             </div>
                         )}
 

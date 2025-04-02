@@ -177,7 +177,7 @@ export const GeriatricosPage = () => {
                     {filteredGeriatricos.length > 0 ? (
                         filteredGeriatricos.map((geriatrico) => (
                             <div key={geriatrico.ge_nit} >
-                                <div className="grid-item" onClick={() => handleRolesGeriatrico(geriatrico)}>
+                                <div className="grid-item" >
                                     <img
                                         src={geriatrico.ge_logo || "/public/Admin.jpg"}
                                         alt="Logo"
@@ -204,8 +204,8 @@ export const GeriatricosPage = () => {
                                         <button className="details-button" onClick={() => handleViewDetails(geriatrico)}>
                                             <FaEye /> Ver Sedes
                                         </button>
-                                        <button className="details-button" onClick={() => handleHistorialGeriatrico(geriatrico)}>
-                                            <FaFile /> Historial Geriatrico
+                                        <button className="details-button" onClick={() => handleRolesGeriatrico(geriatrico)}>
+                                            <FaFile /> Historial Roles
                                         </button>
                                     </div>
                                     <div className="actions">

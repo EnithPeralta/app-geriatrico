@@ -1,6 +1,6 @@
 import React from 'react';
 import { CardPerson } from './CardPerson';
-import { RolesDisplayVinculada } from './RolesDisplayVinculada';
+import RolesDisplayVinculada from './RolesDisplayVinculada';
 
 export const PersonList = ({
     personasFiltradas,

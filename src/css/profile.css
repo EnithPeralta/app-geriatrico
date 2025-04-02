@@ -78,10 +78,6 @@
   cursor: pointer;
 }
 
-.info-card h2 {
-  margin-bottom: 10px;
-  color: #0090bc;
-}
 
 .grid {
   display: grid;

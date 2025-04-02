@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useEnfermera, useGeriatrico, useGeriatricoPersona, useSedesRol } from "../../hooks";
-import "../../css/paciente.css";
 import { LoadingComponet, SideBarComponent } from "../../components";
 import { ModalRegisterEnfermera } from "../components/Enfermeras/ModalRegisterEnfermera";
 import Swal from "sweetalert2";
@@ -83,10 +82,9 @@ export const EnfermerasPage = () => {
             }
         }
     };
-
     const handleInactivarRolesSede = async (persona) => {
         console.log("Persona seleccionada para inactivar:", persona);
-
+    
         if (!persona || !persona.per_id) {
             console.error("❌ Persona no encontrada o `per_id` inválido.", persona);
             Swal.fire({
@@ -95,79 +93,92 @@ export const EnfermerasPage = () => {
             });
             return;
         }
-
+    
         const perId = Number(persona.per_id);
         if (isNaN(perId) || perId <= 0) {
             console.error("❌ Error: `per_id` no es un número válido:", perId);
             return;
         }
-
+    
         console.log(`🔍 Solicitando roles para la persona con ID: ${perId}`);
-
+    
         // Obtener los roles de la persona
         const response = await obtenerPersonaRolesMiGeriatricoSede(perId);
-        console.log("Respuesta de la API Roles: ", response);
-
-        if (!response.success) {
-            console.error("❌ Error al obtener los roles:", response.message);
+        console.log("Respuesta de la API Roles: ", response.data?.persona);
+    
+        if (!response.success || !response.data?.persona?.sedes) {
+            console.error("❌ Error al obtener los roles o la persona no tiene sedes.");
             Swal.fire({
                 icon: "warning",
-                text: response.message,
+                text: "No se pudieron obtener los roles de la persona.",
             });
             return;
         }
-
-        const { rolesSede } = response.persona || {};
-
-        // Buscar el rol de Paciente, Enfermera(O) o Colaborador.
-        const rolSede = rolesSede?.find(rol =>
-            ["Paciente", "Enfermera(O)", "Colaborador"].includes(rol.rol_nombre)
+    
+        console.log("Sedes obtenidas:", response.data?.persona?.sedes);
+    
+        // Buscar el rol correcto en las sedes
+        const rolesValidos = ["Paciente", "Enfermera(O)", "Colaborador"];
+        const sedeConRol = response.data.persona.sedes.find(sede =>
+            sede.roles.some(rol => rolesValidos.includes(rol.rol_nombre))
         );
-
-        if (!rolSede) {
+    
+        if (!sedeConRol) {
             console.warn("⚠️ La persona no tiene el rol de Paciente, Enfermera(O) o Colaborador.");
             Swal.fire({
                 icon: "warning",
-                text: "La persona no tiene el rol de Paciente, Enfermera(O) o Colaborador..",
+                text: "La persona no tiene el rol de Paciente, Enfermera(O) o Colaborador.",
             });
             return;
         }
-
-        if (!rolSede.se_id || !rolSede.rol_id) {
-            console.warn("⚠️ Faltan datos del rol de sede.", rolSede);
+    
+        const rolSede = sedeConRol.roles.find(rol => rolesValidos.includes(rol.rol_nombre));
+        console.log("Rol encontrado:", rolSede, "en sede:", sedeConRol.se_id);
+    
+        if (!rolSede || !sedeConRol.se_id) {
+            console.warn("⚠️ Faltan datos del rol o sede.", rolSede, sedeConRol);
             return;
         }
-
-        const per_id = Number(persona.per_id);
-        const se_id = Number(rolSede.se_id);
+    
+        console.log(`🛑 Inactivando el rol ${rolSede.rol_nombre} en la sede con ID: ${sedeConRol.se_id}`);
+    
+        const se_id = Number(sedeConRol.se_id);
         const rol_id = Number(rolSede.rol_id);
-
-        if ([per_id, se_id, rol_id].some(isNaN) || per_id <= 0 || se_id <= 0 || rol_id <= 0) {
-            console.error("❌ Error: Uno o más valores no son números válidos:", { per_id, se_id, rol_id });
+    
+        if ([perId, se_id, rol_id].some(isNaN) || perId <= 0 || se_id <= 0 || rol_id <= 0) {
+            console.error("❌ Error: Uno o más valores no son números válidos:", { perId, se_id, rol_id });
             return;
         }
-
+    
         // Confirmación del usuario
         const confirmacion = await Swal.fire({
-            text: "Esta acción inactivará el rol de Enfermera(O).",
-            icon: "warning",
+            text: `Se inactivará el rol ${rolSede.rol_nombre}. ¿Deseas continuar?`,
+            icon: "question",
             showCancelButton: true,
             confirmButtonText: "Sí, inactivar",
             cancelButtonText: "Cancelar"
         });
-
+    
         if (!confirmacion.isConfirmed) return;
-
+    
         // Llamar a la función para inactivar el rol
-        const resultado = await inactivarRolesSede({ per_id, se_id, rol_id });
-
-        Swal.fire({
-            icon: resultado.success ? "success" : "error",
-            text: resultado.message || (resultado.success ? "Rol inactivado exitosamente" : "No se pudo inactivar el rol")
-        });
-
-
-    }
+        const resultado = await inactivarRolesSede({ per_id: perId, se_id, rol_id });
+    
+        if (resultado.success) {
+            Swal.fire({
+                icon: "success",
+                text: resultado.message || "Rol inactivado exitosamente"
+            });
+    
+            // Filtrar la lista para eliminar la enfermera inactivada
+            setEnfermeras(prevEnfermeras => prevEnfermeras.filter(e => e.per_id !== persona.per_id));    
+        } else {
+            Swal.fire({
+                icon: "error",
+                text: resultado.message || "No se pudo inactivar el rol"
+            });
+        }
+    };
 
     const enfermerasFiltradas = enfermeras.filter((enfermera) =>
         (enfermera?.per_nombre || "").toLowerCase().includes(search.toLowerCase()) ||
@@ -176,7 +187,7 @@ export const EnfermerasPage = () => {
 
     const handleCrearTurno = (enfermera) => {
         console.log("Enfermera seleccionado:", enfermera.enf_id);
-        navigate(`/geriatrico/crearTurno/${ enfermera.enf_id}`);
+        navigate(`/geriatrico/crearTurno/${enfermera.enf_id}`);
 
     };
 

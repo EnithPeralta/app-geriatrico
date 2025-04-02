@@ -16,12 +16,12 @@
   align-items: center;
   gap: 0.5rem;
 }
-.crear-turno-content{ padding: 2rem;
-background-color: #f8f9fa;
-min-height: 100vh;}
-.subtitle{
-  margin-bottom: 10px;
+.crear-turno-content{
+   padding: 2rem;
+  background-color: #f8f9fa;
+  min-height: 100vh;
 }
+
 .crear-turno-form-container {
   background-color: white;
   padding: 20px;
@@ -45,19 +45,7 @@ min-height: 100vh;}
   flex-direction: column;
   align-items: baseline;
 }
-.options-seg {
-    margin-top: 10px;
-  }
-  
-  .field-group {
-    margin-bottom: 15px;
-  }
-  
-  .field-group label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
+
   input[type="text"],
   input[type="file"]{
     padding: 10px;
@@ -65,20 +53,6 @@ min-height: 100vh;}
     font-size: 16px;
     width: 99% !important;
   }
-
-  .history-button {
-    background-color: #009ee2;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .history-button:hover {
-    background-color: #007acc;
-  }
-  
   
   .history-card{
     background-color: #efefef;
@@ -91,34 +65,6 @@ min-height: 100vh;}
 
 .history-day{
   margin-bottom: 50px;
-}
-.history-date{
-  font-size: 18px;
-  font-weight: 600;
-  color: #3d3d3d;
-  margin-bottom: 10px;
-}
-/* Estilos de cada elemento de medicación */
-.history-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 3px dashed #c8c8c8;
-}
-
-
-
-/* Estilos del nombre del medicamento */
-.history-name {
-  font-size: 16px;
-  color: #333;
-}
-
-/* Estilos de la hora del medicamento */
-.history-time {
-  font-size: 16px;
-  color: #777;
 }
 
 .search-input-seguimiento {
@@ -152,17 +98,4 @@ transition: color 0.3s ease-in-out;
   color: #009ee2;
   font-weight: 600;
   margin-bottom: 20px;
-}
-
-.search-input-geriatrico {
-  padding: 20px;
-  width: 18% !important;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  font-size: 16px;
-  transition: all 0.3s ease-in-out;
-  margin-bottom: 2rem;
-  position: relative;
-  left: 60%;
-  align-content: center;
 }

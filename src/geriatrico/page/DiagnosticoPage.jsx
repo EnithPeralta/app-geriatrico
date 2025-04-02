@@ -8,7 +8,7 @@ export const DiagnosticoPage = () => {
     const { id } = useParams();
     const { obtenerDetallePacienteSede } = usePaciente();
     const { obtenerSesion, session } = useSession();
-    const { obtenerDiagnostico, registrarDiagnostico,actualizarDiagnostico } = useDiagnostico();
+    const { obtenerDiagnostico, registrarDiagnostico, actualizarDiagnostico } = useDiagnostico();
     const [diagnostico, setDiagnostico] = useState({
         pac_id: Number(id),
         diag_fecha: '',
@@ -73,7 +73,7 @@ export const DiagnosticoPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("Paciente ID obtenido:", paciente.pac_id);
-    
+
         const pacId = Number(paciente.pac_id);
         if (!pacId || isNaN(pacId)) {
             Swal.fire({
@@ -83,7 +83,7 @@ export const DiagnosticoPage = () => {
             return;
         }
         console.log("📡 Datos a enviar:", pacId, diagnostico);
-    
+
         if (!pacId) {
             Swal.fire({
                 icon: 'warning',
@@ -91,7 +91,7 @@ export const DiagnosticoPage = () => {
             });
             return;
         }
-    
+
         // Creamos la payload combinando el objeto diagnostico y el pac_id
         const payload = {
             ...diagnostico,
@@ -117,48 +117,48 @@ export const DiagnosticoPage = () => {
             Swal.fire({ icon: 'error', text: 'Ocurrió un error inesperado. Intenta nuevamente.' });
         }
     };
-    
-    
+
+
 
     return (
         <div className="animate__animated animate__fadeInUp">
-            <div className="">
-                <form onSubmit={handleSubmit}>
-                    <div className="section">
-                        <h2>Diagnóstico</h2>
-                        <div className="subsection">
-                            <label className="subsection-label">Fecha</label>
-                            <input
-                                type="date"
-                                name="diag_fecha"
-                                value={diagnostico.diag_fecha}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="subsection">
-                            <label className="subsection-label">Descripción</label>
-                            <textarea
-                                name="diag_descripcion"
-                                placeholder="Ingrese las señales"
-                                className="textarea"
-                                rows="4"
-                                value={diagnostico.diag_descripcion}
-                                onChange={handleChange}
-                            />
-                        </div>
+            <form onSubmit={handleSubmit}>
+                <div className="section">
+                    <div className='report-header'>
+                        <h2 className='h4'>Diagnóstico</h2>
                     </div>
-                    {session.rol_id === 3 && session.rol_id !== 5 && (
-                        <button
-                            type="submit"
-                            className="save-button"
-                        >
-                            {diagnosticoRegistrado ? 'Actualizar' : 'Registrar'}
-                        </button>
-                    )}
-                    <div>
+                    <div className="subsection">
+                        <label className="subsection-label">Fecha</label>
+                        <input
+                            type="date"
+                            name="diag_fecha"
+                            value={diagnostico.diag_fecha}
+                            onChange={handleChange}
+                        />
                     </div>
-                </form>
-            </div>
+                    <div className="subsection">
+                        <label className="subsection-label">Descripción</label>
+                        <textarea
+                            name="diag_descripcion"
+                            placeholder="Ingrese las señales"
+                            className="textarea"
+                            rows="4"
+                            value={diagnostico.diag_descripcion}
+                            onChange={handleChange}
+                        />
+                    </div>
+                </div>
+                {session.rol_id === 3 && session.rol_id !== 5 && (
+                    <button
+                        type="submit"
+                        className="save-button"
+                    >
+                        {diagnosticoRegistrado ? 'Actualizar' : 'Registrar'}
+                    </button>
+                )}
+                <div>
+                </div>
+            </form>
         </div>
     );
 };

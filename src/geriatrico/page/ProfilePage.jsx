@@ -48,7 +48,7 @@ export const ProfilePage = () => {
                 <PInformation persona={persona} onEdit={handleEdit}/>
                 <div className="animate__animated animate__fadeInUp">
                     <div className="info-card">
-                        <h2>Información Personal</h2>
+                        <h2 className="h4">Información Personal</h2>
                         <div className="grid-4-columns">
                             <div>
                                 <label>Nombre Completo</label>

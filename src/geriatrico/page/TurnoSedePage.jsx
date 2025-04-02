@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useGeriatrico, useTurnos } from '../../hooks';
 import { SideBarComponent } from '../../components';
-import { FaCalendarDay, FaEdit, FaEye, FaFileMedicalAlt, FaFileSignature, FaTrash } from 'react-icons/fa';
+import { FaCalendarDay, FaEdit, FaTrash } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { Tabs } from '../../components/Tabs/Tabs';
@@ -167,6 +167,7 @@ export const TurnoSedePage = () => {
             {turnoEditar && (
                 <ModalActualizarTurno
                     turno={turnoEditar}
+                    setTurnos={setTurnosSede}
                     onClose={() => setTurnoEditar(null)}
                 />
             )}

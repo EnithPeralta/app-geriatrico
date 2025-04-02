@@ -10,6 +10,7 @@
     --shadow-main: rgba(0, 0, 0, 0.2);
     --shadow-subtle: rgba(0, 0, 0, 0.1);
 }
+
 .cuadrado-register {
     background: linear-gradient(var(--light-color), var(--secondary-color));
     width: 40vw;
@@ -188,6 +189,13 @@
     max-width: 100rem;
     gap: 10px;
     margin-top: 0px;
+}
+.search-input-asignar {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
 }
 .search-button-buscar{
     background-color: #009ee2;

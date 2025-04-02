@@ -5,7 +5,9 @@ import { usePaciente } from "../../hooks";
 export const RolPacienteSedePage = () => {
   const { id } = useParams();
   const { obtenerRolesPacientesSede } = usePaciente();
-  const [roles, setRoles] = useState([]);
+  const [roles, setRoles] = useState([]); // Lista completa de roles
+  const [filteredRoles, setFilteredRoles] = useState([]); // Roles filtrados por fecha
+  const [searchDate, setSearchDate] = useState("");
 
   useEffect(() => {
     const fetchPacienteSede = async () => {
@@ -14,6 +16,7 @@ export const RolPacienteSedePage = () => {
         console.log("Roles obtenidos correctamente.", response);
         if (response.success) {
           setRoles(response.data);
+          setFilteredRoles(response.data); // Inicializar lista filtrada
         } else {
           console.error(response.message);
         }
@@ -22,38 +25,56 @@ export const RolPacienteSedePage = () => {
       }
     };
     fetchPacienteSede();
-  }, [id]); // Agregar id como dependencia para que el efecto se ejecute cuando cambie
+  }, [id]);
+
+  useEffect(() => {
+    if (searchDate) {
+      const filtered = roles.filter((rol) => {
+        const fechaInicioFormatted = new Date(rol.fechaInicio).toISOString().split("T")[0];
+        return fechaInicioFormatted === searchDate;
+      });
+      setFilteredRoles(filtered);
+    } else {
+      setFilteredRoles(roles);
+    }
+  }, [searchDate, roles]);
 
   return (
     <div className="animate__animated animate__fadeInUp content">
-
-      <div className="turnos-container-sede">
-        <h2>Historial</h2>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Fecha inicio</th>
-              <th>Fecha fin</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {roles.length > 0 ? (
-              roles.map((rol, index) => (
-                <tr key={index}>
-                  <td>{rol.fechaInicio}</td>
-                  <td>{rol.fechaFin ? rol.fechaFin : "Indefinido"}</td>
-                  <td>{rol.activoSede ? "Activo" : "Inactivo"}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4">No hay roles asignados</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      <h2 className="h4">Historial del paciente</h2>
+      <div className="search-container">
+        <input
+          type="date"
+          value={searchDate}
+          onChange={(e) => setSearchDate(e.target.value)}
+          className="search-input"
+          placeholder="Buscar por fecha"
+        />
       </div>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Fecha inicio</th>
+            <th>Fecha fin</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredRoles.length > 0 ? (
+            filteredRoles.map((rol, index) => (
+              <tr key={index}>
+                <td>{rol.fechaInicio}</td>
+                <td>{rol.fechaFin ? rol.fechaFin : "Indefinido"}</td>
+                <td>{rol.activoSede ? "Activo" : "Inactivo"}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="3">No hay roles asignados</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 };

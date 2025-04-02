@@ -50,7 +50,7 @@ export const CuidadosEnfermeriaPage = () => {
     });
     // Cargar datos del paciente y verificar si hay cuidados registrados
     useEffect(() => {
-                obtenerSesion();
+        obtenerSesion();
         const fetchPaciente = async () => {
             try {
                 const response = await obtenerDetallePacienteSede(id);
@@ -166,7 +166,9 @@ export const CuidadosEnfermeriaPage = () => {
         <div className='main-container'>
             <div className='content'>
                 <div className="animate__animated animate__fadeInUp">
-                    <h2>Cuidados de Enfermería</h2>
+                    <div className='report-header'>
+                        <h2 className="h4">Cuidados de Enfermería</h2>
+                    </div>
                     <div className="">
                         {/* Checkbox Fecha */}
                         <div className="cuidado-item">

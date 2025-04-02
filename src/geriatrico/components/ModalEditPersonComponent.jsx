@@ -88,9 +88,9 @@ export const ModalEditPersonComponent = ({ editedPersona, onClose, setPersonas }
     return (
         <div className="modal-overlay">
             <div className="modal">
-                <div className="modal-content-geriatrico">
+                <div className="modal-content">
                     <form onSubmit={handleEditSubmit}>
-                        {/* Foto de perfil */}
+                        <h4 className="h4">Editar Perfil</h4>
                         <div className="modal-img">
                             {personaEditada.previewFoto ? (
                                 <img

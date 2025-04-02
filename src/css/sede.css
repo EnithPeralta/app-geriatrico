@@ -1,67 +1,63 @@
-.bodySedeEspecifica {
-    background: linear-gradient(120deg, #bbbbbb 25%, #e9e9e9 50%);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    position: relative;
-    overflow: hidden;
-    padding-top: 120px; /* Añadido para bajar el contenedor */
-}
-
-.grid-item-sede{
-    position: relative;
-    overflow: hidden;
-    background-image: url('/public/Bg.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.grid-item-sede {
+    background-color: #ffffff; /* Fondo blanco */
+    border-radius: 1rem; /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 150px;
-    width: 250px;
+    height: 180px; /* Ajustar altura */
+    width: 400px; /* Hacer las tarjetas más anchas */
     cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animación */
+    padding: 10px; /* Espaciado interno */
+}
+.grid-item-sede:hover {
+    transform: translateY(-5px); /* Efecto hover */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Sombra más fuerte */
 }
 
 .sede-name {
-    font-size: 27px;
-    color:#333;
-    margin-bottom: 5px;
-    font-weight: 500;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 50px;
+    font-size: 28px; /* Aumentar tamaño de fuente */
+    font-weight: bold; /* Hacer el texto más destacado */
+    color: #333333; /* Color oscuro para contraste */
+    text-align: center; /* Centrar el texto */
+    margin-top: 20px; /* Espaciado superior */
+    margin-bottom: 40px; /* Espaciado inferior */
 }
 
-.sede-title{
+.sede-title {
     text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-left: 20px;
-    margin-right: 20px;
-    font-size: 23px;
-    color: #e9e9e9;
-    font-weight: 300;
+    font-size: 20px; /* Ajustar tamaño para armonizar */
+    color: #333333; /* Color oscuro */
 }
 
-@media screen and (max-height: 700px) {
-    .bodySedeEspecifica {
-        padding-top: 70px;
+/* Iconos dentro de las tarjetas */
+.icon-container {
+    font-size: 50px; /* Tamaño del icono */
+    color: #007bff; /* Color azul llamativo */
+    margin-bottom: 10px; /* Espaciado entre el icono y el título */
+}
+
+.role-description {
+    text-align: center;
+    font-size: 14px; /* Tamaño pequeño para descripción */
+    color: #666666; /* Color suave */
+    margin-top: 5px; /* Espaciado entre título y descripción */
+}
+
+/* Media Queries para dispositivos móviles */
+@media screen and (max-width: 768px) {
+    .grid-item-sede {
+        width: 200px; /* Ajustar tamaño en pantallas pequeñas */
+        height: 130px;
     }
 
-    
-}
+    .sede-name {
+        font-size: 18px;
+    }
 
-/* Media Queries para evitar hover en dispositivos táctiles */
-@media (hover: none) {
-    .sede-card:hover {
-        transform: none;
-        box-shadow: none;
+    .icon-container {
+        font-size: 35px;
     }
 }

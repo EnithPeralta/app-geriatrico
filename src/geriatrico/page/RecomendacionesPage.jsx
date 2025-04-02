@@ -136,7 +136,9 @@ export const RecomendacionesPage = () => {
         <div className="animate__animated animate__fadeInUp">
             <div className="main-container">
                 <div className="content">
-                    <h2>Recomendaciones</h2>
+                    <div className='report-header'>
+                        <h2 className='h4'>Recomendaciones</h2>
+                    </div>
                     <form onSubmit={handleRegistrarRecomendacion}>
                         <div>
                             <div className="cuidado-item">

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { FaUserAltSlash } from "react-icons/fa";
 import Swal from "sweetalert2";
-import { useSedesRol } from "../../../hooks";
+import { useSedesRol, useSession } from "../../../hooks";
 
-export const RolesDisplayVinculada = ({ rolesPersonas, person }) => {
+const RolesDisplayVinculada = ({ rolesPersonas, person }) => {
     const { inactivarRolAdminSede, inactivarRolesSede } = useSedesRol();
+    const { session } = useSession();
     if (!rolesPersonas) {
         console.warn("rolesPersonas no está definido.");
         return null;
     }
 
-    console.log("rolesPersona", rolesPersonas);
 
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [activeTab, setActiveTab] = useState("");
@@ -18,24 +18,100 @@ export const RolesDisplayVinculada = ({ rolesPersonas, person }) => {
     const [activeRol, setActiveRol] = useState("");
 
     useEffect(() => {
-        console.log("Estado del modal:", isModalOpen);
     }, [isModalOpen]);
 
     useEffect(() => {
-        console.log("Estado de activeRol actualizado:", activeRol);
     }, [activeRol]);
 
+
+    //     const per_id = Number(person.per_id);
+    //     const se_id = rolesPersonas.sedes?.[0]?.se_id;
+    //     const rol_id = rolesPersonas.sedes?.[0]?.roles?.[0]?.rol_id;
+
+    //     console.log("per_id", per_id);
+    //     console.log("se_id", se_id);
+    //     console.log("rol_id", rol_id);
+
+
+    //     // Verificar que per_id, ge_id y rol_id sean números válidos
+    //     if (isNaN(per_id) || isNaN(se_id) || isNaN(rol_id)) {
+    //         console.error("❌ Parámetros inválidos para inactivar rol", { per_id, se_id, rol_id });
+    //         Swal.fire({
+    //             icon: "error",
+    //             text: "Parámetros inválidos para inactivar el rol.",
+    //         });
+    //         return;
+    //     }
+
+    //     // Confirmación del usuario
+    //     const confirmacion = await Swal.fire({
+    //         text: "¿Deseas inactivará el rol de Administrador Sede?",
+    //         icon: "question",
+    //         showCancelButton: true,
+    //         confirmButtonText: "Sí, inactivar",
+    //         cancelButtonText: "Cancelar",
+    //     });
+
+    //     if (!confirmacion.isConfirmed) return;
+
+    //     try {
+    //         // Llamar a la función para inactivar el rol
+    //         const resultado = await inactivarRolAdminSede({ per_id, se_id, rol_id });
+
+    //         // Mostrar el resultado
+    //         Swal.fire({
+    //             icon: resultado.success ? "success" : "error",
+    //             text: resultado.message || (resultado.success ? "Rol inactivado exitosamente" : "No se pudo inactivar el rol"),
+    //         });
+    //     } catch (error) {
+    //         console.error("❌ Error al inactivar rol geriátrico:", error);
+    //         Swal.fire({
+    //             icon: "error",
+    //             text: "Hubo un error al inactivar el rol. Intenta nuevamente.",
+    //         });
+    //     }
+    // };
+
     const handleInactivarRolAdminSede = async () => {
-
         const per_id = Number(person.per_id);
-        const se_id = rolesPersonas.sedes?.[0]?.se_id;
-        const rol_id = rolesPersonas.sedes?.[0]?.roles?.[0]?.rol_id;
 
+        // Buscar la sede que contenga el rol "Administrador Sede" (rol_id: 3)
+        const sedeAdmin = rolesPersonas.sedes?.find(sede =>
+            sede.roles.some(rol => rol.rol_id === 3)
+        );
+
+        if (!sedeAdmin) {
+            console.error("❌ No se encontró una sede con rol Administrador Sede.");
+            Swal.fire({
+                icon: "error",
+                text: "No se encontró una sede con rol Administrador Sede.",
+            });
+            return;
+        }
+
+        // Encontrar el rol dentro de la sede
+        const rolAdmin = sedeAdmin.roles.find(rol => rol.rol_id === 3);
+
+        if (!rolAdmin) {
+            console.error("❌ No se encontró el rol Administrador Sede en la sede correspondiente.");
+            Swal.fire({
+                icon: "error",
+                text: "No se encontró el rol Administrador Sede en la sede correspondiente.",
+            });
+            return;
+        }
+
+        const se_id = sedeAdmin.se_id;
+        const rol_id = rolAdmin.rol_id;
+
+        console.log("📌 Parámetros para inactivar:");
+        console.log("per_id:", per_id);
+        console.log("se_id:", se_id);
         console.log("rol_id:", rol_id);
 
-        // Verificar que per_id, ge_id y rol_id sean números válidos
+        // Validar que los datos sean correctos
         if (isNaN(per_id) || isNaN(se_id) || isNaN(rol_id)) {
-            console.error("❌ Parámetros inválidos para inactivar rol", { per_id, se_id, rol_id });
+            console.error("❌ Parámetros inválidos", { per_id, se_id, rol_id });
             Swal.fire({
                 icon: "error",
                 text: "Parámetros inválidos para inactivar el rol.",
@@ -45,7 +121,7 @@ export const RolesDisplayVinculada = ({ rolesPersonas, person }) => {
 
         // Confirmación del usuario
         const confirmacion = await Swal.fire({
-            text: "¿Deseas inactivará el rol de Administrador Sede?",
+            text: "¿Deseas inactivar el rol de Administrador Sede?",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Sí, inactivar",
@@ -55,16 +131,14 @@ export const RolesDisplayVinculada = ({ rolesPersonas, person }) => {
         if (!confirmacion.isConfirmed) return;
 
         try {
-            // Llamar a la función para inactivar el rol
             const resultado = await inactivarRolAdminSede({ per_id, se_id, rol_id });
 
-            // Mostrar el resultado
             Swal.fire({
                 icon: resultado.success ? "success" : "error",
                 text: resultado.message || (resultado.success ? "Rol inactivado exitosamente" : "No se pudo inactivar el rol"),
             });
         } catch (error) {
-            console.error("❌ Error al inactivar rol geriátrico:", error);
+            console.error("❌ Error al inactivar rol:", error);
             Swal.fire({
                 icon: "error",
                 text: "Hubo un error al inactivar el rol. Intenta nuevamente.",
@@ -113,10 +187,8 @@ export const RolesDisplayVinculada = ({ rolesPersonas, person }) => {
         event.stopPropagation(); // Evita que el evento burbujee y cierre el modal por accidente
         setActiveTab(rol_nombre);
         const geriatrico = rolesPersonas.rolesGeriatrico?.find(r => r.rol_nombre === rol_nombre);
-        console.log("geriatrico", geriatrico);
         setActiveSede("");
         const periodoActivo = geriatrico?.periodos?.find(p => p.activo) || null;
-        console.log("periodoActivo", periodoActivo);
         setActiveRol(periodoActivo ? "Activo" : "Inactivo");
     };
 
@@ -125,7 +197,6 @@ export const RolesDisplayVinculada = ({ rolesPersonas, person }) => {
         setActiveSede(se_nombre);
 
         const sede = rolesPersonas.sedes?.find(s => s.se_nombre === se_nombre);
-        console.log("sede", sede);
 
         if (!sede) {
             console.warn("No se encontró la sede");
@@ -137,7 +208,6 @@ export const RolesDisplayVinculada = ({ rolesPersonas, person }) => {
         const rolConPeriodo = sede.roles?.find(r => r.periodos?.some(p => p.rol_activo));
 
         const periodoActivo = rolConPeriodo?.periodos?.find(p => p.rol_activo) || null;
-        console.log("periodoActivo", periodoActivo);
 
         setActiveRol(periodoActivo ? "Activo" : "Inactivo");
     };
@@ -146,15 +216,11 @@ export const RolesDisplayVinculada = ({ rolesPersonas, person }) => {
         setActiveRol(rol_nombre);
     };
 
-    // Verifica el valor de activeTab y los rolesPersonas
-    console.log("Active Tab:", activeTab);
-    console.log("Roles Personales:", rolesPersonas);
 
     const periodoActivoGeriatrico = rolesPersonas.rolesGeriatrico
         ?.find(rol => rol.rol_nombre === activeTab)?.periodos
         ?.find(p => p.activo === true || p.activo === 'true' || p.activo === 1 || p.activo === false || p.activo === 'false' || p.activo === 0);  // Captura todos los valores
 
-    console.log("Periodo Activo Geriátrico:", periodoActivoGeriatrico);
 
     const periodoActivoSede = rolesPersonas.sedes
         ?.find(sede => sede.se_nombre === activeSede)  // Filtra por el nombre de la sede
@@ -162,7 +228,24 @@ export const RolesDisplayVinculada = ({ rolesPersonas, person }) => {
         ?.find(rol => rol.rol_nombre === activeRol)  // Filtra por el nombre del rol
         ?.periodos
         ?.find(p => p.activo !== undefined); // Asegúrate de que el periodo tiene un valor para `activo`
-    console.log("periodoActivoSede", periodoActivoSede);
+
+    const esAdminSedeActivo = rolesPersonas.sedes?.some(sede =>
+        sede.roles?.some(rol =>
+            rol.rol_nombre === "Administrador Sede" &&
+            rol.periodos?.some(periodo => periodo.activo)
+        )
+    );
+    
+    const tieneRolAcudiente = rolesPersonas?.sedes?.some(sede =>
+        sede.roles?.some(rol => rol.rol_nombre === "Acudiente")
+    );
+    
+    
+    
+
+    const tieneRolDiferenteDeAcudiente = rolesPersonas.sedes?.some(sede =>
+        sede.roles?.length > 0 && sede.roles.some(rol => rol.rol_nombre !== "Acudiente")
+    );
 
 
 
@@ -276,21 +359,22 @@ export const RolesDisplayVinculada = ({ rolesPersonas, person }) => {
                             </div>
                         </div>
                     )}
-                    {periodoActivoSede?.activo && activeSede && rolesPersonas.sedes?.[0]?.roles?.[0]?.rol_nombre !== "Acudiente" && (
-                        <button
-                            className="inactive"
-                            onClick={() =>
-                                periodoActivoSede?.activo & activeSede && rolesPersonas.sedes?.[0]?.roles?.[0]?.rol_nombre !== "Acudiente"
-                                    ? handleInactivarRolAdminSede(activeSede)
-                                    : handleInactivarRolesSede(activeSede)
-                            }
-                        >
-                            <FaUserAltSlash />
-                        </button>
-                    )}
 
+                    {periodoActivoSede?.activo && activeSede &&  !tieneRolAcudiente && (
+                        (session.rol_id === 2 && esAdminSedeActivo) ? (
+                            <button className="inactive" onClick={() => handleInactivarRolAdminSede(activeSede)}>
+                                <FaUserAltSlash />
+                            </button>
+                        ) : (session.rol_id === 3 && tieneRolDiferenteDeAcudiente) && (
+                            <button className="inactive" onClick={() => handleInactivarRolesSede(activeSede)}>
+                                <FaUserAltSlash />
+                            </button>
+                        )
+                    )}
                 </div>
             </div>
         </div>
     ) : null;
 };
+
+export default RolesDisplayVinculada;

@@ -10,6 +10,7 @@ import { SeguimientoPage } from "./SeguimientoPage";
 import { RolPacienteSedePage } from "./RolPacienteSedePage";
 import { RecomendacionesPage } from "./RecomendacionesPage";
 import { DiagnosticoPage } from "./DiagnosticoPage";
+import { InventarioPacientePage } from "./InventarioPacientePage";
 
 export const PacienteEspecificoPage = () => {
     const { id } = useParams();
@@ -82,6 +83,8 @@ export const PacienteEspecificoPage = () => {
             navigate(`/geriatrico/recomendaciones/${paciente?.pac_id}`);
         } else if (index === 5) {
             navigate(`/geriatrico/diagnostico/${paciente?.pac_id}`);
+        } else if (index === 6) {
+            navigate(`/geriatrico/inventarioPaciente/${paciente?.pac_id}`);
         }
     };
 
@@ -113,7 +116,9 @@ export const PacienteEspecificoPage = () => {
                         </button>
 
                     </div>
-                    <h2>Información del Paciente</h2>
+                    <div className='report-header'>
+                        <h2 className="h4">Información del Paciente</h2>
+                    </div>
                     <div className="grid-4-columns">
                         {[
                             { label: "Nombre Completo", value: paciente?.nombre || "" },
@@ -140,10 +145,13 @@ export const PacienteEspecificoPage = () => {
             title: "Gestión de Cuidados",
             content: <CuidadosEnfermeriaPage /> // 📌 Se redirige automáticamente
         },
-        {
-            title: "Seguimientos",
-            content: <SeguimientoPage /> // 📌 Se redirige automáticamente
-        },
+        ...(session.rol_id === 5
+            ? [{
+                title: "Seguimientos",
+                content: <SeguimientoPage /> // 📌 Se redirige automáticamente
+            }] : []
+        ),
+
         {
             title: "Historia Roles",
             content: <RolPacienteSedePage /> // 📌 Se redirige automáticamente
@@ -158,9 +166,21 @@ export const PacienteEspecificoPage = () => {
                     title: "Diagnóstico",
                     content: <DiagnosticoPage /> // 📌 Se redirige automáticamente
                 }
+
             ]
             : []
-        )
+        ),
+
+        ...(session.rol_id === 3
+            ? [
+                {
+                    title: "Inventario",
+                    content: <InventarioPacientePage />
+                }
+            ]
+            : []
+        ),
+
     ];
 
 
@@ -206,7 +226,6 @@ export const PacienteEspecificoPage = () => {
                             // 📌 Si es ENFERMERO (rol_id === 5), mostramos los Tabs
                         )} */}
                             <Tabs tabs={tabs} activeTab={0} onClick={handleTabChange} />
-
                         </div>
                     </div>
                 </div>

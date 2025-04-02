@@ -1,0 +1,53 @@
+.report-header {
+    border-bottom: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.report-header .report-date {
+    font-size: 16px;
+    color: #777;
+    text-align: right;
+  }
+  
+  .inventory {
+    background-color: #efefef;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 20px 20px 60px #bebebe,
+    -20px -20px 60px #ffffff;
+    position: relative;
+  }
+  
+  /* Estilos de la tarjeta del inventario */
+  .inventory-card {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Estilos de cada elemento del inventario */
+  .inventory-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px; /* Aumenta el padding para más espacio */
+    border-bottom: 1px solid #ccc;
+    transition: transform 0.2s; /* Agrega transición para el hover */
+  }
+  
+  .inventory-item:hover {
+    transform: translateY(-2px); /* Efecto de hover */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra en el hover */
+  }
+  
+  .inventory-item:last-child {
+    border-bottom: none;
+  }
+  
+  /* Estilos de los detalles del elemento */
+  .inventory-details {
+    font-size: 18px;
+    color: #555;
+  }

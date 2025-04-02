@@ -3,7 +3,7 @@ import { useSeguimiento } from '../../../hooks';
 import Swal from 'sweetalert2';
 import { FaUser } from 'react-icons/fa';
 
-export const ModalActualizarSeguimiento = ({ id, setShowModal }) => {
+export const ModalActualizarSeguimiento = ({ id, setShowModal, setHistorialSeguimiento }) => {
     const { obtenerSeguimientosPorId, actualizarSeguimientoPaciente } = useSeguimiento();
     const [seguimiento, setSeguimiento] = useState(null);
 
@@ -87,6 +87,11 @@ export const ModalActualizarSeguimiento = ({ id, setShowModal }) => {
                 icon: 'success',
                 text: result.message
             });
+            setHistorialSeguimiento(prevHistorial =>
+                prevHistorial.map(seg =>
+                    seg.seg_id === id ? { ...seg, ...editedSeguimiento } : seg
+                )
+            );
             setShowModal(false);
 
         } else {

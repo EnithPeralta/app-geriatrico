@@ -79,10 +79,21 @@ export const SedesPage = () => {
         setSedeToEdit(null);
     };
 
-    const handleSaveSede = (newSede) => {
-        setSedes(prev => [...prev, newSede]);
-    };
-
+   
+const handleSaveSede = (newSede) => {
+    setSedes((prevSedes) => {
+        const index = prevSedes.findIndex((s) => s.se_id === newSede.se_id);
+        if (index !== -1) {
+            // Actualiza la sede existente
+            const updatedSedes = [...prevSedes];
+            updatedSedes[index] = newSede;
+            return updatedSedes;
+        } else {
+            // Agrega una nueva sede
+            return [...prevSedes, newSede];
+        }
+    });
+};
     const handleInactivarSedes = async (se_id) => {
         const confirm = await Swal.fire({
             text: "¿Estás seguro de que deseas inactivar la sede?",

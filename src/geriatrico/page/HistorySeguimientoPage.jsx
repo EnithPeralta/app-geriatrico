@@ -220,10 +220,12 @@ export const HistorySeguimientoPage = () => {
                         <LoadingComponet />
                     )}
                 </div>
-                {showModal && <ModalActualizarSeguimiento
-                    id={selectedId}
-                    setShowModal={setShowModal}
-                />}
+                {showModal &&
+                    <ModalActualizarSeguimiento
+                        id={selectedId}
+                        setHistorialSeguimiento={setHistorialSeguimiento}
+                        setShowModal={setShowModal}
+                    />}
             </div>
         </div>
     );

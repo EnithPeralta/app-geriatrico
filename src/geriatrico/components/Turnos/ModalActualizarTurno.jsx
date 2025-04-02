@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { useTurnos } from "../../../hooks";
 
-export const ModalActualizarTurno = ({ turno, onClose }) => {
+export const ModalActualizarTurno = ({ turno, onClose, setTurnos }) => {
   const { actualizarTurnoEnfermeria } = useTurnos();
 
   // Estados para los valores del formulario
@@ -45,13 +45,15 @@ export const ModalActualizarTurno = ({ turno, onClose }) => {
           icon: "success",
           text: response.message,
         });
-        onClose(); // Cierra el modal si la actualización es exitosa
+        setTurnos(prevTurno => [...prevTurno, response.data]);
+
+        onClose(); 
       } else {
-        Swal.fire(
-          "Error",
-          response?.message || "Ocurrió un error al actualizar el turno.",
-          "error"
-        );
+        Swal.fire({
+          icon: "error",
+          titleText: response.message,
+          text: response.conflito,
+        });
       }
     } catch (error) {
       console.error("Error al actualizar el turno:", error);
@@ -62,7 +64,7 @@ export const ModalActualizarTurno = ({ turno, onClose }) => {
   return (
     <div className="modal-overlay">
       <div className="modal">
-        <div className="modal-content-geriatrico">
+        <div className="modal-content">
           <h2>Actualizar Turno</h2>
           <form onSubmit={handleSubmit}>
             <div className="modal-field">

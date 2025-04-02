@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useAuthStore, useSedesRol, } from "../../hooks";
-import { SelectField } from "../SelectField/SelectField";
+import { SelectRolEnfermera } from "../SelectRolEnfermera";
 
 export const ModalEnfermera = ({ datosInicial, onRegistrar, onClose, selectedRoles, setSelectedRoles }) => {
     const { asignarRolesSede } = useSedesRol();
@@ -85,8 +85,8 @@ export const ModalEnfermera = ({ datosInicial, onRegistrar, onClose, selectedRol
     return (
         <div className="modal-overlay" onClick={(e) => e.stopPropagation()}>
             <div className="modal">
-                <div className="modal-content-geriatrico">
-                    <h3>Registrar Persona</h3>
+                <div className="modal-content">
+                    {/* <h3>Registrar Persona</h3>
                     <div className="modal-field">
                         <label>Nombre Completo</label>
                         <input type="text" name="per_nombre_completo" value={datosPersona.per_nombre_completo} onChange={handleChangePersona} required />
@@ -119,13 +119,13 @@ export const ModalEnfermera = ({ datosInicial, onRegistrar, onClose, selectedRol
                     <div className="modal-field">
                         <label>Contraseña</label>
                         <input type="password" name="per_password" value={datosPersona.per_password} onChange={handleChangePersona} required />
-                    </div>
+                    </div> */}
                     <h3>Registrar Enfermera</h3>
                     <div className="modal-field">
                         <label>Código</label>
                         <input type="text" name="enf_codigo" value={datosEnfermera.enf_codigo} onChange={handleChangeEnfermera} required />
                     </div>
-                    <SelectField
+                    <SelectRolEnfermera
                         label="Rol"
                         name="rol_id"
                         value={selectedRoles || ""}

@@ -59,6 +59,12 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
                 });
                 return false;
             }
+            const yaTieneRol = await validarRol(per_id, rol_id);
+            if (yaTieneRol) {
+                console.log("⚠️ La persona ya tiene este rol asignado en la sede.");
+                await Swal.fire({ icon: "info", text: "La persona ya tiene este rol asignado." });
+                return false;
+            }
 
             const response = await asignarRolesSede({ per_id, rol_id, sp_fecha_inicio, sp_fecha_fin });
 
@@ -107,8 +113,8 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
                 }
             }
             console.log(result);
-            if (result?.action === "error") {
-                setShowPersona(true);
+            if (result?.action === "assign_role") {
+                setShowSelectRoles(true);
                 setDatosAcudiente(prev => ({ ...prev, per_id: result.per_id }));
                 await Swal.fire({ icon: 'info', text: result.message });
 
@@ -121,22 +127,33 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
                     );
 
                     if (asignado) {
-                        await registrarAcudiente({ per_id: result.per_id, enf_codigo: enfCodigo });
+                        await registrarAcudiente({
+                            per_id: result.per_id,
+                            pac_id: pacienteSeleccionado.pac_id,
+                            pa_parentesco: parentesco,
+                        });
                     }
                 }
                 return;
             }
 
             if (result.message) {
-                setShowSelectRoles(true);
+                setShowPersona(true);
                 return;
             }
+
             if (!await validarRol(result.per_id)) {
                 setShowSelectRoles(true);
-                if (!await handleAssignSedes(result.per_id, datosEnfermera.rol_id, datosEnfermera.sp_fecha_inicio, datosEnfermera.sp_fecha_fin)) return;
+                if (!await handleAssignSedes(
+                    result.per_id,
+                    datosAcudiente.rol_id,
+                    datosAcudiente.sp_fecha_inicio,
+                    datosAcudiente.sp_fecha_fin
+                )) return;
             } else {
-                await Swal.fire({ icon: 'info', text: "La persona ya tiene el rol de enfermera asignado." });
+                await Swal.fire({ icon: 'info', text: "La persona ya tiene el rol de acudiente asignado." });
             }
+
 
 
             // 6️⃣ Registrar el acudiente después de la validación del rol
@@ -212,7 +229,6 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
                                         className="modal-input"
                                         value={datosAcudiente.sp_fecha_fin}
                                         onChange={handleChange}
-                                        required
                                     />
                                 </div>
                             </>

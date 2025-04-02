@@ -122,7 +122,7 @@ export const LoginPage = () => {
         <div className="cuadrado">
           <div className="web">
             <FaCircle className="circle" />
-            <span className="title">Geriátrico Web</span>
+            <span className="titleLogin">Geriátrico Web</span>
           </div>
           <h3 className="h3">Comienza ahora</h3>
           <h2 className="h2">Iniciar sesión<span className="link">.</span></h2>

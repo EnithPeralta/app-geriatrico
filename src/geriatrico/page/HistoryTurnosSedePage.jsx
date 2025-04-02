@@ -9,12 +9,17 @@ export const HistoryTurnosSedePage = () => {
     const { obtenerEnfermerasSede } = useEnfermera();
     const { verTurnosSedeHistorialEnfermera } = useTurnos();
     const [turnosHistorial, setTurnosHistorial] = useState([]);
+    const [turnosOriginales, setTurnosOriginales] = useState([]);
     const [geriatrico, setGeriatrico] = useState(null);
     const [enfermeras, setEnfermeras] = useState([]);
     const [error, setError] = useState(null);
     const [search, setSearch] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [selectedEnfermera, setSelectedEnfermera] = useState(null);
+    const [activeTab, setActiveTab] = useState("");
+    const [activeTurno, setActiveTurno] = useState("");
+
+
 
 
 
@@ -43,8 +48,13 @@ export const HistoryTurnosSedePage = () => {
     const handleVerTurnos = async (enfermera) => {
         try {
             const result = await verTurnosSedeHistorialEnfermera(enfermera.enf_id);
+            console.log(result);
             if (result.success && result.turnos) {
-                setTurnosHistorial(result.turnos);
+                // Convertir el objeto en un array de turnos
+                const turnosArray = Object.entries(result.turnos).flatMap(([fecha, turnos]) => turnos);
+
+                setTurnosHistorial(turnosArray);
+                setTurnosOriginales(turnosArray);
                 setSelectedEnfermera(enfermera);
                 setShowModal(true);
             }
@@ -52,6 +62,28 @@ export const HistoryTurnosSedePage = () => {
             console.error("Error al obtener el historial de turnos en la sede:", error);
         }
     };
+
+    const handleFechaChange = (event, fecha_inicio) => {
+        event.stopPropagation();
+
+        if (activeTurno === fecha_inicio) {
+            // Si se hace clic en la misma fecha activa, restablecer el historial original
+            setTurnosHistorial(turnosOriginales);
+            setActiveTurno("");
+            setActiveTab("");
+        } else {
+            setActiveTurno(fecha_inicio);
+            const historialFiltrado = turnosOriginales.filter(turno => turno.fecha_inicio === fecha_inicio);
+            setTurnosHistorial(historialFiltrado);
+            setActiveTab(fecha_inicio);
+        }
+    };
+
+    const fechasUnicas = [...new Set(turnosOriginales.map(turno => turno.fecha_inicio))];
+
+
+
+
     const enfermerasFiltradas = enfermeras.filter((enfermera) =>
         (enfermera?.per_nombre || "").toLowerCase().includes(search.toLowerCase()) ||
         (enfermera?.per_documento || "").includes(search)
@@ -102,34 +134,69 @@ export const HistoryTurnosSedePage = () => {
             </div>
             {showModal && (
                 <div className="modal-overlay">
-                    <div className="modal">
-                        <div className="turnos-container-sede">
-                            <h3 className="h4">Historial de Turnos - {selectedEnfermera?.per_nombre}</h3>
-                            <table className='table'>
-                                <thead>
-                                    <tr>
-                                        <th>Fecha Inicio</th>
-                                        <th>Hora Inicio</th>
-                                        <th>Fecha Fin</th>
-                                        <th>Hora Fin</th>
-                                        <th>Total Horas</th>
-                                        <th>Tipo Turno</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {turnosHistorial.map((turno, i) => (
-                                        <tr key={i}>
-                                            <td>{turno.fecha_inicio}</td>
-                                            <td>{turno.hora_inicio}</td>
-                                            <td>{turno.fecha_fin}</td>
-                                            <td>{turno.hora_fin}</td>
-                                            <td>{turno.total_horas_turno}</td>
-                                            <td>{turno.tipo_turno}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            <button className="save-button" onClick={() => setShowModal(false)}>Cerrar</button>
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h2 className="h4">Historial de Turnos - {selectedEnfermera?.per_nombre}</h2>
+                            <button
+                                className="close-btn"
+                                onClick={() => setShowModal(false)}
+                            >
+                                <i className="fa-solid fa-xmark" />
+                            </button>
+                            {/* <button onClick={() => {
+                                setTurnosHistorial(turnosOriginales);
+                                setActiveTurno("");
+                            }} className="btn-reset">
+                                Restablecer
+                            </button> */}
+                        </div>
+                        <div className="tabs-container">
+                            <div className="geriatrico-tabs">
+                                {fechasUnicas.map((fecha, index) => (
+                                    <button
+                                        key={index}
+                                        className={`geriatrico-tab ${activeTurno === fecha ? "active" : ""}`}
+                                        onClick={(event) => handleFechaChange(event, fecha)}>
+                                        {fecha}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div className="geriatrico-tab-content">
+                                {activeTab ? (
+                                    turnosHistorial.length > 0 ? (
+                                        <table className="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Fecha Inicio</th>
+                                                    <th>Hora Inicio</th>
+                                                    <th>Fecha Fin</th>
+                                                    <th>Hora Fin</th>
+                                                    <th>Total Horas</th>
+                                                    <th>Tipo Turno</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {turnosHistorial.map((turno, i) => (
+                                                    <tr key={i}>
+                                                        <td>{turno.fecha_inicio}</td>
+                                                        <td>{turno.hora_inicio}</td>
+                                                        <td>{turno.fecha_fin}</td>
+                                                        <td>{turno.hora_fin}</td>
+                                                        <td>{turno.total_horas_turno}</td>
+                                                        <td>{turno.tipo_turno}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    ) : (
+                                        <p className="text-center text-muted">No tiene historial de turnos.</p>
+                                    )
+                                ) : (
+                                    <p className="text-center text-muted">Seleccione una fecha para ver los turnos.</p>
+                                )}
+                            </div>
+
                         </div>
                     </div>
                 </div>

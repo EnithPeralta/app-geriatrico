@@ -17,3 +17,5 @@ export * from './useSeguimiento';
 export * from './useTurnos';
 export * from './useRecomendaciones';
 export * from './useDiagnostico';
+export * from './useInventarioSede';
+export * from './useInventarioPaciente';

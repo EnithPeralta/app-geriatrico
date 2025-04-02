@@ -10,7 +10,7 @@ const registerFormFields = {
     per_genero: '',
     per_telefono: '',
     per_nombre_completo: '',
-    per_documento: '', // Asegurar que no sea undefined
+    per_documento: '',
     per_correo: '',
     per_foto: ''
 };
@@ -117,9 +117,6 @@ export const ModalEnfermeraPersona = ({ enfermeraDocumento, handleAssignSedes, s
             Swal.fire({ icon: 'error', text: 'Ocurrió un error al registrar la persona' });
         }
     };
-
-
-
 
 
     return (

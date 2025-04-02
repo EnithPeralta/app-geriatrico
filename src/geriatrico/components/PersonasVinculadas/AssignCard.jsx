@@ -13,14 +13,14 @@ export const AssignCard = ({
     assigning,
     handleAssignRole,
     handleAssignSedes,
-    onClose // Asegúrate de que onClose se pase como prop
+    onClose
 }) => {
 
 
     return (
         <div className='modal-overlay'>
             <div className='modal' onClick={(e) => e.stopPropagation()}>
-                <div className="modal-content-geriatrico">
+                <div className="modal-content">
                     <CheckboxField
                         name="rol_id"
                         value={selectedRoles}
