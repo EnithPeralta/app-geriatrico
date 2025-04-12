@@ -1,3 +1,4 @@
 export * from "./ModalInventarioPaciente";
 export * from "./ModalStockMedicamentoPac";
-export * from "./ModalEditInventarioPac";
+export * from "./ModalSalidaStockPac";
+export * from "./HistoryDisplayPac"

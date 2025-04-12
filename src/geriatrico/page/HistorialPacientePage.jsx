@@ -87,8 +87,12 @@ export const HistorialPacientePage = () => {
         return seg_fecha.includes(searchTerm);
     });
 
-
-
+    // Filtrar historial por fecha si hay búsqueda, o mostrar solo el primero
+    const visibleHistorial = searchTerm
+        ? filteredHistorial // Si hay búsqueda, mostrar coincidencias
+        : historialAplanado.length > 0
+            ? [historialAplanado[0]] // Si no hay búsqueda, mostrar solo el primer seguimiento
+            : [];
     return (
         <div className="animate__animated animate__fadeInUp">
             <div className="main-container">
@@ -105,8 +109,8 @@ export const HistorialPacientePage = () => {
                                 className='search-input'
                             />
                         </div>
-                        {filteredHistorial.length > 0 ? (
-                            filteredHistorial.map(({ seg_id, seg_fecha, seg_foto, seg_glicemia, seg_peso, seg_talla, seg_temp, otro, seg_fc, seg_fr, enfermera }) => (
+                        {visibleHistorial.length > 0 ? (
+                            visibleHistorial.map(({ seg_id, seg_fecha, seg_foto, seg_glicemia, seg_peso, seg_talla, seg_temp, otro, seg_fc, seg_fr, enfermera }) => (
                                 <div key={seg_id} className="daily-container">
                                     <h4 className="daily-title"><FaCalendarDay /> {seg_fecha}</h4>
                                     <div className="daily-card">

@@ -181,7 +181,6 @@ export const useRoles = () => {
         dispatch(startSeleccion());
 
         const token = getToken();
-        console.log("🔑 Token utilizado:", token);
 
         if (!token) {
             const errorMessage = "Token de autenticación no encontrado";
@@ -208,7 +207,6 @@ export const useRoles = () => {
                 ...(geIdNum ? { ge_id: geIdNum } : {}),
             };
 
-            console.log("📤 Payload final:", payload);
 
             const { data } = await geriatricoApi.post(
                 "/roles/rolSeleccionado",
@@ -216,17 +214,11 @@ export const useRoles = () => {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            console.log("✅ Respuesta exitosa:", data);
 
             if (data.ge_id) {
-                console.log("📌 Guardando ge_id:", data.ge_id);
 
                 // Guardar en Redux
                 dispatch(setRolSeleccionado({ rol_id: rolIdNum, se_id: seIdNum, ge_id: data.ge_id }));
-                setTimeout(() => {
-                    console.log("🟢 Estado actual en Redux:", store.getState().roles.rolSeleccionado);
-                }, 500);
-
                 // Guardar en localStorage para persistencia
                 localStorage.setItem("ge_id", data.ge_id);
                 localStorage.setItem("rol_id", data.rol_id);

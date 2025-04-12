@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useInventarioPaciente, usePaciente, useSession } from '../../hooks';
-import { ModalEditInventarioPac, ModalInventarioPaciente, ModalStockMedicamentoPac } from '../components/InventarioPaciente';
-import { FaMedkit, FaEdit, FaSearch } from 'react-icons/fa';
+import { HistoryDisplayPac, ModalInventarioPaciente, ModalSalidaStockPac, ModalStockMedicamentoPac } from '../components/InventarioPaciente';
+import { FaMedkit, FaMinus, FaBriefcaseMedical, FaHistory } from 'react-icons/fa';
 
 export const InventarioPacientePage = () => {
-    const { obtenerSesion } = useSession();
+    const { obtenerSesion, session } = useSession();
     const { obtenerDetallePacienteSede } = usePaciente();
     const { obtenerMedicamentosInvPaciente } = useInventarioPaciente();
     const [medicamentos, setMedicamentos] = useState([]);
@@ -13,9 +13,10 @@ export const InventarioPacientePage = () => {
     const { id } = useParams();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModal, setIsModal] = useState(false);
+    const [isModalHistory, setIsModalHistory] = useState(false);
     const [medicamentoSeleccionado, setMedicamentoSeleccionado] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
-
+    const [inventarioPaciente, setInventarioPaciente] = useState([]);
 
     useEffect(() => {
         obtenerSesion();
@@ -55,7 +56,14 @@ export const InventarioPacientePage = () => {
         };
 
         fetchMedicamentoPaciente();
+
     }, [paciente]);
+
+    const handleMedicamentoAgregado = (nuevoMedicamento) => {
+        setInventarioPaciente(prev => [...prev, nuevoMedicamento]);
+    };
+
+
 
     const medicamentosFiltrados = medicamentos.filter(med =>
         med.med_nombre.toLowerCase().includes(searchTerm.toLowerCase())
@@ -78,54 +86,85 @@ export const InventarioPacientePage = () => {
                         />
                     </div>
 
-                    <div className="turnos-grid">
+                    <div className="turnos-container-sede">
                         {medicamentosFiltrados.length > 0 ? (
-                            medicamentosFiltrados.map((med) => (
-                                <div key={med.med_sede_id} className="turnos-card">
-                                    <div className="turnos-header">
-                                        <h4>{med.med_nombre}</h4>
-                                        <p><span>Cantidad:</span> {med.med_cantidad}</p>
-                                        <button className="save-button" onClick={() => {
-                                            setMedicamentoSeleccionado(med);
-                                            setIsModal(false);
-                                            setIsModalOpen(false);
-                                        }}>
-                                            <FaMedkit />
-                                        </button>
-                                    </div>
-                                    <div className="actividad-item">
-                                        <p><span>Presentación:</span> {med.med_presentacion}</p>
-                                    </div>
-                                    <div className="actividad-item">
-                                        <p><span>Unidades por presentación:</span> {med.unidades_por_presentacion}</p>
-                                    </div>
-                                    <div className="actividad-item">
-                                        <p><span>Descripción:</span> {med.med_descripcion}</p>
-                                    </div>
-                                    <div className="actividad-item">
-                                        <p><span>Medicamentos disponibles:</span> {med.med_total_unidades_disponibles}</p>
-                                    </div>
-                                    <div className="button-container">
-                                        <button className="save-button" onClick={() => {
-                                            setMedicamentoSeleccionado(med);
-                                            setIsModal(true);
-                                        }}>
-                                            <FaEdit />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Presentación</th>
+                                        <th>Unidades por presentación</th>
+                                        <th>Descripción</th>
+                                        <th>Unidades disponibles</th>
+                                        <th>Agregar Stock</th>
+                                        <th>Salida Stock</th>
+                                        {session.rol_id === 3 && (
+                                            <th>Historial</th>)
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {medicamentosFiltrados.map((med, index) => (
+                                        <tr key={index}>
+                                            <td>{med.med_nombre}</td>
+                                            <td>{med.med_presentacion?.charAt(0).toUpperCase() + med.med_presentacion?.slice(1).toLowerCase()}</td>
+                                            <td>{med.unidades_por_presentacion}</td>
+                                            <td>{med.med_descripcion}</td>
+                                            <td>{med.med_total_unidades_disponibles}</td>
+                                            <td>
+                                                <button
+                                                    className="asignar"
+                                                    title="Agregar stock"
+                                                    onClick={() => {
+                                                        setMedicamentoSeleccionado(med);
+                                                        setIsModal(false);
+                                                    }}
+                                                >
+                                                    <FaMedkit />
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button
+                                                    className="inactive"
+                                                    title="Salida de stock"
+                                                    onClick={() => {
+                                                        setMedicamentoSeleccionado(med);
+                                                        setIsModal(true);
+                                                    }}
+                                                >
+                                                    <FaMinus />
+                                                </button>
+                                            </td>
+                                            {session.rol_id === 3 && (<td>
+                                                <button
+                                                    className='turnos'
+                                                    title='Historial'
+                                                    onClick={() => {
+                                                        setMedicamentoSeleccionado(med);
+                                                        setIsModalHistory(true);
+                                                    }}
+                                                >
+                                                    <FaHistory />
+                                                </button>
+                                            </td>
+                                            )}
+
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         ) : (
                             <p>No hay medicamentos disponibles.</p>
                         )}
                     </div>
                     <div className='button-container'>
-                        <button className="save-button" onClick={() => setIsModalOpen(true)}>Agregar Medicamento</button>
+                        <button className="save-button" onClick={() => setIsModalOpen(true)}>
+                            <FaBriefcaseMedical /> Vincular
+                        </button>
                     </div>
                 </div>
             </div>
-
-            {medicamentoSeleccionado && (
+            {medicamentoSeleccionado && !isModalHistory && (
                 <ModalStockMedicamentoPac
                     med_pac_id={medicamentoSeleccionado.med_pac_id}
                     onClose={() => {
@@ -137,7 +176,7 @@ export const InventarioPacientePage = () => {
             )}
 
             {isModal && medicamentoSeleccionado && (
-                <ModalEditInventarioPac
+                <ModalSalidaStockPac
                     med_pac_id={medicamentoSeleccionado.med_pac_id}
                     medicamento={medicamentoSeleccionado}
                     setMedicamentos={setMedicamentos}
@@ -149,8 +188,20 @@ export const InventarioPacientePage = () => {
                 <ModalInventarioPaciente
                     pac_id={Number(paciente.pac_id)}
                     onClose={() => setIsModalOpen(false)}
+                    onMedicamentoAgregado={handleMedicamentoAgregado}
                 />
             )}
+
+            {isModalHistory && medicamentoSeleccionado && (
+                <HistoryDisplayPac
+                    med_pac_id={medicamentoSeleccionado.med_pac_id}
+                    onClose={() => {
+                        setIsModalHistory(false);
+                        setMedicamentoSeleccionado(null);
+                    }}
+                />
+            )}
+
         </div>
     );
 };

@@ -12,42 +12,101 @@
     text-align: right;
   }
   
-  .inventory {
-    background-color: #efefef;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 20px 20px 60px #bebebe,
-    -20px -20px 60px #ffffff;
-    position: relative;
+  
+.inventory {
+  background-color: #f9f9f9; /* Fondo claro para contraste */
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 
+    rgba(0, 0, 0, 0.1) 0px 4px 12px; 
+}
+
+
+.inventory-card {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.inventory-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 10px; 
+  margin-bottom: 15px;
+  padding: 20px; 
+  box-shadow:
+    rgba(0,0,0,0.1) 0px 4px 12px; 
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; 
+}
+
+.inventory-item:hover {
+  transform: scale(1.02); 
+}
+
+
+.inventory-details {
+  font-size: 16px;
+  color: #333;
+  display: flex;
+  flex-direction: column; 
+}
+
+.item-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #0090bc;
+}
+
+.item-description {
+  font-size: 14px;
+  color: #555;
+}
+
+.item-presentation,
+.item-units-per-presentation {
+  font-size: 14px;
+}
+
+.item-presentation {
+    color: #777;
+    margin-top: .5rem
+}
+
+.item-units-per-presentation { 
+    color:#444
+}
+
+
+/* Estilos de la información del elemento (columna derecha) */
+.inventory-info {
+    display:flex
+}
+.available-units{
+font-weight:bold}
+
+
+.availableUnits{
+color: #0090bc;
+}
+
+  /* Media query para diseño responsivo */
+  @media (max-width: 768px) {
+    .main-container {
+      flex-direction: column; /* Apilar el contenido en pantallas pequeñas */
+    }
+  
+    .content {
+      padding: 10px; /* Reduce el padding en pantallas pequeñas */
+    }
+  
+    .inventory {
+      padding: 10px; /* Reduce el padding en pantallas pequeñas */
+    }
+  
+    .inventory-item {
+      padding: 10px; /* Reduce el padding en pantallas pequeñas */
+    }
   }
   
-  /* Estilos de la tarjeta del inventario */
-  .inventory-card {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  /* Estilos de cada elemento del inventario */
-  .inventory-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px; /* Aumenta el padding para más espacio */
-    border-bottom: 1px solid #ccc;
-    transition: transform 0.2s; /* Agrega transición para el hover */
-  }
-  
-  .inventory-item:hover {
-    transform: translateY(-2px); /* Efecto de hover */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra en el hover */
-  }
-  
-  .inventory-item:last-child {
-    border-bottom: none;
-  }
-  
-  /* Estilos de los detalles del elemento */
-  .inventory-details {
-    font-size: 18px;
-    color: #555;
-  }

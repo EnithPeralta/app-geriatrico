@@ -4,6 +4,7 @@ import '../../css/roles.css';
 import { GoBackComponet } from '../../components/GoBackComponent';
 import { ModalCrearRol } from '../components/Modal-Rol/ModalCrearRol';
 import { ModalEditarRol } from '../components/Modal-Rol/ModalEditarRol';
+import { FaEdit, FaPlus } from 'react-icons/fa';
 
 export const RolesPage = () => {
     const [roles, setRoles] = useState([]);
@@ -33,7 +34,7 @@ export const RolesPage = () => {
     const handleSaveRol = async (nuevoRol) => {
         const result = await crearRol(nuevoRol);
         if (result.success) {
-            setRoles(prev =>[...prev, result.rol]);
+            setRoles(prev => [...prev, result.rol]);
             setIsCreateModalOpen(false);
         }
         return result;
@@ -62,14 +63,15 @@ export const RolesPage = () => {
                                         <span className="rol-name">{rol.rol_nombre}</span>
                                         <span className="rol-description">{rol.rol_descripcion}</span>
                                     </div>
-                                    <div className="actions-rol">
+                                    <div className="actions-rol" title='Editar'>
                                         <button
                                             onClick={() => {
                                                 setSelectedRol(rol);
                                                 setIsEditModalOpen(true);
                                             }}
+                                            className='edit-button'
                                         >
-                                            <i className="fas fa-edit" />
+                                            <i className={`fa-solid fa-edit`} />
                                         </button>
                                     </div>
                                 </div>
@@ -79,7 +81,7 @@ export const RolesPage = () => {
                         )}
                         <div className="card-rol" onClick={() => setIsCreateModalOpen(true)}>
                             <div className="rol-info-container">
-                                <i className="fas fa-plus" />
+                                <FaPlus />
                                 <p>Agregar Rol</p>
                             </div>
                         </div>

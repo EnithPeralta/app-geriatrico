@@ -11,6 +11,7 @@ import { RolPacienteSedePage } from "./RolPacienteSedePage";
 import { RecomendacionesPage } from "./RecomendacionesPage";
 import { DiagnosticoPage } from "./DiagnosticoPage";
 import { InventarioPacientePage } from "./InventarioPacientePage";
+import { FormulacionMedicamentosPage } from "./FormulacionMedicamentosPage";
 
 export const PacienteEspecificoPage = () => {
     const { id } = useParams();
@@ -85,6 +86,8 @@ export const PacienteEspecificoPage = () => {
             navigate(`/geriatrico/diagnostico/${paciente?.pac_id}`);
         } else if (index === 6) {
             navigate(`/geriatrico/inventarioPaciente/${paciente?.pac_id}`);
+        }else if (index === 7) {
+            navigate(`/geriatrico/formulacionMedicamentos/${paciente?.pac_id}`);
         }
     };
 
@@ -170,16 +173,14 @@ export const PacienteEspecificoPage = () => {
             ]
             : []
         ),
-
-        ...(session.rol_id === 3
-            ? [
-                {
-                    title: "Inventario",
-                    content: <InventarioPacientePage />
-                }
-            ]
-            : []
-        ),
+        {
+            title: "Inventario",
+            content: <InventarioPacientePage />
+        },
+        {
+            title: "Formulación Medicamentos",
+            content: <FormulacionMedicamentosPage />
+        }
 
     ];
 

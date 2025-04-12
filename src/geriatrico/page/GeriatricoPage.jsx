@@ -5,7 +5,7 @@ import '../../css/geriatrico.css';
 import { useNavigate } from "react-router-dom";
 import 'animate.css';
 import { LoadingComponet, ModalCrearGeriatrico, ModalGeriatrico, SideBarComponent, ModalEditarGeriatrico } from "../../components";
-import { FaEye, FaFile } from "react-icons/fa";
+import { FaEdit, FaEye, FaFile, FaUserEdit } from "react-icons/fa";
 
 export const GeriatricosPage = () => {
     const { obtenerGeriatricos, crearGeriatrico, actualizarGeriatrico, inactivarGeriatrico, reactivarGeriatrico } = useGeriatrico();
@@ -88,7 +88,7 @@ export const GeriatricosPage = () => {
     const handleInactivarGeriatrico = async (ge_id) => {
         const confirm = await Swal.fire({
             text: "¿Estás seguro de que deseas inactivar este geriátrico?",
-            icon: "warning",
+            icon: "question",
             showCancelButton: true,
             confirmButtonText: "Sí, Inactivar",
             cancelButtonText: "Cancelar"
@@ -109,7 +109,7 @@ export const GeriatricosPage = () => {
     const handleReactivarGeriatrico = async (ge_id) => {
         const confirm = await Swal.fire({
             text: "¿Estás seguro de que deseas reactivar este geriátrico?",
-            icon: "warning",
+            icon: "question",
             showCancelButton: true,
             confirmButtonText: "Sí, reactivar",
             cancelButtonText: "Cancelar"
@@ -210,7 +210,7 @@ export const GeriatricosPage = () => {
                                     </div>
                                     <div className="actions">
                                         <button
-                                            className={`toggle-button ${geriatrico.ge_activo ? 'active' : 'inactive'}`}
+                                            className={`toggle-button ${geriatrico.ge_activo ? 'activo' : 'inactivo'}`}
                                             onClick={() => {
                                                 if (geriatrico.ge_activo) {
                                                     handleInactivarGeriatrico(geriatrico.ge_id);
@@ -218,11 +218,12 @@ export const GeriatricosPage = () => {
                                                     handleReactivarGeriatrico(geriatrico.ge_id);
                                                 }
                                             }}
+                                            title="Activar/Desactivar"
                                         >
                                             <i className={`fas ${geriatrico.ge_activo ? 'fa-toggle-on' : 'fa-toggle-off'}`} />
                                         </button>
 
-                                        <button className="edit-button" onClick={() => handleEditGeriatrico(geriatrico)}>
+                                        <button className="edit-button" title="Editar" onClick={() => handleEditGeriatrico(geriatrico)}>
                                             <i className="fas fa-edit" />
                                         </button>
                                     </div>

@@ -51,8 +51,10 @@ export const HistoryTurnosSedePage = () => {
             console.log(result);
             if (result.success && result.turnos) {
                 // Convertir el objeto en un array de turnos
-                const turnosArray = Object.entries(result.turnos).flatMap(([fecha, turnos]) => turnos);
-
+                const turnosArray = Object.entries(result.turnos).flatMap(([fecha, turnos]) => 
+                    turnos.map(t => ({ ...t, fecha_inicio: fecha })) // Aseguras que cada turno tenga su fecha asociada
+                  );
+                  
                 setTurnosHistorial(turnosArray);
                 setTurnosOriginales(turnosArray);
                 setSelectedEnfermera(enfermera);
@@ -122,7 +124,7 @@ export const HistoryTurnosSedePage = () => {
                                     <td>{e.per_documento}</td>
                                     <td>{e.enf_codigo}</td>
                                     <td>
-                                        <button className="btn" onClick={() => handleVerTurnos(e)}>
+                                        <button title='Ver Historial' className="btn" onClick={() => handleVerTurnos(e)}>
                                             <FaFileMedical />
                                         </button>
                                     </td>

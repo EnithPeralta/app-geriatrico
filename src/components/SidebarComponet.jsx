@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import "../css/side.css";
-import { FaAngleDoubleLeft, FaArrowCircleRight, FaHome, FaHotel, FaUser, FaUsersCog, FaUsers, FaHandshake, FaHospitalUser, FaUserNurse, FaBuilding, FaFileMedicalAlt, FaFileContract, FaUserPlus, FaUserCog, FaCapsules } from 'react-icons/fa';
+import { FaAngleDoubleLeft, FaArrowCircleRight, FaHome, FaHotel, FaUser, FaUsersCog, FaUsers, FaHandshake, FaHospitalUser, FaUserNurse, FaBuilding, FaFileMedicalAlt, FaFileContract, FaUserPlus, FaUserCog, FaCapsules, FaMedkit } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useAuthStore, useGeriatrico, useSede, useSession } from '../hooks';
 import { useNavigate } from "react-router-dom";
@@ -43,6 +43,8 @@ export const SideBarComponent = () => {
         }
     }, []);
 
+    
+
     useEffect(() => {
         if (esSuperAdmin) return;
 
@@ -68,7 +70,6 @@ export const SideBarComponent = () => {
 
             try {
                 const result = await obtenerSedesHome();
-                console.log("📡 Respuesta de la API:", result);
                 if (result.success && result.sede && result.geriatrico) {
                     setSede(result.sede);  // Aseguramos que `sede` es un objeto válido
                     setGeriatrico(result.geriatrico);
@@ -100,44 +101,44 @@ export const SideBarComponent = () => {
                                 </button>
                             </li>
                             <li>
-                                <Link to={'/geriatrico/superAdmin'}>
+                                <Link to={'/geriatrico/superAdmin'} title='Inicio'>
                                     <FaHome className='icon' />
                                     <span>Inicio</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={'/geriatrico/geriatrico'}>
+                                <Link to={'/geriatrico/geriatrico'} title='Geriatricos'>
                                     <FaHotel className='icon' />
                                     <span>Geriatricos</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={'/geriatrico/asignar'}>
+                                <Link to={'/geriatrico/asignar'} title='Personas'>
                                     <FaUsers className='icon' />
                                     <span>Personas</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={'/geriatrico/roles'}>
+                                <Link to={'/geriatrico/roles'} title='Roles'>
                                     <FaUserCog className='icon' />
                                     <span>Roles</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={'/register'}>
+                                <Link to={'/register'} title='Registrar'>
                                     <FaUserPlus />
                                     <span>Registrar</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={'/geriatrico/profile'}>
+                                <Link to={'/geriatrico/profile'} title='Perfil'>
                                     <FaUser className='icon' />
                                     <span>Perfil</span>
                                 </Link>
                             </li>
 
                             <li>
-                                <div onClick={startLogout}>
+                                <div onClick={startLogout} title='Salir'>
                                     <a>
                                         <FaArrowCircleRight className='icon' />
                                         <span>Salir</span>
@@ -168,11 +169,13 @@ export const SideBarComponent = () => {
                                     <FaAngleDoubleLeft />
                                 </button>
                             </li>
-                            <li onClick={() => {
-                                localStorage.removeItem("rol_id"); // 🔥 Borra el rol de localStorage
-                                dispatch(resetRol()); // 🔥 Resetea el rol en Redux
-                                navigate("/geriatrico/home"); // 🔀 Redirige
-                            }}>
+                            <li
+                                title='Inicio'
+                                onClick={() => {
+                                    localStorage.removeItem("rol_id"); // 🔥 Borra el rol de localStorage
+                                    dispatch(resetRol()); // 🔥 Resetea el rol en Redux
+                                    navigate("/geriatrico/home"); // 🔀 Redirige
+                                }}>
                                 <Link>
                                     <FaHome className="icon" />
                                     <span>Inicio</span>
@@ -180,31 +183,31 @@ export const SideBarComponent = () => {
                             </li>
 
                             <li>
-                                <Link to={'/geriatrico/sedes'}>
+                                <Link to={'/geriatrico/sedes'} title='Sedes'>
                                     <FaHotel />
                                     <span>Sedes</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={'/geriatrico/profile'}>
+                                <Link to={'/geriatrico/profile'} title='Perfil'>
                                     <FaUser />
                                     <span>Perfil</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={'/register'}>
+                                <Link to={'/register'} title='Registrar'>
                                     <FaUserPlus />
                                     <span>Registrar</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={'/geriatrico/gestionarPersonas'}>
+                                <Link to={'/geriatrico/gestionarPersonas'} title='Personas'>
                                     <FaUsersCog />
                                     <span>Personas</span>
                                 </Link>
                             </li>
                             <li>
-                                <div onClick={startLogout}>
+                                <div onClick={startLogout} title='Salir'>
                                     <a>
                                         <FaArrowCircleRight />
                                         <span>Salir</span>
@@ -225,7 +228,6 @@ export const SideBarComponent = () => {
 
     if (adminSede) {
         return (
-            <div className="main-container">
                 <div className="animate__animated animate__fadeInLeft">
                     <nav id="sidebar" className={sidebarOpen ? '' : 'close'} >
                         <ul>
@@ -236,87 +238,87 @@ export const SideBarComponent = () => {
                                 </button>
                             </li>
 
-                            <li onClick={() => {
-                                localStorage.removeItem("rol_id"); // 🔥 Borra el rol de localStorage
-                                dispatch(resetRol()); // 🔥 Resetea el rol en Redux
-                                navigate("/geriatrico/home"); // 🔀 Redirige
-                            }}>
+                            <li
+                                title='Inicio'
+                                onClick={() => {
+                                    localStorage.removeItem("rol_id"); // 🔥 Borra el rol de localStorage
+                                    dispatch(resetRol()); // 🔥 Resetea el rol en Redux
+                                    navigate("/geriatrico/home"); // 🔀 Redirige
+                                }}>
                                 <Link>
                                     <FaHome className="icon" />
                                     <span>Inicio</span>
                                 </Link>
                             </li>
-
                             <li>
-                                <Link to={'/geriatrico/profile'}>
-                                    <FaUser className='icon' />
-                                    <span>Perfil</span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to={'/geriatrico/inventarioSede'}>
-                                    <FaCapsules className='icon' />
-                                    <span>Inventario</span>
+                                <Link to={'/geriatrico/gestionarPersonas'}>
+                                    <FaUsersCog className='icon' title='Gestionar Personas' />
+                                    <span>Ver Persona</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link to={'/geriatrico/turnoSede'}>
-                                    <FaBuilding className='icon' />
+                                    <FaBuilding className='icon' title='Turnos Sede' />
                                     <span>Turnos Sede</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link to={'/geriatrico/pacientes'}>
-                                    <FaHospitalUser className='icon' />
+                                    <FaHospitalUser className='icon' title='Pacientes' />
                                     <span>Pacientes</span>
                                 </Link>
                             </li><li>
                                 <Link to={'/geriatrico/enfermeras'}>
-                                    <FaUserNurse className='icon' />
+                                    <FaUserNurse className='icon' title='Enfermeras' />
                                     <span>Enfermeras</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={'/geriatico/colaboradores'}>
-                                    <FaHandshake className='icon' />
+                                <Link to={'/geriatrico/colaboradores'}>
+                                    <FaHandshake className='icon' title='Colaboradores' />
                                     <span>Colaborador</span>
                                 </Link>
                             </li>
                             <li>
+                                <Link to={'/geriatrico/medicamentos'}>
+                                    <FaMedkit className='icon' title='Medicamentos' />
+                                    <span>Medicamento</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/inventarioSede'}>
+                                    <FaCapsules className='icon' title='Inventario' />
+                                    <span>Inventario</span>
+                                </Link>
+                            </li>
+                            <li>
                                 <Link to={'/register'}>
-                                    <FaUserPlus className='icon' />
+                                    <FaUserPlus className='icon' title='Registrar' />
                                     <span>Registrar</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={'/geriatrico/gestionarPersonas'}>
-                                    <FaUsersCog className='icon' />
-                                    <span>Ver Persona</span>
+                                <Link to={'/geriatrico/profile'}>
+                                    <FaUser className='icon' title='Perfil' />
+                                    <span>Perfil</span>
                                 </Link>
                             </li>
                             <li>
                                 <div onClick={startLogout}>
-                                    <a>
-                                        <FaArrowCircleRight className='icon' />
+                                    <Link>
+                                        <FaArrowCircleRight className='icon' title='Salir' />
                                         <span>Salir</span>
-                                    </a>
+                                    </Link>
                                 </div>
                             </li>
                         </ul>
                     </nav>
-
-                    {/* Contenedor del contenido principal */}
-                    <div className="content" >
-                        {/* Aquí se carga el contenido principal para Super Admin */}
-                    </div>
                 </div>
-            </div >
         );
     }
 
     if (enfermera) {
         return (
-            <div className="main-container">
                 <div className="animate__animated animate__fadeInLeft">
                     <nav id="sidebar" className={sidebarOpen ? '' : 'close'} >
                         <ul>
@@ -327,11 +329,13 @@ export const SideBarComponent = () => {
                                 </button>
                             </li>
 
-                            <li onClick={() => {
-                                localStorage.removeItem("rol_id"); // 🔥 Borra el rol de localStorage
-                                dispatch(resetRol()); // 🔥 Resetea el rol en Redux
-                                navigate("/geriatrico/home"); // 🔀 Redirige
-                            }}>
+                            <li
+                                title='Inicio'
+                                onClick={() => {
+                                    localStorage.removeItem("rol_id"); // 🔥 Borra el rol de localStorage
+                                    dispatch(resetRol()); // 🔥 Resetea el rol en Redux
+                                    navigate("/geriatrico/home"); // 🔀 Redirige
+                                }}>
                                 <Link>
                                     <FaHome className="icon" />
                                     <span>Inicio</span>
@@ -339,87 +343,37 @@ export const SideBarComponent = () => {
                             </li>
 
                             <li>
-                                <Link to={'/geriatrico/misTurnos'}>
+                                <Link to={'/geriatrico/misTurnos'} title='Mis Turnos'>
                                     <FaFileContract className='icon' />
                                     <span>Mis Turnos</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={'/geriatrico/historialTurnosEnfermera'}>
+                                <Link to={'/geriatrico/historialTurnosEnfermera'} title='Mis Historial'>
                                     <FaFileMedicalAlt className='icon' />
                                     <span>Mi Historial</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={'/geriatrico/pacientes'}>
+                                <Link to={'/geriatrico/pacientes'} title='Pacientes'>
                                     <FaHospitalUser className='icon' />
                                     <span>Pacientes</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={'/geriatrico/profile'}>
+                                <Link to={'/geriatrico/medicamentos'}>
+                                    <FaMedkit className='icon' title='Medicamentos' />
+                                    <span>Medicamento</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/profile'} title='Perfil'>
                                     <FaUser className='icon' />
                                     <span>Perfil</span>
                                 </Link>
                             </li>
                             <li>
-                                <div onClick={startLogout}>
-                                    <a>
-                                        <FaArrowCircleRight className='icon' />
-                                        <span>Salir</span>
-                                    </a>
-                                </div>
-                            </li>
-                        </ul>
-                    </nav>
-
-                    {/* Contenedor del contenido principal */}
-                    <div className="content" style={{ backgroundColor: geriatrico?.colores?.principal }}>
-                        {/* Aquí se carga el contenido principal para Super Admin */}
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    if (acudiente) {
-        return (
-            <div className="main-container">
-                <div className="animate__animated animate__fadeInLeft">
-                    <nav id="sidebar" className={sidebarOpen ? '' : 'close'} >
-                        <ul>
-                            <li>
-                                <img src={sede?.se_foto} alt="Logo" style={{ width: "100px", height: "100px", padding: "10px" }} className="logo-fundacion" />
-                                <button onClick={toggleSidebar} id="toggle-btn" className={sidebarOpen ? '' : 'rotate'}>
-                                    <FaAngleDoubleLeft />
-                                </button>
-                            </li>
-
-                            <li onClick={() => {
-                                localStorage.removeItem("rol_id"); // 🔥 Borra el rol de localStorage
-                                dispatch(resetRol()); // 🔥 Resetea el rol en Redux
-                                navigate("/geriatrico/home"); // 🔀 Redirige
-                            }}>
-                                <Link>
-                                    <FaHome className="icon" />
-                                    <span>Inicio</span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to={'/geriatrico/misPacientes'}>
-                                    <FaHospitalUser className='icon' />
-                                    <span>Pacientes</span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to={'/geriatrico/profile'}>
-                                    <FaUser className='icon' />
-                                    <span>Perfil</span>
-                                </Link>
-                            </li>
-
-                            <li>
-                                <div onClick={startLogout}>
+                                <div onClick={startLogout} title='Salir'>
                                     <a>
                                         <FaArrowCircleRight className='icon' />
                                         <span>Salir</span>
@@ -434,6 +388,61 @@ export const SideBarComponent = () => {
                         {/* Aquí se carga el contenido principal para Super Admin */}
                     </div>
                 </div>
+        );
+    }
+
+    if (acudiente) {
+        return (
+                <div className="animate__animated animate__fadeInLeft">
+                    <nav id="sidebar" className={sidebarOpen ? '' : 'close'} >
+                        <ul>
+                            <li>
+                                <img src={sede?.se_foto} alt="Logo" style={{ width: "100px", height: "100px", padding: "10px" }} className="logo-fundacion" />
+                                <button onClick={toggleSidebar} id="toggle-btn" className={sidebarOpen ? '' : 'rotate'}>
+                                    <FaAngleDoubleLeft />
+                                </button>
+                            </li>
+
+                            <li
+                                title='Inicio'
+                                onClick={() => {
+                                    localStorage.removeItem("rol_id"); // 🔥 Borra el rol de localStorage
+                                    dispatch(resetRol()); // 🔥 Resetea el rol en Redux
+                                    navigate("/geriatrico/home"); // 🔀 Redirige
+                                }}>
+                                <Link>
+                                    <FaHome className="icon" />
+                                    <span>Inicio</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/misPacientes'} title='Mis Pacientes'>
+                                    <FaHospitalUser className='icon' />
+                                    <span>Pacientes</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={'/geriatrico/profile'} title='Perfil'>
+                                    <FaUser className='icon' />
+                                    <span>Perfil</span>
+                                </Link>
+                            </li>
+
+                            <li>
+                                <div onClick={startLogout} title='Salir'>
+                                    <a>
+                                        <FaArrowCircleRight className='icon' />
+                                        <span>Salir</span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    {/* Contenedor del contenido principal */}
+                    <div className="content">
+                        {/* Aquí se carga el contenido principal para Super Admin */}
+                    </div>
             </div>
         );
     }

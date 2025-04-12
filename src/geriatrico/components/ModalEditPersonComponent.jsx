@@ -51,7 +51,7 @@ export const ModalEditPersonComponent = ({ editedPersona, onClose, setPersonas }
         const { name, value } = e.target;
         setPersonaEditada(prev => ({
             ...prev,
-            [name]: value,
+            [name]: value
         }));
     };
 
@@ -69,12 +69,12 @@ export const ModalEditPersonComponent = ({ editedPersona, onClose, setPersonas }
 
         if (result.success) {
             setPersonas(prev =>
-                prev.map(p => (p.id === result.persona.id ? result.persona : p))
+                prev.map(p => (p.id === personaEditada.id ? { ...p, ...personaEditada } : p))
             );
             onClose();
             Swal.fire({
                 icon: "success",
-                text: "Persona actualizada exitosamente",
+                text: result.message,
             });
         } else {
             console.error(result.message);

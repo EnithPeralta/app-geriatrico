@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaArrowUp } from 'react-icons/fa';
 
 export const CardPersonEnfermera = ({ enfermera, onClick, onInactivate, onCrearTurno }) => {
     return (
@@ -18,12 +19,12 @@ export const CardPersonEnfermera = ({ enfermera, onClick, onInactivate, onCrearT
                 )}
             </div>
             <div className="buttons-asignar">
-                <button className={enfermera.activoSede ? 'asignar' : 'inactive'} onClick={onInactivate}>
+                <button className={enfermera.activoSede ? 'asignar' : 'inactive'} onClick={onInactivate} title='Inactivar'>
                     <i className={`fa-solid ${enfermera.activoSede ? "fa-user-gear asignar" : "fa-user-slash inactive"}`} />
                 </button>
                 {enfermera.activoSede && (
-                    <button className="turnos" onClick={onCrearTurno}>
-                        <i className="fa-solid fa-user-pen i-asignar"></i>
+                    <button className="turnos" onClick={onCrearTurno} title='Asignar Turno'>
+                        <FaArrowUp />
                     </button>
                 )}
             </div>

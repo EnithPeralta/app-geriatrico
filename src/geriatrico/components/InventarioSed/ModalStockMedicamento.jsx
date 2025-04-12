@@ -1,32 +1,31 @@
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
 import { useInventarioSede } from '../../../hooks';
 import Swal from 'sweetalert2';
 
 export const ModalStockMedicamento = ({ med_sede_id, onClose, setMedicamento }) => {
     const [total, setTotal] = useState('');
-    const { agregarStockMedicamento } = useInventarioSede();
+    const [medOrigen, setMedOrigen] = useState('');
+    const { entradaStockMedicamentoInvSede } = useInventarioSede();
 
     const handleAgregarStock = async (e) => {
         e.preventDefault();
 
         if (!total || isNaN(total) || total <= 0) {
-            Swal.fire({
-                icon: 'error',
-                text: "Ingrese una cantidad válida."
-            });
+            Swal.fire({ icon: 'error', text: "Ingrese una cantidad válida." });
+            return;
+        }
+
+        if (!medOrigen.trim()) {
+            Swal.fire({ icon: 'error', text: "Debe indicar el origen del medicamento." });
             return;
         }
 
         const totalInt = parseInt(total);
-        const response = await agregarStockMedicamento(med_sede_id, totalInt);
+        const response = await entradaStockMedicamentoInvSede(med_sede_id, totalInt, medOrigen);
 
         if (response.success) {
-            Swal.fire({
-                icon: 'success',
-                text: response.message
-            });
+            Swal.fire({ icon: 'success', text: response.message });
 
-            // ✅ Actualizamos el stock del medicamento directamente
             setMedicamento(prevState =>
                 prevState.map(med =>
                     med.med_sede_id === med_sede_id
@@ -36,12 +35,10 @@ export const ModalStockMedicamento = ({ med_sede_id, onClose, setMedicamento }) 
             );
 
             setTotal('');
+            setMedOrigen('');
             onClose();
         } else {
-            Swal.fire({
-                icon: 'error',
-                text: `❌ Error: ${response.message}`
-            });
+            Swal.fire({ icon: 'error', text: `❌ Error: ${response.message}` });
             console.error(`❌ Error al agregar stock: ${response.message}`);
         }
     };
@@ -53,6 +50,7 @@ export const ModalStockMedicamento = ({ med_sede_id, onClose, setMedicamento }) 
                     <h2>Agregar Unidades Disponibles</h2>
                     <form onSubmit={handleAgregarStock}>
                         <div className="modal-field">
+                            <label>Cantidad:</label>
                             <input
                                 type="number"
                                 value={total}
@@ -60,9 +58,20 @@ export const ModalStockMedicamento = ({ med_sede_id, onClose, setMedicamento }) 
                                 min="1"
                             />
                         </div>
+                        <div className="modal-field">
+                            <label>Origen de medicamento:</label>
+                            <select name="presentacion" value={medOrigen} onChange={(e) => setMedOrigen(e.target.value)}
+                            >
+                                <option value="" hidden>Seleccionar</option>
+                                <option value="EPS">EPS</option>
+                                <option value="Compra Directa">Compra Directa</option>
+                                <option value="Donación">Donación</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
                         <div className="modal-buttons">
-                            <button type="submit" className="create">Guardar</button>
-                            <button type="button" className="cancel" onClick={onClose}>Cancelar</button>
+                            <button type="submit" className="save-button">Guardar</button>
+                            <button type="button" className="cancel-button" onClick={onClose}>Cancelar</button>
                         </div>
                     </form>
                 </div>

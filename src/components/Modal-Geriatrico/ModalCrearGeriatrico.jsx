@@ -54,7 +54,7 @@ export const ModalCrearGeriatrico = ({ isOpen, onClose, onSave }) => {
     return (
         <div className="modal-overlay" onClick={(e) => e.stopPropagation()}>
             <div className="modal">
-                <div className="modal-content-geriatrico">
+                <div className="modal-content">
                     <form onSubmit={handleSubmit}>
                         <div className="modal-field">
                             <label>Nombre</label>
@@ -82,8 +82,6 @@ export const ModalCrearGeriatrico = ({ isOpen, onClose, onSave }) => {
                                 <input type="color" className="color-box" style={{ backgroundColor: formData.ge_color_terciario }} name="ge_color_terciario" value={formData.ge_color_terciario} onChange={handleChange} required />
                             </div>
                         </div>
-                        {error && <p className="error-message">{error}</p>}
-                        {success && <p className="success-message">{success}</p>}
                         <div className="modal-buttons">
                             <button type="submit" className="create" disabled={loading}>
                                 {loading ? "Guardando..." : "Crear"}

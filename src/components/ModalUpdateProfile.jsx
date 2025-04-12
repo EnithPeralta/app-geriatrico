@@ -96,8 +96,8 @@ export const ModalUpdateProfile = ({ persona, updatePersona, setPersona, showMod
                             <input className="modal-input" type="text" name="telefono" value={editedPersona.telefono} onChange={handleChange} required />
                         </div>
                         <div className="modal-buttons">
-                            <button type="submit" className="create">Guardar</button>
-                            <button type="button" className="cancel" onClick={() => setShowModal(false)}>Cancelar</button>
+                            <button type="submit" className="save-button">Actualizar</button>
+                            <button type="button" className="cancel-button" onClick={() => setShowModal(false)}>Cancelar</button>
                         </div>
                     </form>
                 </div>

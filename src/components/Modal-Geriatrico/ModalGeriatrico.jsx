@@ -4,7 +4,7 @@ export const ModalGeriatrico = ({ geriatrico, isOpen, onClose }) => {
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-sedes" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-content">
                     <span className="modal-name">{geriatrico.ge_nombre}</span>
                     <p className="modal-nit">NIT: {geriatrico.ge_nit}</p>
@@ -38,7 +38,9 @@ export const ModalGeriatrico = ({ geriatrico, isOpen, onClose }) => {
                             <p>No hay sedes registradas</p>
                         )}
                     </ul>
-                    <button onClick={onClose} className="details-button">Cerrar</button>
+                    <div className="modal-buttons">
+                        <button onClick={onClose} className="cancel-button">Cerrar</button>
+                    </div>
                 </div>
 
             </div>

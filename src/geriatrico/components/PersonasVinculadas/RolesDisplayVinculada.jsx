@@ -362,11 +362,11 @@ const RolesDisplayVinculada = ({ rolesPersonas, person }) => {
 
                     {periodoActivoSede?.activo && activeSede &&  !tieneRolAcudiente && (
                         (session.rol_id === 2 && esAdminSedeActivo) ? (
-                            <button className="inactive" onClick={() => handleInactivarRolAdminSede(activeSede)}>
+                            <button className="inactive" title='Inactivar' onClick={() => handleInactivarRolAdminSede(activeSede)}>
                                 <FaUserAltSlash />
                             </button>
                         ) : (session.rol_id === 3 && tieneRolDiferenteDeAcudiente) && (
-                            <button className="inactive" onClick={() => handleInactivarRolesSede(activeSede)}>
+                            <button className="inactive" title='Inactivar' onClick={() => handleInactivarRolesSede(activeSede)}>
                                 <FaUserAltSlash />
                             </button>
                         )

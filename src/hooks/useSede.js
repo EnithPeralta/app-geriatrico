@@ -8,40 +8,37 @@ export const useSede = () => {
 
     const obtenerSedesGeriatrico = async () => {
         dispatch(startSede());
-    
+
         const token = getToken();
-        console.log("🔑 Token obtenido:", token);
-    
+
         if (!token) {
             const errorMessage = "Token de autenticación no encontrado";
             console.error(errorMessage);
             dispatch(setSedeError(errorMessage));
             return { success: false, message: errorMessage, sedes: [] };
         }
-    
+
         try {
             const { data } = await geriatricoApi.get("/sedes/sedesGeriatrico", {
                 headers: { Authorization: `Bearer ${token}` },
             });
-    
-            console.log("✅ Respuesta del servidor:", data);
-    
+
             if (!data.sedes || !Array.isArray(data.sedes)) {
                 throw new Error("Formato de respuesta inválido");
             }
-    
+
             dispatch(setSede(data.sedes));
-    
+
             return { success: true, message: data.message || "Sedes obtenidas exitosamente", sedes: data.sedes };
         } catch (error) {
             console.error("❌ Error al obtener sedes:", error);
             const errorMessage = error.response?.data?.error || "Error al obtener las sedes";
             dispatch(setSedeError(errorMessage));
-    
+
             return { success: false, message: errorMessage, sedes: [] };
         }
     };
-    
+
 
     const createSede = async ({ se_nombre, se_telefono, se_direccion, cupos_totales, cupos_ocupados, se_foto }) => {
         dispatch(startSede());
@@ -267,79 +264,75 @@ export const useSede = () => {
 
     const obtenerSedesHome = async () => {
         dispatch(startSede());
-        console.log("📡 Intentando obtener información para la home...");
-    
         const token = getToken();
-        
-        console.log("token", token);
         if (!token) {
             const errorMessage = "❌ Token de autenticación no encontrado";
             dispatch(setSedeError(errorMessage));
             return { success: false, message: errorMessage, sede: null, usuario: null, rol: null };
         }
-    
+
         try {
             const { data } = await geriatricoApi.get("/sedes/homeSede", {
                 headers: { Authorization: `Bearer ${token}` },
             });
-    
-    
+
+
             // Desestructurar la respuesta del servidor
-            const { sede, usuario, rol , geriatrico } = data;
-    
+            const { sede, usuario, rol, geriatrico } = data;
+
             // Guardar la sede, usuario y rol en el estado global
             dispatch(setSede(sede));
             dispatch(setUsuario(usuario));
             dispatch(setSedeRol(rol));
-    
-            return { 
-                success: true, 
-                message: data.message || "Información obtenida exitosamente", 
+
+            return {
+                success: true,
+                message: data.message || "Información obtenida exitosamente",
                 geriatrico,
-                sede, 
-                usuario, 
-                rol 
+                sede,
+                usuario,
+                rol
             };
-    
+
         } catch (error) {
             console.error("❌ Error al obtener datos:", error);
-    
+
             const errorMessage = error.response?.data?.message || "Error al obtener la información";
             dispatch(setSedeError(errorMessage));
-    
-            return { success: false, message: errorMessage, sede: null, usuario: null, rol: null , geriatrico: null };
+
+            return { success: false, message: errorMessage, sede: null, usuario: null, rol: null, geriatrico: null };
         }
     };
-    
+
     const obtenerDetalleSede = async (se_id) => {
         dispatch(startSede());
         console.log("🔍 Intentando obtener información para la sede...");
-    
+
         const token = getToken();
         if (!token) {
             const errorMessage = "Token de autenticación no encontrado";
             dispatch(setSedeError(errorMessage));
             return { success: false, message: errorMessage, sede: null };
         }
-    
+
         try {
             // Include the se_id in the API call
             const { data } = await geriatricoApi.get(`/sedes/${se_id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-    
+
             console.log("✅ Respuesta del servidor:", data);
-    
+
             return { success: true, message: data.message || "Información obtenida exitosamente", sede: data.sede };
-    
+
         } catch (error) {
             console.error("❌ Error al obtener datos:", error);
-    
+
             const errorMessage = error.response?.data?.message || "Error al obtener la información";
             dispatch(setSedeError(errorMessage));
-    
+
             return { success: false, message: errorMessage, sede: null };
         }
-    }; 
+    };
     return { obtenerSedesGeriatrico, createSede, actualizarSede, reactivarSedes, inactivarSedes, obtenerSedesHome, obtenerDetalleSede };
 };

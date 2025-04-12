@@ -1,66 +1,160 @@
-import React, { useState } from 'react';
-import { useInventarioPaciente } from '../../../hooks';
+import React, { useEffect, useState } from 'react';
+import { useInventarioPaciente, useInventarioSede } from '../../../hooks';
 import Swal from 'sweetalert2';
+import Select from 'react-select';
 
-export const ModalInventarioPaciente = ({ pac_id, onClose }) => {
-    const [medicamento, setMedicamento] = useState({
-        pac_id,
-        med_nombre: '',
-        med_presentacion: '',
-        unidades_por_presentacion: '',
-        med_descripcion: ''
-    });
 
-    const { registrarMedicamentoPaciente } = useInventarioPaciente();
+export const ModalInventarioPaciente = ({ onClose, pac_id,onMedicamentoAgregado}) => {
+    const { vincularMedicamentoInvPac } = useInventarioPaciente();
+    const { obtenerMedicamentosSede } = useInventarioSede();
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setMedicamento((prev) => ({ ...prev, [name]: value }));
+    const [medicamentosGenerales, setMedicamentosGenerales] = useState([]);
+    const [medicamentoSeleccionado, setMedicamentoSeleccionado] = useState('');
+    const [presentacion, setPresentacion] = useState('');
+    const [totalUnidades, setTotalUnidades] = useState('');
+    const [medicamentos, setMedicamentos] = useState([]);
+    const [detalleMedicamento, setDetalleMedicamento] = useState(null);
+
+
+    useEffect(() => {
+        const fetchMedicamentos = async () => {
+            const response = await obtenerMedicamentosSede();
+            if (response.success) {
+                setMedicamentosGenerales(response.data);
+            } else {
+                Swal.fire('Error', 'No se pudieron cargar los medicamentos', 'error');
+            }
+        };
+        fetchMedicamentos();
+    }, []);
+
+
+    const opciones = medicamentosGenerales.map((med) => ({
+        value: med.med_id,
+        label: med.med_nombre,
+        presentacion: med.med_presentacion,
+        nombre: med.med_nombre,
+        unidad: med.unidades_por_presentacion,
+    }));
+
+
+    const handleChange = (opcion) => {
+        setMedicamentoSeleccionado(opcion.value);
+        setDetalleMedicamento({
+            presentacion: opcion.presentacion,
+            nombre: opcion.nombre,
+            unidad: opcion.unidad,
+        });
     };
 
-    const handleRegistrarMedicamento = async (event) => {
-        event.preventDefault();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!medicamentoSeleccionado || !presentacion || !totalUnidades) {
+            return Swal.fire('Campos incompletos', 'Por favor completa todos los campos', 'warning');
+        }
+
         try {
-            const response = await registrarMedicamentoPaciente(medicamento);
-            Swal.fire({
-                icon: 'success',
-                text: response.message
+            const response = await vincularMedicamentoInvPac({
+                med_id: Number(medicamentoSeleccionado),
+                pac_id: Number(pac_id),
+                cantidad: parseInt(totalUnidades),
+                med_origen: presentacion
             });
-            console.log("Medicamento registrado correctamente.", response);
-            onClose(); // Cerrar modal después de registrar
+
+            if (response.success) {
+                setMedicamentos(prev => [...prev, response.data?.inventario]);
+                Swal.fire({
+                    icon: 'success',
+                    text: response.message
+                });
+                onMedicamentoAgregado(response.data?.inventario); 
+                onClose();
+            } else {
+                Swal.fire('Error', response.message || 'Ocurrió un error al guardar', 'error');
+            }
         } catch (error) {
-            console.error("Error al registrar medicamento:", error);
-            Swal.fire({
-                icon: 'error',
-                text: error.message
-            });
+            console.error(error);
+            Swal.fire('Error', 'Ocurrió un error inesperado', 'error');
         }
     };
 
     return (
         <div className="modal-overlay">
             <div className="modal">
-                <div className="modal-content-geriatrico">
-                    <form onSubmit={handleRegistrarMedicamento}>
+                <div className="modal-content">
+                    <h3>Agregar medicamento al paciente</h3>
+                    <form onSubmit={handleSubmit}>
                         <div className="modal-field">
-                            <label>Nombre:</label>
-                            <input type="text" name="med_nombre" value={medicamento.med_nombre} onChange={handleChange} />
+                            <label>Medicamento:</label>
+                            <Select
+                                options={opciones}
+                                onChange={handleChange}
+                                placeholder="Buscar medicamento..."
+                            />
+
+                            {detalleMedicamento && (
+                                <>
+                                    <div className='modal-fiel'>
+                                        <label>Presentación</label>
+                                        <input
+                                            type="text"
+                                            name="med_nombre"
+                                            value={detalleMedicamento.presentacion}
+                                            readOnly
+                                        />
+                                    </div>
+                                    <div className='modal-field'>
+                                        <label>Nombre del medicamento:</label>
+                                        <input
+                                            type="text"
+                                            name="med_nombre"
+                                            value={detalleMedicamento.nombre}
+                                            readOnly
+                                        />
+                                    </div>
+                                    <div className='modal-field'>
+                                        <label>Unidad de presentación:</label>
+                                        <input
+                                            type="text"
+                                            name="med_nombre"
+                                            value={detalleMedicamento.unidad}
+                                            readOnly
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
+
                         <div className="modal-field">
-                            <label>Presentación:</label>
-                            <input type="text" name="med_presentacion" value={medicamento.med_presentacion} onChange={handleChange} />
+                            <label>Origen del medicamento:</label>
+                            <select
+                                name="presentacion"
+                                value={presentacion}
+                                onChange={(e) => setPresentacion(e.target.value)}
+                            >
+                                <option value="" hidden>Seleccionar</option>
+                                <option value="EPS">EPS</option>
+                                <option value="Compra Directa">Compra Directa</option>
+                                <option value="Donación">Donación</option>
+                                <option value="Otro">Otro</option>
+                            </select>
                         </div>
+
                         <div className="modal-field">
-                            <label>Unidades por Presentación:</label>
-                            <input type="number" name="unidades_por_presentacion" value={medicamento.unidades_por_presentacion} onChange={handleChange} />
+                            <label>Total de unidades:</label>
+                            <input
+                                type="number"
+                                min="1"
+                                value={totalUnidades}
+                                onChange={(e) => setTotalUnidades(e.target.value)}
+                            />
                         </div>
-                        <div className="modal-field">
-                            <label>Descripción:</label>
-                            <input type="text" name="med_descripcion" value={medicamento.med_descripcion} onChange={handleChange} />
-                        </div>
+
                         <div className="modal-buttons">
-                            <button type="submit" className="create">Guardar</button>
-                            <button type="button" className="cancel" onClick={onClose}>Cancelar</button>
+                            <button type="submit" className="save-button">Guardar</button>
+                            <button type="button" className="cancel-button" onClick={onClose}>Cancelar</button>
                         </div>
                     </form>
                 </div>

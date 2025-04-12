@@ -123,7 +123,7 @@ export const ModalEnfermeraPersona = ({ enfermeraDocumento, handleAssignSedes, s
         <>
             <div className='modal-overlay'>
                 <div className='modal'>
-                    <div className='modal-content-geriatrico'>
+                    <div className='modal-content'>
                         <form onSubmit={registerSubmit}>
                             <div className='modal-field'>
                                 <label>Nombre Completo</label>

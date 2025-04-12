@@ -57,8 +57,9 @@ export const ModalEditarGeriatrico = ({ geriatrico, isOpen, onClose, onUpdate, u
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-content-geriatrico" >
+                <div className="modal-content" >
                     <form onSubmit={handleSubmit} >
+                        <h2 className="h4">Editar Geriatrico</h2>
                         <div className="modal-field">
                             <label>Nombre</label>
                             <input
@@ -117,8 +118,8 @@ export const ModalEditarGeriatrico = ({ geriatrico, isOpen, onClose, onUpdate, u
                             ))}
                         </div>
                         <div className="modal-buttons">
-                            <button type="submit" className="create">Guardar</button>
-                            <button type="button" onClick={onClose} className="cancel">Cancelar</button>
+                            <button type="submit" className="save-button">Guardar</button>
+                            <button type="button" onClick={onClose} className="cancel-button">Cancelar</button>
                         </div>
                     </form>
                 </div>

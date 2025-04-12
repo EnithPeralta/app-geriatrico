@@ -118,7 +118,7 @@ export const EnfermerasPage = () => {
         console.log("Sedes obtenidas:", response.data?.persona?.sedes);
     
         // Buscar el rol correcto en las sedes
-        const rolesValidos = ["Paciente", "Enfermera(O)", "Colaborador"];
+        const rolesValidos = ["Paciente", "Enfermera(o)", "Colaborador"];
         const sedeConRol = response.data.persona.sedes.find(sede =>
             sede.roles.some(rol => rolesValidos.includes(rol.rol_nombre))
         );
@@ -192,9 +192,9 @@ export const EnfermerasPage = () => {
     };
 
     return (
-        <div className="main-container" style={{ backgroundColor: geriatrico?.color_principal }}>
+        <div className="main-container" >
             <SideBarComponent />
-            <div className="content-area">
+            <div className="content-area" style={{ backgroundColor: geriatrico?.color_principal }}>
                 <div className="gestionar">
                     <h2 className="gestionar-title">Enfermeras</h2>
                     <button className="gestionar-btn" onClick={() => setShowRegisterEnfermera(true)}>

@@ -2,13 +2,7 @@ import { getToken } from '../helpers';
 import geriatricoApi from '../api/geriatricoApi';
 
 export const useInventarioPaciente = () => {
-    const registrarMedicamentoPaciente = async ({
-        pac_id,
-        med_nombre,
-        med_presentacion,
-        unidades_por_presentacion,
-        med_descripcion
-    }) => {
+    const vincularMedicamentoInvPac = async ({ med_id, pac_id, cantidad, med_origen }) => {
         const token = getToken();
         if (!token) {
             return {
@@ -16,16 +10,16 @@ export const useInventarioPaciente = () => {
                 message: "Token de autenticación no encontrado.",
             };
         }
+
         try {
+            const medicamentoId = Number(med_id);
             const pacienteId = Number(pac_id);
 
             const { data } = await geriatricoApi.post(
-                `/inventariomedicamentospaciente/registrar/${pacienteId}`,
+                `/inventariomedicamentospaciente/vinculoinicial/${medicamentoId}/${pacienteId}`,
                 {
-                    med_nombre,
-                    med_presentacion,
-                    unidades_por_presentacion,
-                    med_descripcion,
+                    cantidad,
+                    med_origen,
                 },
                 {
                     headers: {
@@ -33,6 +27,7 @@ export const useInventarioPaciente = () => {
                     },
                 }
             );
+
             console.log("✅ Respuesta del servidor:", data);
             return {
                 success: true,
@@ -44,7 +39,7 @@ export const useInventarioPaciente = () => {
             return {
                 success: false,
                 message: error.response?.data?.message || "Ocurrió un error inesperado.",
-                error: error.response?.data || error.message
+                error: error.response?.data || error.message,
             };
         }
     };
@@ -83,7 +78,7 @@ export const useInventarioPaciente = () => {
         }
     }
 
-    const agregarStockMedicamentoPac = async ({ med_pac_id, med_cantidad }) => {
+    const entradaStockMedicamentoInvPaciente = async ({ med_pac_id, cantidad, med_origen }) => {
         const token = getToken();
         if (!token) {
             return {
@@ -94,20 +89,22 @@ export const useInventarioPaciente = () => {
         try {
             const medicamentoId = Number(med_pac_id);
             const { data } = await geriatricoApi.put(
-                `/inventariomedicamentospaciente/agregarstock/${medicamentoId}`,
-                { med_cantidad },
+                `/inventariomedicamentospaciente/entradastock/${medicamentoId}`,
+                { cantidad, med_origen },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 }
             );
+            const { inventario, message } = data;
+
             console.log("✅ Respuesta del servidor:", data);
 
             return {
                 success: true,
-                message: data.message || "Stock actualizado correctamente.",
-                data,
+                message: message || "Stock actualizado correctamente.",
+                data: inventario,
             };
 
         } catch (error) {
@@ -120,7 +117,7 @@ export const useInventarioPaciente = () => {
         }
     }
 
-    const actualizarMedicamentoPac = async (med_pac_id, { med_nombre, med_presentacion, unidades_por_presentacion, med_descripcion }) => {
+    const salidaStockMedicamentoInvPaciente = async ({ med_pac_id, cantidad, med_destino }) => {
         const token = getToken();
         if (!token) {
             return {
@@ -131,33 +128,37 @@ export const useInventarioPaciente = () => {
         try {
             const medicamentoId = Number(med_pac_id);
             const { data } = await geriatricoApi.put(
-                `/inventariomedicamentospaciente/${medicamentoId}`,
-                { med_nombre, med_presentacion, unidades_por_presentacion, med_descripcion },
+                `/inventariomedicamentospaciente/salidastock/${medicamentoId}`,
+                { cantidad, med_destino },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 }
             );
+            const { inventario, message } = data;
+
             console.log("✅ Respuesta del servidor:", data);
+
             return {
                 success: true,
-                message: data.message || "Medicamento actualizado exitosamente.",
-                data,
+                message: message || "Stock actualizado correctamente.",
+                data: inventario,
             };
+
         } catch (error) {
-            console.error("❌ Error al actualizar medicamento:", error);
+            console.error("❌ Error al actualizar stock:", error);
             return {
                 success: false,
-                message: error.response?.data?.message || "Ocurrio un error inesperado.",
+                message: error.response?.data?.message || "Ocurrió un error inesperado.",
                 error: error.response?.data || error.message
             };
         }
     }
     return {
-        registrarMedicamentoPaciente,
+        vincularMedicamentoInvPac,
         obtenerMedicamentosInvPaciente,
-        agregarStockMedicamentoPac,
-        actualizarMedicamentoPac
+        entradaStockMedicamentoInvPaciente,
+        salidaStockMedicamentoInvPaciente
     };
 };

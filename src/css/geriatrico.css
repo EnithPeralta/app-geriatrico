@@ -35,7 +35,7 @@
 .search-input {
     padding: 20px;
     padding-left: 25px; /* Ajusta para dejar espacio al icono */
-    width: 97%;
+    width: 98.5%;
     border: 2px solid #ccc;
     border-radius: 10px;
     font-size: 16px;
@@ -209,33 +209,41 @@
     cursor: pointer;
     transition: background 0.3s ease;
     color: white;
-    background-color: #374151;
     margin:0px ;
-
 }
 
   img{
   border-radius: 10px;
   }
 
-.actions .toggle-button .edit-button-sedes{
+.actions .edit-button-sedes{
     background: rgba(0, 0, 0, 1);
 }
 
-
+.toggle-button{
+  background-color:  rgba(0, 0, 0, 1);
+}
 
 .toggle-button:hover {
+    background-color: #ff9f22;
+    transform: scale(1.1);
+}
+
+.edit-button {
     background-color: #0090BC;
     transform: scale(1.1);
 }
 
 .edit-button:hover , .edit-button-sedes:hover {
-    background-color: #0090bc;
+    background-color: #0481a7;
     transform: scale(1.1);
 }
 
 .fas {
-    font-size: 25px;
+  font-size: 20px;
+}
+.fa-edit{
+  font-size: 19px;
 }
 .grid-item-geriatrico i {
   font-size: 30px;

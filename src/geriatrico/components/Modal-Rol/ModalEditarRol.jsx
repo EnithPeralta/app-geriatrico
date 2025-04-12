@@ -41,7 +41,7 @@ export const ModalEditarRol = ({ isOpen, onClose, rol, onUpdate }) => {
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal">
 
-                <div className="modal-content-geriatrico" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                     <h2 className="rol-name">Editar Rol</h2>
 
                     {error && <p className="error-message">{error}</p>}

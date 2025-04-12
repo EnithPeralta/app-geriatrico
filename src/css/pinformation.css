@@ -55,6 +55,7 @@
   display: flex;
   justify-content: flex-end;
   margin-top: 10px; /* Opcional, para dar un poco de espacio */
+  gap: 10px;
 }
 
 .acudiente-button {

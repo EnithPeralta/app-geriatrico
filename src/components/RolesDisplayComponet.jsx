@@ -25,12 +25,11 @@ export const RolesDisplayComponet = ({ rolesPersonas, person, getId }) => {
         console.log("Estado de activeRol actualizado:", activeRol);
     }, [activeRol]);
 
-    const handleInactivarRolGeriatrico = async (event) => {
-        event.preventDefault(); 
+    const handleInactivarRolGeriatrico = async () => {
 
-    
+
         const per_id = Number(person.per_id);
-        const ge_id = Number(getId) 
+        const ge_id = Number(getId)
         const rol_id = rolesPersonas.rolesGeriatrico?.[0]?.rol_id;
 
         // Verificar que per_id, ge_id y rol_id sean números válidos
@@ -124,7 +123,7 @@ export const RolesDisplayComponet = ({ rolesPersonas, person, getId }) => {
     const periodoActivoSede = rolesPersonas.sedes
         ?.find(sede => sede.se_nombre === activeSede)
         ?.roles
-        ?.find(rol => rol.rol_nombre === activeRol)  // Buscar el rol activo en la sede seleccionada
+        ?.find(rol => rol.rol_nombre === activeRol) 
         ?.periodos
         ?.find(p => p.rol_activo !== undefined) || null;
 
@@ -183,9 +182,12 @@ export const RolesDisplayComponet = ({ rolesPersonas, person, getId }) => {
                                     </p>
                                     <p><strong>Fecha de Inicio:</strong> {periodoActivoGeriatrico?.fechaInicio || "No disponible"}</p>
                                     <p><strong>Fecha de Fin:</strong> {periodoActivoGeriatrico?.fechaFin || "No disponible"}</p>
-                                    <button className="inactive" onClick={() => handleInactivarRolGeriatrico(activeTab)}>
-                                        <FaUserAltSlash />
-                                    </button>
+                                    {periodoActivoGeriatrico?.activo && (
+                                        <button className="inactive" onClick={() => handleInactivarRolGeriatrico(activeTab)}>
+                                            <FaUserAltSlash />
+                                        </button>
+                                    )
+                                    }
                                 </div>
                             </div>
                         </div>

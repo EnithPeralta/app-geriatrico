@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaArrowUp, FaUserEdit } from 'react-icons/fa';
 
 export const PersonCardGestion = ({ persona, onClick, onEdit, onAssign }) => {
     return (
@@ -19,11 +20,11 @@ export const PersonCardGestion = ({ persona, onClick, onEdit, onAssign }) => {
             </div>
 
             <div className="buttons-asignar">
-                <button className="edit-button-asignar" onClick={onEdit}>
-                    <i className="fa-solid fa-user-pen i-asignar"></i>
+                <button className="edit-button-asignar" onClick={onEdit} title='Editar'>
+                    <FaUserEdit className='i-asignar' />
                 </button>
-                <button className="add-button-asignar" onClick={onAssign}>
-                    <i className="fas fa-arrow-up i-asignar"></i>
+                <button className="add-button-asignar" onClick={onAssign} title='Vincular' >
+                    <FaArrowUp />
                 </button>
             </div>
         </div>

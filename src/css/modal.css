@@ -17,11 +17,22 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 400px; /* Aumentado un poco para mejorar el espaciado */
   }
+
+  .modal-sedes {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
   
   .modal-geriatrico{
-    background-color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 80%;
+    background: #fff;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 2rem;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   }
   
   .modal-content {
@@ -33,15 +44,15 @@
     max-width: 900px; /* Ajusta el ancho máximo */
     max-height: 80vh; /* No ocupar más del 80% de la altura de la pantalla */
     overflow-y: auto; /* Habilita el scroll si hay mucho contenido */
-  text-align: center;
+    text-align: center;
   }
 
-  .modal-content-geriatrico{
+  .modal-geriatrico{
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 300% !important;
-    max-width: 300px; /* Ajusta el ancho máximo */
+    max-width: 900px; /* Ajusta el ancho máximo */
     max-height: 80vh; /* No ocupar más del 80% de la altura de la pantalla */
     overflow-y: auto; /* Habilita el scroll si hay mucho contenido */
     text-align: left;
@@ -112,7 +123,8 @@
   .modal-field input[type="password"],
   .modal-field input[type="file"],
   .modal-field input[type="select"],
-  .modal-field textarea {
+  .modal-field textarea,
+  .modal-field input[type="number"]{
     width: 100%;
     padding: 8px;
     border: 1px solid #cbd5e0;

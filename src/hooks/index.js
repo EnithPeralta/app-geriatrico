@@ -19,3 +19,8 @@ export * from './useRecomendaciones';
 export * from './useDiagnostico';
 export * from './useInventarioSede';
 export * from './useInventarioPaciente';
+export * from './useMedicamento';
+export * from './useMovimientosStockSede';
+export * from './useMovimientosStockPaciente';
+export * from './useFormulacionMedicamentos';
+export * from './useColaboradores';

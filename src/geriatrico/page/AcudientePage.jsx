@@ -43,6 +43,15 @@ export const AcudientePage = () => {
 
         if (confirm.isConfirmed) {
             const result = await inactivarRelacionAcudiente(pa_id);
+            if (result.success) {
+                setAcudientes((prev) =>
+                    prev.map((acudiente) =>
+                        acudiente.pa_id === pa_id
+                            ? { ...acudiente, acudienteActivo: false }
+                            : acudiente
+                    )
+                );
+            }
             Swal.fire(result.success ? { icon: "success", text: result.message } : { icon: "error", text: result.message });
         }
     };
@@ -58,6 +67,16 @@ export const AcudientePage = () => {
 
         if (confirm.isConfirmed) {
             const result = await reactivarRelacionAcudiente(pa_id);
+            if (result.success) {
+                // Actualiza el estado localmente
+                setAcudientes((prev) =>
+                    prev.map((acudiente) =>
+                        acudiente.pa_id === pa_id
+                            ? { ...acudiente, acudienteActivo: true }
+                            : acudiente
+                    )
+                );
+            }
             Swal.fire(result.success ? { icon: "success", text: result.message } : { icon: "error", text: result.message });
         }
     };
@@ -67,14 +86,14 @@ export const AcudientePage = () => {
             <div className='main-container'>
                 <SideBarComponent />
                 <div className='content-area'>
-                    {session?.rol_id === 3 && (
-                        <div className='gestionar'>
-                            <h2 className='gestionar-title'>Acudientes</h2>
+                    <div className='gestionar'>
+                        <h2 className='gestionar-title'>Acudientes</h2>
+                        {session?.rol_id === 3 && (
                             <button className='gestionar-btn' onClick={() => setShowRegisterAcudiente(true)}>
                                 Agregar Acudiente
                             </button>
-                        </div>
-                    )}
+                        )}
+                    </div>
                     {loading ? (
                         <LoadingComponet />
                     ) : error ? (
@@ -133,6 +152,9 @@ export const AcudientePage = () => {
                     <ModalRegisterAcudiente
                         pacienteId={id}
                         onClose={() => setShowRegisterAcudiente(false)}
+                        onRegisterSuccess={(nuevoAcudiente) => {
+                            setAcudientes(prev => [...prev, nuevoAcudiente]);
+                        }}
                     />
                 )}
             </div>

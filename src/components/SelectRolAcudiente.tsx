@@ -58,10 +58,9 @@ export const SelectRolAcudiente = ({ label, name, value, onChange }) => {
     };
 
     return (
-        <div className="">
+        <div className="modal-field">
             <label>{label}</label>
             <select
-                className="input-wrapper"
                 name={name}
                 value={value || ""} // Asegura que el value esté correctamente asignado
                 onChange={handleChange} // Llama al onChange proporcionado

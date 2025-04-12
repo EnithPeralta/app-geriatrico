@@ -10,7 +10,7 @@ export const GoBackComponet = () => {
   };
 
   return (
-    <button onClick={handleGoBack} className="btn-x">
+    <button onClick={handleGoBack} className="btn-x" title="Volver a la página anterior">
       <FaLongArrowAltLeft />
     </button>
   );

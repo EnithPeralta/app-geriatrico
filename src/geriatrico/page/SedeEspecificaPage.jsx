@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useSede } from "../../hooks";
 import { LoadingComponet, SideBarComponent } from "../../components";
 import '../../css/sede.css';
-import { FaUser, FaUserNurse, FaUsers } from "react-icons/fa";
+import { FaMedkit, FaUser, FaUserNurse, FaUsers } from "react-icons/fa";
+import { SideBarLayout } from "../layout";
 
 export const SedeEspecificaPage = () => {
     const { obtenerSedesHome } = useSede();
@@ -18,13 +19,19 @@ export const SedeEspecificaPage = () => {
             try {
                 setLoading(true);
                 setError(null);
-
+    
+                const cachedSede = localStorage.getItem("sedeData");
+                if (cachedSede) {
+                    const { sede, geriatrico } = JSON.parse(cachedSede);
+                    setSede(sede);
+                    setGeriatrico(geriatrico);
+                    setLoading(false);
+                    return;
+                }
+    
                 const result = await obtenerSedesHome();
-                console.log("📡 Respuesta de la API:", result);
-
                 if (result.success && result.sede && result.geriatrico) {
-                    console.log()
-                    setSede(result.sede);  // Aseguramos que `sede` es un objeto válido
+                    setSede(result.sede);
                     setGeriatrico(result.geriatrico);
                 } else {
                     setError("No se encontraron datos de la sede.");
@@ -35,9 +42,10 @@ export const SedeEspecificaPage = () => {
                 setLoading(false);
             }
         };
-
+    
         fetchSede();
     }, []);
+    
 
     if (loading) {
         return <LoadingComponet />;
@@ -52,12 +60,11 @@ export const SedeEspecificaPage = () => {
     }
 
     return (
-        <div className="flex" style={{ backgroundColor: geriatrico.colores.principal }}>
-            <SideBarComponent />
-            <div className="main-content">
+        <SideBarLayout>
+            <div className="content-area" style={{ backgroundColor: geriatrico.colores.principal }}>
                 <div className="gestionar">
                     <span className="sede-name">{sede.se_nombre}</span>
-                    <img src={sede.se_foto} alt="" className="" style={{ width: "90px", height: "90px", padding: "10px" }} />
+                    <img src={sede.se_foto} alt="" className="" style={{ width: "200px", height: "100px", padding: "10px" }} />
 
                 </div>
                 <div className="grid">
@@ -75,15 +82,22 @@ export const SedeEspecificaPage = () => {
                         <div className="sede-title">Enfermera(O)</div>
                         <p className="role-description">Accede a datos de atención médica.</p>
                     </div>
-                    <div className="grid-item-sede">
+                    <div className="grid-item-sede" onClick={() => navigate("/geriatrico/colaboradores")}>
                         <div className="icon-container">
                             <FaUsers /> {/* Icono de colaboradores */}
                         </div>
                         <div className="sede-title">Colaborador</div>
                         <p className="role-description">Administra roles y tareas internas.</p>
                     </div>
+                    <div className="grid-item-sede" onClick={() => navigate("/geriatrico/medicamentos")}>
+                        <div className="icon-container">
+                            <FaMedkit /> {/* Icono de medicamentos */}
+                        </div>
+                        <div className="sede-title">Medicamento</div>
+                        <p className="role-description">Administracion de medicamentos.</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </SideBarLayout>
     );
 };

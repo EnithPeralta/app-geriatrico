@@ -115,7 +115,6 @@ export const CuidadosEnfermeriaPage = () => {
             ...prev,
             [name]: checked ? "S" : "N"
         }));
-
     };
 
     const handleChange = (event) => {
@@ -548,9 +547,9 @@ export const CuidadosEnfermeriaPage = () => {
                             <span>Administrar medicamentos</span>
                             <div className="options">
                                 {[
-                                    { name: '"cue_med_m', label: 'Mañana' },
-                                    { name: '"cue_med_t', label: 'Tarde' },
-                                    { name: '"cue_med_n', label: 'Noche' }
+                                    { name: 'cue_med_m', label: 'Mañana' },
+                                    { name: 'cue_med_t', label: 'Tarde' },
+                                    { name: 'cue_med_n', label: 'Noche' }
                                 ].map(({ name, label }, index) => (
                                     <div key={index} className="checkbox-group" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                                         <label className="container-checkbox" style={{ display: "flex", alignItems: "center", gap: "5px" }}>

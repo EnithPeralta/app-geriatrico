@@ -6,7 +6,7 @@ export const AssignCardGestion = ({ selectedGeriatrico, setSelectedGeriatrico, s
     return (
         <div className="modal-overlay">
             <div className="modal" >
-                <div className="modal-content-geriatrico" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                     <SelectGeriatrico
                         name="ge_id"
                         value={selectedGeriatrico}

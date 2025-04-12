@@ -4,10 +4,12 @@ import {
     AcudientePacientePage,
     AcudientePage,
     AdminSuperPage,
+    ColaboradoresPage,
     CuadroTurnosEnfermeraPage,
     CuidadosEnfermeriaPage,
     DiagnosticoPage,
     EnfermerasPage,
+    FormulacionMedicamentosPage,
     GeriatricosPage,
     GestionarPersonasPage,
     GestionPersonaGeriatricoPage,
@@ -19,6 +21,7 @@ import {
     HomePage,
     InventarioPacientePage,
     InventarioSedePage,
+    MedicamentosPage,
     PacienteEspecificoPage,
     PacientesPage,
     ProfilePage,
@@ -52,6 +55,8 @@ export const GeriatricoRoutes = () => {
             <Route path='turnoSede' element={<TurnoSedePage />} />
             <Route path="historialTurnosEnfermera" element={<HistoryTurnosEnfermeraPage />} />
             <Route path="inventarioSede" element={<InventarioSedePage />} />
+            <Route path="medicamentos" element={<MedicamentosPage />} />
+            <Route path="colaboradores" element={<ColaboradoresPage />} />
             <Route path="historialTurnoSede/:id" element={<HistoryTurnosSedePage />} />
             <Route path="pacienteEspecifico/:id" element={<PacienteEspecificoPage />} />
             <Route path="rolesPorGeriatrico/:id" element={<RolesPorGeriatricoPage />} />
@@ -66,6 +71,7 @@ export const GeriatricoRoutes = () => {
             <Route path="recomendaciones/:id" element={<RecomendacionesPage />} />
             <Route path="diagnostico/:id" element={<DiagnosticoPage />} />
             <Route path="inventarioPaciente/:id" element={<InventarioPacientePage />} />
+            <Route path="formulacionMedicamentos/:id" element={<FormulacionMedicamentosPage />} />
         </Routes>
     )
 }

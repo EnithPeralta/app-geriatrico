@@ -3,7 +3,7 @@ import { useAcudiente, useDiagnostico, usePaciente, useRecomendaciones, useSegui
 import { useParams, useNavigate } from 'react-router-dom';
 import { LoadingComponet, SideBarComponent } from '../../components';
 import { PInformation } from '../layout';
-import { FaBriefcaseMedical, FaCalendarDay, FaCameraRetro, FaClock, FaEdit, FaFileMedicalAlt, FaHandHoldingMedical, FaHeartbeat, FaLungs, FaNotesMedical, FaStethoscope, FaSyringe, FaThermometerHalf, FaUser, FaUserMd, FaUserNurse, FaWeight } from 'react-icons/fa';
+import { FaBriefcaseMedical, FaCalendarDay, FaCameraRetro, FaClock, FaEdit, FaFileMedicalAlt, FaHandHoldingMedical, FaHeartbeat, FaLungs, FaNotesMedical, FaRuler, FaRulerCombined, FaStethoscope, FaSyringe, FaThermometerHalf, FaUser, FaUserMd, FaUserNurse, FaWallet, FaWaveSquare, FaWeight } from 'react-icons/fa';
 import { ModalActualizarSeguimiento } from '../components/Seguimiento/ModalActualizarSeguimiento';
 
 export const HistorySeguimientoPage = () => {
@@ -91,6 +91,14 @@ export const HistorySeguimientoPage = () => {
         return seg_fecha.includes(searchTerm);
     });
 
+    // // Filtrar historial por fecha si hay búsqueda, o mostrar solo el primero
+    // const visibleHistorial = searchTerm
+    //     ? filteredHistorial // Si hay búsqueda, mostrar coincidencias
+    //     : historialAplanado.length > 0
+    //         ? [historialAplanado[0]] // Si no hay búsqueda, mostrar solo el primer seguimiento
+    //         : [];
+
+
     const handleAcudiente = async () => {
         if (!paciente?.pac_id) return;
         try {
@@ -105,7 +113,7 @@ export const HistorySeguimientoPage = () => {
         <div className='animate__animated animate__fadeIn animate__faster'>
             <div className='main-container'>
                 <SideBarComponent />
-                <div className='content'>
+                <div className='content-area'>
                     {session?.rol_id === 6 && <PInformation persona={paciente} onEdit={handleAcudiente} />}
                     <div className='gestionar'>
                         <h2 className='gestionar-title'>Historial de Seguimientos</h2>
@@ -118,7 +126,7 @@ export const HistorySeguimientoPage = () => {
                         />
                     </div>
                     {filteredHistorial.length > 0 ? (
-                        filteredHistorial.map(({ seg_id, seg_fecha, seg_foto, seg_glicemia, seg_peso, seg_talla, seg_temp, otro, enfermera }) => (
+                        filteredHistorial.map(({ seg_id, seg_fecha, seg_foto, seg_glicemia, seg_peso, seg_talla, seg_temp, otro, seg_fc, seg_pa, seg_fr }) => (
                             <div key={seg_id} className='daily-container'>
                                 <h4 className="daily-title"><FaCalendarDay /> {seg_fecha}</h4>
                                 <div className='daily-card'>
@@ -146,7 +154,27 @@ export const HistorySeguimientoPage = () => {
                                                 <span className="metric-label">Glicemia</span>
                                             </div>
                                             <div className="metric-item">
+                                                <FaHeartbeat className="metric-icon" />
+                                                <span className="metric-value">{seg_fc}</span>
+                                                <span className="metric-label">F-Cardica</span>
+                                            </div>
+                                            <div className="metric-item">
                                                 <FaLungs className="metric-icon" />
+                                                <span className="metric-value">{seg_fr}</span>
+                                                <span className="metric-label">F-Respiratoria</span>
+                                            </div>
+                                            <div className="metric-item">
+                                                <FaWaveSquare className="metric-icon" />
+                                                <span className="metric-value">{seg_pa}</span>
+                                                <span className="metric-label">Precion Arterial</span>
+                                            </div>
+                                            <div className="metric-item">
+                                                <FaThermometerHalf className="metric-icon" />
+                                                <span className="metric-value">{seg_temp}</span>
+                                                <span className="metric-label">Temperatura</span>
+                                            </div>
+                                            <div className="metric-item">
+                                                <FaRuler className="metric-icon" />
                                                 <span className="metric-value">{seg_talla}</span>
                                                 <span className="metric-label">Talla</span>
                                             </div>
@@ -155,11 +183,8 @@ export const HistorySeguimientoPage = () => {
                                                 <span className="metric-value">{otro}</span>
                                                 <span className="metric-label">Otros</span>
                                             </div>
-                                            <div className="metric-item">
-                                                <FaThermometerHalf className="metric-icon" />
-                                                <span className="metric-value">{seg_temp}</span>
-                                                <span className="metric-label">Temperatura</span>
-                                            </div>
+
+
                                         </div>
                                     </div>
                                     <div className="historial-card timeline-card">

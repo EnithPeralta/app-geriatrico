@@ -3,6 +3,7 @@
   display: flex; /* Usar flexbox para alinear el Sidebar y el contenido */
   flex-direction: row; /* Alinear los elementos en fila */
   min-height: 100vh; /* Para que ocupe toda la altura de la pantalla */
+  overflow: hidden;
 }
 
 .logo-fundacion{
@@ -15,7 +16,7 @@
 #sidebar {
   font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
-  height: 100vh;
+  height: 100%;
   width: 200px;
   padding: 5px 1rem;
   background-color: var(--base-clr);
@@ -26,11 +27,10 @@
   z-index: 1000; 
   transition: 300ms ease-in-out;
   overflow: hidden;
-  text-wrap: nowrap;
-  box-shadow: 20px 20px 60px #bebebe,
-  -20px -20px 60px #ffffff;
+  text-wrap: nowrap;;
   transition:  .5s ease; /* Transición suave */
 }
+
 #sidebar:not(.close) ul li span {
   display: inline; /* Mostrar nombres cuando el sidebar está abierto */
   position: static;
@@ -50,7 +50,7 @@
   pointer-events: none;
 }
 
-#sidebar ul li:hover span {
+#sidebar:not(.close) ul li:hover span {
   display: inline-block;
   opacity: 1;
   z-index: 1;
@@ -61,20 +61,7 @@
   display: none; /* Ocultar los nombres */
 }
 
-/* Mostrar nombres al pasar el mouse cuando el sidebar está cerrado */
-#sidebar.close a:hover span {
-  display: inline;
-  position: absolute;
-  left: 60px; /* Ajustar la posición */
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 5px 10px;
-  border-radius: 5px;
-  white-space: nowrap;
-  transition: opacity 0.3s;
-  opacity: 1;
-  z-index: 1000; 
-}
+
 
 
 
@@ -93,13 +80,11 @@
 
 #sidebar ul {
   list-style: none;
-
 }
 
 #sidebar > ul > li:first-child {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 16px;
 
 }
 
@@ -146,6 +131,7 @@
 #sidebar .dropdown-btn span {
   flex-grow: 1;
   color: #3d3d3d;
+  font-size: 15px;
 }
 
 #sidebar a:hover ,

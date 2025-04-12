@@ -141,7 +141,8 @@ input::placeholder {
 }
 
 /* Estilo para los campos de solo lectura */
-input[readonly] {
+input[readonly],
+textarea[readonly] {
   background-color: #3fd2ff32;
   color: #495057;
   border: none;

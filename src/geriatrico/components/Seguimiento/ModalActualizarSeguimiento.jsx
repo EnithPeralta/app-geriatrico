@@ -88,10 +88,14 @@ export const ModalActualizarSeguimiento = ({ id, setShowModal, setHistorialSegui
                 text: result.message
             });
             setHistorialSeguimiento(prevHistorial =>
-                prevHistorial.map(seg =>
-                    seg.seg_id === id ? { ...seg, ...editedSeguimiento } : seg
-                )
+                prevHistorial.map(hist => ({
+                    ...hist,
+                    seguimientos: hist.seguimientos.map(seg =>
+                        seg.seg_id === id ? { ...seg, ...editedSeguimiento } : seg
+                    )
+                }))
             );
+            
             setShowModal(false);
 
         } else {
@@ -107,7 +111,7 @@ export const ModalActualizarSeguimiento = ({ id, setShowModal, setHistorialSegui
     return (
         <div className="modal-overlay">
             <div className="modal">
-                <div className="modal-content-geriatrico">
+                <div className="modal-content">
                     <form onSubmit={handleSubmit}>
                         <div className="modal-img">
                             {editedSeguimiento && editedSeguimiento.seg_foto_preview ? (

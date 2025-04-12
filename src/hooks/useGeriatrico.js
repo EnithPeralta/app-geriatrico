@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import geriatricoApi from "../api/geriatricoApi";
-import { saveGeriatricoFailure, saveGeriatricoSuccess, startSavingGeriatrico, clearGeriatricoState  } from "../store/geriatrico";
+import { saveGeriatricoFailure, saveGeriatricoSuccess, startSavingGeriatrico, clearGeriatricoState } from "../store/geriatrico";
 import { getToken } from "../helpers";
 
 export const useGeriatrico = () => {
@@ -378,7 +378,6 @@ export const useGeriatrico = () => {
     };
 
     const homeMiGeriatrico = async () => {
-        dispatch(startSavingGeriatrico()); // Iniciar la carga
         const token = getToken();
 
         if (!token) {
@@ -427,38 +426,5 @@ export const useGeriatrico = () => {
         }
     };
 
-    const obtenerColoresGeriatrico = async (ge_id) => {
-        const token = getToken();
-    
-        if (!token) {
-            return {
-                success: false,
-                message: "No hay token disponible",
-                colores: null
-            };
-        }
-    
-        try {
-            const { data } = await geriatricoApi.get(`/geriatricos/${ge_id}/colores`, {
-                headers: {
-                    Authorization: `Bearer ${token}`, // Agregar token en los headers
-                }
-            });
-    
-            return {
-                success: true,
-                colores: data.colores
-            };
-        } catch (error) {
-            console.error('Error al obtener colores:', error);
-    
-            return {
-                success: false,
-                message: error.response?.data?.message || "Error al obtener colores del geriátrico",
-                colores: null
-            };
-        }
-    };
-    
-    return { crearGeriatrico, obtenerGeriatricosActive, obtenerGeriatricos, limpiarEstadoGeriatrico, actualizarGeriatrico, obtenerGeriatricosInactivos, reactivarGeriatrico, inactivarGeriatrico, homeMiGeriatrico, obtenerColoresGeriatrico };
+    return { crearGeriatrico, obtenerGeriatricosActive, obtenerGeriatricos, limpiarEstadoGeriatrico, actualizarGeriatrico, obtenerGeriatricosInactivos, reactivarGeriatrico, inactivarGeriatrico, homeMiGeriatrico };
 };

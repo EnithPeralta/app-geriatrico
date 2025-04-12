@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "../../css/admin.css";
 import { useAuthStore, useGeriatrico } from "../../hooks";
 
-export const AdminLayout = ({ children, persona, loading, ge_id }) => {
+export const AdminLayout = ({ children, persona, loading }) => {
     const { startLogout } = useAuthStore();
-    const { obtenerColoresGeriatrico } = useGeriatrico();
     const navigate = useNavigate();
     const [colores, setColores] = useState({
         principal: "#ffffff",
@@ -13,28 +12,14 @@ export const AdminLayout = ({ children, persona, loading, ge_id }) => {
         terciario: "#d9d9d9"
     });
 
-    useEffect(() => {
-        const cargarColores = async () => {
-            const resultado = await obtenerColoresGeriatrico(ge_id);
-
-            if (resultado.success) {
-                setColores(resultado.colores);
-            } else {
-                console.error("Error al obtener colores:", resultado.message);
-            }
-        };
-
-        if (ge_id) {
-            cargarColores();
-        }
-    }, [ge_id]);
+   
 
     return (
         <div
             className="bodyAdmin"
         >
             {/* Header */}
-            <div className="headerAdmin">   {/*style={{ backgroundColor: colores.secundario }}> */}
+            <div className="headerAdmin">   
                 <div className="logo">
                     <img className="logo-img" src="/logo.png" alt="" />
                 </div>
@@ -42,7 +27,7 @@ export const AdminLayout = ({ children, persona, loading, ge_id }) => {
                     <button className="icon-button" >
                         <i className="fa-solid fa-share-nodes"></i>
                     </button>
-                    <button className="icon-button" onClick={startLogout}>
+                    <button className="icon-button" onClick={startLogout} title="Cerrar Sesión">
                         <i className="fa-solid fa-right-from-bracket"></i>
                     </button>
                 </div>

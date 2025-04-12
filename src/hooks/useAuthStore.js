@@ -16,7 +16,6 @@ export const useAuthStore = () => {
         try {
             const { data } = await geriatricoApi.post('auth/login', { per_usuario, per_password });
 
-            console.log("✅ Datos del servidor:", data);
 
             // Guardar token en localStorage
             localStorage.setItem('token', data.token);
@@ -78,7 +77,6 @@ export const useAuthStore = () => {
                 },
             });
 
-            console.log("Respuesta del servidor:", data);
 
             if (data.data && data.data.per_id) {
                 const { per_usuario, per_password } = data.data.user;

@@ -155,3 +155,7 @@ gap: 5px;
 .btn-history:hover {
   background-color: #38c66d;
 }
+
+.report-title{
+  color: white;
+}

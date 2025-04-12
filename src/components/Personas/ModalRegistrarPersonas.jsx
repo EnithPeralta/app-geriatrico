@@ -123,7 +123,7 @@ export const ModalRegistrarPersonas = ({ handleAssignSedes, pacienteId, acudient
     return (
         <div className='modal-overlay'>
             <div className='modal'>
-                <div className='modal-content-geriatrico'>
+                <div className='modal-content'>
                     <h2>Registrar Persona</h2>
                     <form onSubmit={registerSubmit}>
                         <div className='modal-field'>
@@ -233,7 +233,7 @@ export const ModalRegistrarPersonas = ({ handleAssignSedes, pacienteId, acudient
                         </div>
                         <div className='modal-field'>
                             <label>Parentesco</label>
-                            <select className='modal-field' value={parentesco} onChange={(e) => setParentesco(e.target.value)} required>
+                            <select value={parentesco} onChange={(e) => setParentesco(e.target.value)} required>
                                 <option value='' hidden>Seleccione...</option>
                                 <option value='Padre/Madre'>Padre/Madre</option>
                                 <option value='Hijo/a'>Hijo/a</option>

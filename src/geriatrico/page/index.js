@@ -58,3 +58,9 @@ export * from './DiagnosticoPage';
 //DiagnosticoPage.jsx
 export * from './RolesPorGeriatricoPage';
 //RolesPorGeriatricoPage.jsx
+export * from './MedicamentosPage';
+//MedicamentosPage.jsx
+export * from './FormulacionMedicamentosPage';
+//FormulacionMedicamentosPage.jsx
+export * from './ColaboradoresPage';
+//ColaboradoresPage.jsx

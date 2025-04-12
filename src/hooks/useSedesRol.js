@@ -31,14 +31,16 @@ export const useSedesRol = () => {
             return {
                 success: true,
                 message: data.message || "Rol administrador sede asociado exitosamente",
-                sedePersonaRol: data.sedePersonaRol
+                sedePersonaRol: data.nuevaVinculacion,
+                rolNombre: data.rolNombre,
+                sede: data.sede
+
             };
         } catch (error) {
             console.error("❌ Error al asignar rol a la sede:", error);
-            const errorMessage = error.response?.data?.message || "Error al asignar el rol a la sede";
             return {
                 success: false,
-                message: errorMessage,
+                message: error.response?.data?.message || "Error al asignar rol a la sede",
                 sedePersonaRol: null
             };
         }

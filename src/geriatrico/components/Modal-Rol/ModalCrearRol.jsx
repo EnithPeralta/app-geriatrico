@@ -28,7 +28,7 @@ export const ModalCrearRol = ({ isOpen, onClose, onSave }) => {
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-content-geriatrico">
+                <div className="modal-content">
                     {error && <p className="error-message">{error}</p>}
                     <form onSubmit={handleSubmit}>
                         <h2 className="rol-name">Crear Nuevo Rol</h2>

@@ -66,19 +66,28 @@ export const TurnoSedePage = () => {
             reverseButtons: true
         });
 
-        if (!resultado.isConfirmed) return; // Si el usuario cancela, no hace nada
+        if (!resultado.isConfirmed) return; 
 
         try {
             const response = await eliminarTurnoEnfermeria(tur_id);
             if (response.success) {
                 setTurnosSede(turnosSede.filter(turno => turno.tur_id !== tur_id));
-                Swal.fire("Eliminado", "El turno ha sido eliminado exitosamente.", "success");
+                Swal.fire({
+                    icon: "success",
+                    text: response.message
+                });
             } else {
-                Swal.fire("Error", response.message, "error");
+                Swal.fire({
+                    icon: "error",
+                    text: response.message
+                });
             }
         } catch (error) {
             console.error("Error al eliminar turno:", error);
-            Swal.fire("Error", "No se pudo eliminar el turno.", "error");
+            Swal.fire({
+                icon: "error",
+                text: "No se pudo eliminar el turno."
+            });
         }
     };
 
@@ -131,10 +140,10 @@ export const TurnoSedePage = () => {
                                             <td>{t.total_horas_turno}</td>
                                             <td>
                                                 <div className="buttons-asignar">
-                                                    <button className="btn-edit" onClick={() => setTurnoEditar(t.turno_id)}>
+                                                    <button className="btn-edit" onClick={() => setTurnoEditar(t.turno_id)} title='Editar'>
                                                         <FaEdit />
                                                     </button>
-                                                    <button className="btn-delete" onClick={() => handleEliminarTurno(t.turno_id)}>
+                                                    <button className="btn-delete" onClick={() => handleEliminarTurno(t.turno_id)} title='Eliminar'>
                                                         <FaTrash />
                                                     </button>
                                                 </div>

@@ -150,7 +150,7 @@ export const ModalRegistrarPaciente = ({ datosIniciales, onClose, selectedRoles 
     return (
         <div className="modal-overlay">
             <div className="modal">
-                <div className="modal-content-geriatrico">
+                <div className="modal-content">
                     <div className="modal-field">
                         <label>Edad:</label>
                         <input className="modal-input" type="text" name="pac_edad" value={datosPaciente.pac_edad} onChange={handleChange} required />

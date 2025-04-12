@@ -4,7 +4,7 @@ import { useAcudiente, useGeriatricoPersona, usePersona, useSedesRol } from '../
 import { ModalRegistrarPersonas, SelectField } from '../../../components';
 import { SelectRolAcudiente } from '../../../components/SelectRolAcudiente';
 
-export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
+export const ModalRegisterAcudiente = ({ onClose, pacienteId, onRegisterSuccess }) => {
     const { asignarRolesSede } = useSedesRol();
     const { registrarAcudiente } = useAcudiente();
     const { obtenerPersonaRolesMiGeriatricoSede } = useGeriatricoPersona();
@@ -134,6 +134,7 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
                         });
                     }
                 }
+                onResetForm();
                 return;
             }
 
@@ -167,6 +168,15 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
                 icon: response?.success ? 'success' : 'error',
                 text: response?.message || "Error al registrar acudiente."
             });
+            if (response?.success) {
+                onRegisterSuccess?.({
+                    ...response.data, // si el backend te devuelve el acudiente creado
+                    per_id: result.per_id,
+                    pac_id: pacienteSeleccionado.pac_id,
+                    pa_parentesco: parentesco
+                });
+                onClose();
+            }
             onResetForm();
         } catch (error) {
             console.error("❌ Error capturado en useSedesRol:", error);
@@ -177,7 +187,7 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
     return (
         <div className='modal-overlay'>
             <div className='modal'>
-                <div className='modal-content-geriatrico'>
+                <div className='modal-content'>
                     <h2>Registrar Acudiente</h2>
                     {mensaje && <p className="success-message">{mensaje}</p>}
                     {error && <p className="error-message">{error}</p>}
@@ -194,7 +204,7 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId }) => {
                         <div className='modal-field'>
                             <label>Parentesco</label>
                             <select className='modal-field' value={parentesco} onChange={(e) => setParentesco(e.target.value)} required>
-                                <option value="" hidden>Seleccione...</option>
+                                <option hidden>Seleccione...</option>
                                 <option value="Padre/Madre">Padre/Madre</option>
                                 <option value="Hijo/a">Hijo/a</option>
                                 <option value="Hermano/a">Hermano/a</option>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { LoadingComponet, ModalEnfermera, ModalRegistrarPaciente, SideBarComponent } from "../../components";
-import { useEnfermera, useGeriatrico, useGeriatricoPersona, usePaciente, useSedesRol } from "../../hooks";
+import { useEnfermera, useForm, useGeriatrico, useGeriatricoPersona, usePaciente, useSedesRol } from "../../hooks";
 import { ModalEditPersonComponent } from "../components/ModalEditPersonComponent";
 import Swal from "sweetalert2";
 import { PersonList } from "../components/PersonasVinculadas/PersonList";
@@ -41,48 +41,42 @@ export const GestionPersonaGeriatricoPage = () => {
     });
 
     const [rolesPersonas, setRolesPersonas] = useState([]);
+    const { onResetForm } = useForm();
 
     useEffect(() => {
-        const fetchSede = async () => {
+        const fetchData = async () => {
+            setLoading(true);
+            setError(null);
             try {
-                setLoading(true);
-                setError(null);
-                const result = await homeMiGeriatrico();
-                console.log("📡 Respuesta de la API:", result);
-                if (result.success && result.geriatrico) {
-                    setGeriatrico(result.geriatrico);
+                const [sedeResult, personasResult] = await Promise.all([
+                    homeMiGeriatrico(),
+                    personasVinculadasMiGeriatrico()
+                ]);
+    
+                console.log("📡 Respuesta de la API (sede):", sedeResult);
+    
+                if (sedeResult?.success && sedeResult.geriatrico) {
+                    setGeriatrico(sedeResult.geriatrico);
                 } else {
                     setError("No se encontraron datos de la sede.");
                 }
-            } catch (err) {
-                setError("Error al obtener los datos.");
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchSede();
-    }, []);
-
-
-    useEffect(() => {
-        const fetchPersonas = async () => {
-            setLoading(true);
-            try {
-                const response = await personasVinculadasMiGeriatrico();
-                if (response && response.success && response.personas && response.personas.data) {
-                    setPersonas(response.personas.data);
+    
+                if (personasResult?.success && personasResult.personas?.data) {
+                    setPersonas(personasResult.personas.data);
                 } else {
-                    setError(response.message);
+                    setError(personasResult?.message || "No se pudieron obtener las personas vinculadas.");
                 }
             } catch (err) {
+                console.error(err);
                 setError("Error al obtener los datos.");
             } finally {
                 setLoading(false);
             }
         };
-        fetchPersonas();
+    
+        fetchData();
     }, []);
-
+    
     // Filtrar personas por nombre o documento
     const personasFiltradas = personas.filter(personas =>
         personas?.per_nombre?.toLowerCase()?.includes(search.toLowerCase()) ||
@@ -352,6 +346,8 @@ export const GestionPersonaGeriatricoPage = () => {
                 sp_fecha_inicio: fechaInicio,
                 sp_fecha_fin: fechaFin || null,
             });
+            onResetForm();
+
             console.log(response)
             // Manejo de la respuesta del servidor
             if (response?.success) {
@@ -456,11 +452,12 @@ export const GestionPersonaGeriatricoPage = () => {
             correo: persona.per_correo || "",
             telefono: persona.per_telefono || "",
             genero: persona.per_genero || "",
-            password: "", // No se debe prellenar la contraseña por seguridad
+            password: "",
             foto: persona.per_foto || "",
         });
         setShowEditModal(true);
     };
+
 
 
 
@@ -517,7 +514,7 @@ export const GestionPersonaGeriatricoPage = () => {
                         )}
                         {showEditModal && editedPersona && (
                             <ModalEditPersonComponent
-                                editedPersona={editedPersona}
+                                editedPersona={{ ...editedPersona }}
                                 setPersonas={setPersonas}
                                 onClose={() => setShowEditModal(false)}
                             />

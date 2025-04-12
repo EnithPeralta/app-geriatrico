@@ -15,8 +15,7 @@ export const useSession = () => {
         try {
             const { data } = await geriatricoApi.get("/obtenerSesion");
             setSession(data);
-            localStorage.setItem("session", JSON.stringify(data)); // 🔹 Guarda sesión actualizada en localStorage
-            console.log("✅ Sesión obtenida:", data);
+            localStorage.setItem("session", JSON.stringify(data)); 
             return data;
         } catch (err) {
             setError(err.response?.data?.message || err.message);

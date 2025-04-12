@@ -21,7 +21,8 @@ export const PersonaCardRoles = ({
                         <div className="user-details">
                             <div className="user-role">{persona.per_nombre}</div>
                             <div className="user-name">{persona.per_documento}</div>
-                            <div className="user-name">{persona.gp_fecha_vinculacion}</div>
+                            
+                            {new Date(persona.gp_fecha_vinculacion).toLocaleDateString("es-ES")}
                         </div>
                         <div className="status-icon-person">
                             {persona.gp_activo ? (
@@ -30,9 +31,9 @@ export const PersonaCardRoles = ({
                                 <i className="fa-solid fa-circle-xmark inactivo"></i>
                             )}
                         </div>
-                        
+
                     </div>
-                    
+
                     {activeCard === persona.per_id && (
                         <div style={{ marginTop: "10px" }}>
                             <RolesDisplayComponet rolesPersonas={rolesPersonas} person={persona} getId={ge_id} />

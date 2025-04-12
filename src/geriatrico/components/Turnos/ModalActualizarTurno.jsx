@@ -23,11 +23,17 @@ export const ModalActualizarTurno = ({ turno, onClose, setTurnos }) => {
     }
   }, [turno]);
 
-  console.log("Turno a actualizar:", turno);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("ID del turno:", turno.turno_id);
+      console.log({
+        tur_id: turno,
+        tur_fecha_inicio: turFechaInicio,
+        tur_fecha_fin: turFechaFin,
+        tur_hora_inicio: turHoraInicio,
+        tur_hora_fin: turHoraFin,
+        tur_tipo_turno: turTipoTurno,
+      });
 
       const response = await actualizarTurnoEnfermeria({
         tur_id: turno,
@@ -45,9 +51,13 @@ export const ModalActualizarTurno = ({ turno, onClose, setTurnos }) => {
           icon: "success",
           text: response.message,
         });
-        setTurnos(prevTurno => [...prevTurno, response.data]);
+        setTurnos(prevTurnos =>
+          prevTurnos.map((t) =>
+            t.turno_id === turno.turno_id ? response.data : t
+          )
+        );
 
-        onClose(); 
+        onClose();
       } else {
         Swal.fire({
           icon: "error",
@@ -91,7 +101,6 @@ export const ModalActualizarTurno = ({ turno, onClose, setTurnos }) => {
                 type="time"
                 value={turHoraInicio}
                 onChange={(e) => setTurHoraInicio(e.target.value)}
-                step="600"
               />
             </div>
 

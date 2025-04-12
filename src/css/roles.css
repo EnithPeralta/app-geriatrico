@@ -97,7 +97,7 @@
 }
 
 .actions-rol button {
-    background: rgba(0, 0, 0, 0.7);
+    background: #0090BC;
     border: none;
     padding: 6px;
     border-radius: 5px;
@@ -111,19 +111,13 @@
 }
 
 .actions-rol button:hover {
-    background: rgb(0, 0, 0);
+    background: #0481a7;
 }
 
 .actions-rol i {
     color: white;
     font-size: 14px;
 }
-
-/* Iconos generales */
-.fa {
-    font-size: 15px;
-}
-
 
 .rol-input {
     padding: 10px;
