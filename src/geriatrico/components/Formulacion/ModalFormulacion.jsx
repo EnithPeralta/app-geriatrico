@@ -38,6 +38,7 @@ export const ModalFormulacion = ({ pac_id, onClose }) => {
     useEffect(() => {
         const fetchMedicamentos = async () => {
             const response = await obtenerMedicamentos();
+            console.log(response);
             if (response.success) {
                 setMedicamentosGenerales(response.data);
             } else {
@@ -53,9 +54,10 @@ export const ModalFormulacion = ({ pac_id, onClose }) => {
     const opciones = medicamentosGenerales.map((med) => ({
         value: med.med_id,
         label: med.med_nombre,
-        presentacion: med.med_presentacion,
+        presentacion: med.med_presentacion?.charAt(0).toUpperCase() + med.med_presentacion?.slice(1).toLowerCase(),
         nombre: med.med_nombre,
         unidad: med.unidades_por_presentacion,
+        tipo: med.med_tipo_contenido?.charAt(0).toUpperCase() + med.med_tipo_contenido?.slice(1).toLowerCase()
     }));
 
     const handleChange = (opcion) => {
@@ -64,6 +66,7 @@ export const ModalFormulacion = ({ pac_id, onClose }) => {
             presentacion: opcion.presentacion,
             nombre: opcion.nombre,
             unidad: opcion.unidad,
+            tipo: opcion.tipo
         });
     };
 
@@ -87,12 +90,12 @@ export const ModalFormulacion = ({ pac_id, onClose }) => {
         if (result.success) {
             Swal.fire({
                 icon: 'success',
-                title: 'Formulación registrada',
                 text: result.message
             });
             onResetForm();
             setMedicamentoSeleccionado(null);
             setDetalleMedicamento(null);
+            onClose();
         } else {
             Swal.fire({
                 icon: 'error',
@@ -131,6 +134,10 @@ export const ModalFormulacion = ({ pac_id, onClose }) => {
                                 <div className="modal-field">
                                     <label>Unidad de presentación:</label>
                                     <input type="text" value={detalleMedicamento.unidad} readOnly />
+                                </div>
+                                <div className="modal-field">
+                                    <label>Tipo de contenido:</label>
+                                    <input type="text" value={detalleMedicamento.tipo} readOnly />
                                 </div>
                             </>
                         )}

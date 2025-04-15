@@ -60,8 +60,6 @@ export const useFormulacionMedicamentos = () => {
                 },
             });
 
-            console.log(data);
-
             return {
                 success: true,
                 message: data.message || "Formulación obtenida con éxito.",
@@ -93,7 +91,6 @@ export const useFormulacionMedicamentos = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log(data);
 
             return {
                 success: true,
@@ -250,7 +247,7 @@ export const useFormulacionMedicamentos = () => {
         try {
             const { data } = await geriatricoApi.put(
                 `/formulacionmedicamentos/extender/${admin_id}`,
-                { admin_fecha_fin }, // ✅ Enviar la nueva fecha de fin en el body
+                { admin_fecha_fin },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -261,7 +258,7 @@ export const useFormulacionMedicamentos = () => {
             return {
                 success: true,
                 message: data.message || "Formulación extendida correctamente.",
-                data: data.formulacion, // ✅ opcional: devolver la formulación actualizada
+                data: data.formulacion,
             };
         } catch (error) {
             console.error("❌ Error al suspender formulación:", error);
@@ -274,6 +271,41 @@ export const useFormulacionMedicamentos = () => {
         }
     };
 
+    const obtenerFormulacionesDelDia = async (pac_id) => {
+        const token = getToken();
+
+        if (!token) {
+            return {
+                success: false,
+                message: "Token de autenticación no encontrado.",
+            };
+        }
+
+        try {
+            const { data } = await geriatricoApi.get(`/formulacionmedicamentos/diaria/${pac_id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+
+            console.log(data);
+
+            return {
+                success: true,
+                message: data.message || "Formulación obtenida con éxito.",
+                data,
+            }
+        } catch (error) {
+            console.error("❌ Error al obtener formulación:", error);
+            return {
+                success: false,
+                message:
+                    error.response?.data?.message ||
+                    "Ocurrido un error inesperado al intentar obtener la formulación.",
+            };
+        }
+    }
+
 
 
     return {
@@ -283,6 +315,7 @@ export const useFormulacionMedicamentos = () => {
         actualizarFormulacionPendiente,
         deleteFormulacionPendiente,
         suspenderFormulacionEnCurso,
-        extenderFechaFinFormulacion
+        extenderFechaFinFormulacion,
+        obtenerFormulacionesDelDia
     }
 }

@@ -7,7 +7,8 @@ export const ModalActualizar = ({ medicamento, onClose }) => {
         med_nombre: medicamento.med_nombre || '',
         med_presentacion: medicamento.med_presentacion || '',
         unidades_por_presentacion: medicamento.unidades_por_presentacion || '',
-        med_descripcion: medicamento.med_descripcion || ''
+        med_descripcion: medicamento.med_descripcion || '',
+        med_tipo_contenido: medicamento.med_tipo_contenido || ''
     });
 
     const { actualizarMedicamento } = useMedicamento();
@@ -27,7 +28,7 @@ export const ModalActualizar = ({ medicamento, onClose }) => {
                     icon: 'success',
                     text: response.message
                 });
-                
+
                 onClose();
             } else {
                 Swal.fire({
@@ -72,6 +73,23 @@ export const ModalActualizar = ({ medicamento, onClose }) => {
                         <div className="modal-field">
                             <label>Unidades por presentación:</label>
                             <input type="number" name="unidades_por_presentacion" value={formData.unidades_por_presentacion} onChange={handleChange} />
+                        </div>
+                        <div className="modal-field">
+                            <label>Tipo de contenido:</label>
+                            <select name="med_tipo_contenido" value={formData.med_tipo_contenido} onChange={handleChange}>
+                                <option value="" hidden>Seleccione...</option>
+                                <option value="mililitros">Mililitros</option>
+                                <option value="gramos">Gramos</option>
+                                <option value="unidades">Unidades</option>
+                                <option value="miligramos">Miligramos</option>
+                                <option value="tabletas">Tabletas</option>
+                                <option value="cápsulas">Cápsulas</option>
+                                <option value="disparos">Disparos</option>
+                                <option value="parches">Parches</option>
+                                <option value="gotas">Gotas</option>
+                                <option value="supositorios">Supositorios</option>
+                                <option value="otros">Otros</option>
+                            </select>
                         </div>
                         <div className="modal-field">
                             <label>Descripción:</label>

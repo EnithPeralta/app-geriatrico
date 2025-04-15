@@ -307,6 +307,14 @@
     color: #6c757d;
 }
 
+select{
+    border-radius: 5px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    color: #3d3d3d;
+    width: 100%;
+}
 
 /* ========== FORMULARIOS ========== */
 input[type="checkbox"] {

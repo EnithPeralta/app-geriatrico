@@ -46,7 +46,6 @@ export const DiagnosticoPage = () => {
             try {
                 const pacId = Number(paciente.pac_id);
                 const response = await obtenerDiagnostico(pacId);
-                console.log("Diagnóstico obtenido:", response);
                 if (response.success) {
                     setDiagnostico(response.data);
                     setDiagnosticoRegistrado(true);
@@ -72,7 +71,6 @@ export const DiagnosticoPage = () => {
     // Enviar el formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Paciente ID obtenido:", paciente.pac_id);
 
         const pacId = Number(paciente.pac_id);
         if (!pacId || isNaN(pacId)) {
@@ -82,7 +80,6 @@ export const DiagnosticoPage = () => {
             });
             return;
         }
-        console.log("📡 Datos a enviar:", pacId, diagnostico);
 
         if (!pacId) {
             Swal.fire({
@@ -100,21 +97,33 @@ export const DiagnosticoPage = () => {
         try {
             let response;
             if (diagnosticoRegistrado) {
-                console.log("🔄 Actualizando diagnóstico...");
-                response = await actualizarDiagnostico(payload); // Asegúrate de que el payload sea correcto
+                response = await actualizarDiagnostico(payload);
             } else {
-                console.log("📋 Registrando nueva recomendación...");
-                response = await registrarDiagnostico(payload); // Corregido el tipo de mensaje
+                response = await registrarDiagnostico(payload);
             }
-            console.log("Respuesta del servidor:", response);
+
             if (response.success) {
-                Swal.fire({ icon: 'success', text: response.message });
+                Swal.fire({
+                    icon: 'success',
+                    text: response.message
+                });
+                const updated = await obtenerDiagnostico(pacId);
+                if (updated.success) {
+                    setDiagnostico(updated.data);
+                    setDiagnosticoRegistrado(true);
+                }
             } else {
-                Swal.fire({ icon: 'error', text: response.message });
+                Swal.fire({
+                    icon: 'error',
+                    text: response.message
+                });
             }
         } catch (err) {
-            console.error("❌ Error al registrar o actualizar el diagnóstico:", err); // Mensaje de error más claro
-            Swal.fire({ icon: 'error', text: 'Ocurrió un error inesperado. Intenta nuevamente.' });
+            console.error("❌ Error al registrar o actualizar el diagnóstico:", err);
+            Swal.fire({
+                icon: 'error',
+                text: 'Ocurrió un error inesperado. Intenta nuevamente.'
+            });
         }
     };
 

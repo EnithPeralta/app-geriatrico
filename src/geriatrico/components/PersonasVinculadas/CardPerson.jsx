@@ -25,16 +25,24 @@ export const CardPerson = ({ persona, onClick, onEdit, onAssign, onInactivate })
                 )}
             </div>
             <div className="buttons-asignar" title='Activar/Inactivar'>
-                {session.rol_id !== 3 && (
-                    <button className={persona.gp_activo ? 'asignar' : 'inactive'} onClick={onInactivate}>
-                        <i className={`fa-solid ${persona.gp_activo ? "fa-user-gear " : "fa-user-slash inactive"}`} />
+                {persona.gp_activo ? (
+                    session.rol_id !== 3 && (
+                        <button className="asignar" onClick={onInactivate}>
+                            <i className="fa-solid fa-user-gear" />
+                        </button>
+                    )
+                ) : (
+                    // Si la persona está inactiva, cualquier rol puede reactivar, incluyendo el 3
+                    <button className="inactive" onClick={onInactivate}>
+                        <i className="fa-solid fa-user-slash inactive" />
                     </button>
                 )}
+
                 <button className="edit-button-asignar" onClick={onEdit} title='Editar'>
-                    <FaUserEdit  />
+                    <FaUserEdit />
                 </button>
                 <button className="add-button-asignar" onClick={onAssign} title='Vincular'>
-                    <FaArrowUp  />
+                    <FaArrowUp />
                 </button>
 
             </div>

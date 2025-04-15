@@ -30,11 +30,14 @@ export const ModalInventarioSede = ({ onClose, setMedicamentos }) => {
     const opciones = medicamentosGenerales.map((med) => ({
         value: med.med_id,
         label: med.med_nombre,
-        presentacion: med.med_presentacion,
+        presentacion: med.med_presentacion?.charAt(0).toUpperCase() + med.med_presentacion?.slice(1).toLowerCase(),
         nombre: med.med_nombre,
         unidad: med.unidades_por_presentacion,
+        tipo: med.med_tipo_contenido?.charAt(0).toUpperCase() + med.med_tipo_contenido?.slice(1).toLowerCase()
+
     }));
 
+    console.log(opciones);
 
     const handleChange = (opcion) => {
         setMedicamentoSeleccionado(opcion.value);
@@ -42,6 +45,7 @@ export const ModalInventarioSede = ({ onClose, setMedicamentos }) => {
             presentacion: opcion.presentacion,
             nombre: opcion.nombre,
             unidad: opcion.unidad,
+            tipo: opcion.tipo
         });
     };
 
@@ -80,7 +84,7 @@ export const ModalInventarioSede = ({ onClose, setMedicamentos }) => {
         <div className="modal-overlay">
             <div className="modal">
                 <div className="modal-content">
-                    <h3>Agregar Medicamento al Inventario</h3>
+                    <h3 className='h4'>Agregar Medicamento al Inventario</h3>
                     <form onSubmit={handleSubmit}>
                         <div className="modal-field">
                             <label>Medicamento:</label>
@@ -92,25 +96,23 @@ export const ModalInventarioSede = ({ onClose, setMedicamentos }) => {
 
                             {detalleMedicamento && (
                                 <>
-                                    <div className='modal-fiel'>
-                                        <label>Presentación</label>
-                                        <input
-                                            type="text"
-                                            name="med_nombre"
-                                            value={detalleMedicamento.presentacion}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className='modal-field'>
-                                        <label>Nombre del medicamento:</label>
-                                        <input
-                                            type="text"
-                                            name="med_nombre"
-                                            value={detalleMedicamento.nombre}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className='modal-field'>
+
+                                    <label>Nombre del medicamento:</label>
+                                    <input
+                                        type="text"
+                                        name="med_nombre"
+                                        value={detalleMedicamento.nombre}
+                                        readOnly
+                                    />
+
+                                    <label>Presentación</label>
+                                    <input
+                                        type="text"
+                                        name="med_nombre"
+                                        value={detalleMedicamento.presentacion}
+                                        readOnly
+                                    />
+                                    
                                         <label>Unidad de presentación:</label>
                                         <input
                                             type="text"
@@ -118,7 +120,14 @@ export const ModalInventarioSede = ({ onClose, setMedicamentos }) => {
                                             value={detalleMedicamento.unidad}
                                             readOnly
                                         />
-                                    </div>
+                                    
+                                    <label>Tipo de contenido:</label>
+                                    <input
+                                        type="text"
+                                        name="med_nombre"
+                                        value={detalleMedicamento.tipo}
+                                        readOnly
+                                    />
                                 </>
                             )}
                         </div>

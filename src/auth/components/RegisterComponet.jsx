@@ -42,7 +42,6 @@ export const RegisterComponent = () => {
     const [fechaInicio, setFechaInicio] = useState("");
     const [assigning, setAssigning] = useState(false);
     const [fechaFin, setFechaFin] = useState("");
-    const [selectedSed, setSelectedSed] = useState("");
     const [selectedGeriatrico, setSelectedGeriatrico] = useState([]);
 
 
@@ -148,15 +147,7 @@ export const RegisterComponent = () => {
 
     const handleAssignSedes = async (per_id, rol_id, sp_fecha_inicio, sp_fecha_fin,) => {
         try {
-            if (!per_id || !rol_id || !sp_fecha_inicio || !sp_fecha_fin) {
-                console.warn("❌ Datos incompletos para la asignación del rol.");
-                await Swal.fire({
-                    icon: "warning",
-                    text: "Por favor, complete todos los campos antes de asignar el rol."
-                });
-                return false;
-            }
-
+            
             const response = await asignarRolesSede({
                 per_id, rol_id, sp_fecha_inicio, sp_fecha_fin
             });
@@ -183,50 +174,40 @@ export const RegisterComponent = () => {
     };
 
     const handleAssignRole = async (per_id, ge_id, rol_id, gp_fecha_inicio, gp_fecha_fin) => {
-        if (!per_id, ge_id, rol_id, gp_fecha_inicio, gp_fecha_fin) {
-            Swal.fire({
-                icon: 'error',
-                text: 'Debe seleccionar un geriátrico, al menos un rol y una fecha de inicio.',
-            })
-            return;
-        }
 
         setAssigning(true);
         try {
-            let successMessage = '';
-            for (let rol_id of selectedRoles) {
-                const response = await asignarRolGeriatrico({
-                    per_id,
-                    ge_id: Number(selectedGeriatrico),
-                    rol_id,
-                    gp_fecha_inicio,
-                    gp_fecha_fin
-                });
+            const response = await asignarRolGeriatrico({
+                per_id,
+                ge_id: Number(ge_id),
+                rol_id,
+                gp_fecha_inicio,
+                gp_fecha_fin
+            });
 
-                if (!response.success) {
-                    console.error("Error al asignar rol:", response.message);
-                    Swal.fire({
-                        icon: 'error',
-                        text: response.message,
-                    })
-                    setAssigning(false);
-                    return;
-                }
-                successMessage = response.message;
+            if (!response.success) {
+                console.error("Error al asignar rol:", response.message);
+                Swal.fire({
+                    icon: 'error',
+                    text: response.message,
+                });
+                setAssigning(false);
+                return;
             }
 
             Swal.fire({
                 icon: 'success',
-                text: successMessage || 'Roles asignados correctamente',
-            })
+                text: response.message || 'Rol asignado correctamente',
+            });
         } catch (error) {
             console.error("Error en la asignación del rol:", error);
             Swal.fire({
                 icon: 'error',
                 text: 'Error al asignar el rol',
-            })
+            });
         }
     };
+
 
     const handleAssignAdminSede = async (per_id, se_id, rol_id, sp_fecha_inicio, sp_fecha_fin) => {
         setAssigning(true);
@@ -274,13 +255,7 @@ export const RegisterComponent = () => {
     };
 
     const handleAssignAdminSedeModal = async () => {
-        if (!selectedPersona || !selectedSedes || selectedRoles.length === 0 || !fechaInicio) {
-            Swal.fire({
-                icon: "error",
-                text: "Debe seleccionar al menos una sede y un rol, y definir la fecha de inicio.",
-            });
-            return;
-        }
+        
         setAssigning(true);
         try {
             for (let rol_id of selectedRoles) {
@@ -441,14 +416,9 @@ export const RegisterComponent = () => {
             const rolId = Number(selectedRoles);
 
             if (rolId === 2) { // Admin Geriátrico
-                const datosAdminGeriatrico = {
-                    per_id: idPersona,
-                    ge_id,
-                    gp_fecha_inicio,
-                    gp_fecha_fin
-                };
-                console.log("📤 Enviando datos del admin geriátrico:", datosAdminGeriatrico);
-                await handleAssignRole(datosAdminGeriatrico);
+
+                await handleAssignRole(idPersona, selectedGeriatrico, rolId, gp_fecha_inicio, gp_fecha_fin);
+                console.log("📤 Admin geriatrico registrado:", response);
 
             } else if (rolId === 3) { // Admin Sede
                 await handleAssignAdminSede(idPersona, selectedSedes, rolId, sp_fecha_inicio, sp_fecha_fin);
@@ -457,13 +427,14 @@ export const RegisterComponent = () => {
 
             // 4️⃣ Asignar sedes generales
             const asignacionExitosa = await handleAssignSedes(idPersona, selectedRoles, sp_fecha_inicio, sp_fecha_fin);
+            console.log("📤 Sedes asignadas:", asignacionExitosa);
 
-            if (!asignacionExitosa?.success) {
+            if (asignacionExitosa) {
                 Swal.fire({
-                    icon: 'error',
-                    text: asignacionExitosa?.message || 'Error al asignar sedes'
+                    icon: 'success',
+                    text: asignacionExitosa.message
                 });
-                return;
+                setShowModal(false);
             }
 
             // 5️⃣ Datos según el rol
@@ -482,8 +453,14 @@ export const RegisterComponent = () => {
                     sp_fecha_fin
                 };
                 console.log("📤 Enviando datos del paciente:", datosPaciente);
-                await handlePacientes(datosPaciente);
-
+                const pacienteResponse = await handlePacientes(datosPaciente);
+                if (pacienteResponse.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        text: pacienteResponse.message
+                    });
+                    return;
+                }
             } else if (rolId === 5) { // Enfermera
                 const datosEnfermera = {
                     per_id: idPersona,
@@ -492,8 +469,14 @@ export const RegisterComponent = () => {
                     sp_fecha_inicio,
                     sp_fecha_fin
                 };
-                console.log("📤 Enviando datos de la enfermera:", datosEnfermera);
-                await handleEnfermera(datosEnfermera);
+                const enfermeraResponse = await handleEnfermera(datosEnfermera);
+                if (enfermeraResponse?.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        text: enfermeraResponse.message
+                    });
+                    return;
+                }
 
             } else if (![2, 3].includes(rolId)) {
                 Swal.fire({ icon: 'error', text: 'El rol seleccionado no es válido' });
@@ -557,7 +540,7 @@ export const RegisterComponent = () => {
                 <InputField label="Teléfono" type="text" name="per_telefono" value={per_telefono} onChange={onInputChange} placeholder="3112345678" icon="fas fa-phone" />
                 <InputField label="Foto" type="file" name="per_foto" onChange={onInputChange} accept="image/*" />
 
-                {!esSuperAdmin && validRegister() && (
+                {validRegister() && (
                     <>
                         <SelectField label="Rol" name="rol_id" value={selectedRoles} onChange={handleRoleChange} />
 

@@ -50,7 +50,7 @@ export const ModalSalidaStock = ({ onClose, med_sede_id, setMedicamentos, medica
             <div className="modal">
                 <div className="modal-content">
                     <form onSubmit={handleSubmit}>
-                        <h2>Registrar Salida de Stock</h2>
+                        <h2 className='h4'> Retirar unidades</h2>
 
                         <div className="modal-field">
                             <label>Cantidad a retirar:</label>

@@ -52,15 +52,13 @@ export const GestionPersonaGeriatricoPage = () => {
                     homeMiGeriatrico(),
                     personasVinculadasMiGeriatrico()
                 ]);
-    
-                console.log("📡 Respuesta de la API (sede):", sedeResult);
-    
+
                 if (sedeResult?.success && sedeResult.geriatrico) {
                     setGeriatrico(sedeResult.geriatrico);
                 } else {
                     setError("No se encontraron datos de la sede.");
                 }
-    
+
                 if (personasResult?.success && personasResult.personas?.data) {
                     setPersonas(personasResult.personas.data);
                 } else {
@@ -73,10 +71,10 @@ export const GestionPersonaGeriatricoPage = () => {
                 setLoading(false);
             }
         };
-    
+
         fetchData();
     }, []);
-    
+
     // Filtrar personas por nombre o documento
     const personasFiltradas = personas.filter(personas =>
         personas?.per_nombre?.toLowerCase()?.includes(search.toLowerCase()) ||
@@ -84,7 +82,6 @@ export const GestionPersonaGeriatricoPage = () => {
     );
 
     const handleCardClick = async (persona) => {
-        console.log("Persona seleccionada:", persona);
 
         const isActive = activeCard === persona.per_id ? null : persona.per_id;
         setActiveCard(isActive);
@@ -175,28 +172,37 @@ export const GestionPersonaGeriatricoPage = () => {
 
     const handleInactivarVinculacion = async (persona) => {
         console.log("Persona seleccionada para inactivar:", persona);
-
+    
         if (!persona || !persona.per_id) {
             console.warn("⚠️ Información incompleta para inactivar el rol: falta per_id.");
             return;
         }
-
+    
         const confirmacion = await Swal.fire({
-            text: "Deseas inactivará la vinculación de la persona al geriatrico.",
+            text: "Deseas inactivará la vinculación de la persona al geriátrico.",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Sí, inactivar",
             cancelButtonText: "Cancelar"
         });
-
+    
         if (!confirmacion.isConfirmed) return;
-
+    
         const resultado = await inactivarVinculacionGeriatrico(persona.per_id);
-
+    
         if (resultado.success) {
             Swal.fire({
                 icon: "success",
                 text: resultado.message || "Vinculación inactivada exitosamente"
+            });
+            setPersonas((prev) => {
+                const personasActualizadas = prev.map((p) => {
+                    if (p.per_id === persona.per_id) {
+                        return { ...p, gp_activo: false }; // Cambia gp_activo a false
+                    }
+                    return p; // Mantén las demás personas igual
+                });
+                return personasActualizadas;
             });
         } else {
             Swal.fire({
@@ -204,43 +210,51 @@ export const GestionPersonaGeriatricoPage = () => {
                 text: resultado.message || "No se pudo inactivar la vinculación"
             });
         }
-
     }
+    
 
     const handleReactivarVinculacion = async (persona) => {
         console.log("Persona seleccionada para reactivar:", persona);
-
+    
         if (!persona || !persona.per_id) {
             console.warn("⚠️ Información incompleta para reactivar el rol: falta per_id.");
             return;
         }
-
+    
         const confirmacion = await Swal.fire({
-            text: "Deseas reactivará la vinculación de la persona al geriatrico.",
+            text: "Deseas reactivará la vinculación de la persona al geriátrico.",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Sí, reactivar",
             cancelButtonText: "Cancelar"
         });
-
+    
         if (!confirmacion.isConfirmed) return;
-
+    
         const resultado = await reactivarVinculacionGeriatrico(persona.per_id);
-
+    
         if (resultado.success) {
             Swal.fire({
                 icon: "success",
                 text: resultado.message || "Vinculación reactivada exitosamente"
             });
-            resetForm();
+            setPersonas((prev) => {
+                const personasActualizadas = prev.map((p) => {
+                    if (p.per_id === persona.per_id) {
+                        return { ...p, gp_activo: true }; // Cambia gp_activo a true
+                    }
+                    return p; // Mantén las demás personas igual
+                });
+                return personasActualizadas;
+            });
         } else {
             Swal.fire({
                 icon: "error",
                 text: resultado.message || "No se pudo reactivar la vinculación"
             });
         }
-
     }
+    
 
 
     const handlePaciente = async (datosPaciente) => {

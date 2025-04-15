@@ -3,7 +3,6 @@ import { getToken } from "../helpers/getToken";
 
 export const usePaciente = () => {
     const registrarPaciente = async (datosPaciente) => {
-        console.log("📤 Enviando datos para registrar/actualizar paciente:", datosPaciente);
     
         const token = getToken();
         if (!token) {
@@ -24,8 +23,6 @@ export const usePaciente = () => {
                     },
                 }
             );
-    
-            console.log("✅ Respuesta del servidor:", data);
     
             return {
                 success: true,
@@ -59,8 +56,6 @@ export const usePaciente = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            console.log("✅ Respuesta del servidor:", data);
-
             return {
                 success: true,
                 message: data.message || "Pacientes obtenidos exitosamente",
@@ -93,8 +88,6 @@ export const usePaciente = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            console.log("✅ Respuesta del servidor:", data);
-
             return {
                 success: true,
                 message: data.message || "Pacientes obtenidos exitosamente",
@@ -121,7 +114,6 @@ export const usePaciente = () => {
     };
 
     const obtenerDetallePacienteSede = async (per_id) => {
-        console.log("📤 Enviando ID del paciente:", per_id);
         if (!per_id) {
             return {
                 success: false,
@@ -144,7 +136,6 @@ export const usePaciente = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            console.log("✅ Respuesta del servidor:", data);
 
             if (!data?.paciente) {
                 return {
@@ -172,7 +163,6 @@ export const usePaciente = () => {
     };
 
     const actualizarDetallePaciente = async (per_id, datosPaciente) => {
-        console.log("📤 Enviando datos para actualizar paciente:", datosPaciente);
         const token = getToken();
 
         if (!token) {
@@ -188,7 +178,6 @@ export const usePaciente = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            console.log("✅ Respuesta del servidor:", data);
 
             if (!data?.paciente) {
                 return {

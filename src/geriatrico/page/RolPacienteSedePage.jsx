@@ -13,7 +13,6 @@ export const RolPacienteSedePage = () => {
     const fetchPacienteSede = async () => {
       try {
         const response = await obtenerRolesPacientesSede(id);
-        console.log("Roles obtenidos correctamente.", response);
         if (response.success) {
           setRoles(response.data);
           setFilteredRoles(response.data); // Inicializar lista filtrada

@@ -4,7 +4,6 @@ import { getToken } from "../helpers";
 export const useCuidadosEnfermeria = () => {
 
     const registrarCuidadosEnfermeria = async (pac_id, datosCuidados) => {
-        console.log("📌 Datos a enviar:", pac_id, datosCuidados);
         const token = getToken();
 
         if (!token) {
@@ -22,8 +21,6 @@ export const useCuidadosEnfermeria = () => {
                 datosCuidados,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-
-            console.log("✅ Respuesta del servidor:", data);
 
             return {
                 success: true,
@@ -58,7 +55,6 @@ export const useCuidadosEnfermeria = () => {
             });
 
             const { data } = response;
-            console.log("✅ Respuesta del servidor:", data);
 
             if (!data || !data.datos) {
                 console.warn("⚠️ No se encontraron datos en la respuesta del servidor.");
@@ -86,7 +82,6 @@ export const useCuidadosEnfermeria = () => {
     };
 
     const actualizarCuidadosEnfermeria = async (pac_id, datosCuidados) => {
-        console.log("📌 Datos a enviar:", pac_id, datosCuidados);
         const token = getToken();
 
         if (!token) {
@@ -104,8 +99,6 @@ export const useCuidadosEnfermeria = () => {
                 datosCuidados,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-
-            console.log("✅ Respuesta del servidor:", data);
 
             return {
                 success: true,

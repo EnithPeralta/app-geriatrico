@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSede } from "../../hooks";
-import { LoadingComponet, SideBarComponent } from "../../components";
+import { LoadingComponet } from "../../components";
 import '../../css/sede.css';
 import { FaMedkit, FaUser, FaUserNurse, FaUsers } from "react-icons/fa";
 import { SideBarLayout } from "../layout";
@@ -14,38 +14,44 @@ export const SedeEspecificaPage = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchSede = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-    
-                const cachedSede = localStorage.getItem("sedeData");
-                if (cachedSede) {
-                    const { sede, geriatrico } = JSON.parse(cachedSede);
-                    setSede(sede);
-                    setGeriatrico(geriatrico);
-                    setLoading(false);
-                    return;
-                }
-    
-                const result = await obtenerSedesHome();
-                if (result.success && result.sede && result.geriatrico) {
-                    setSede(result.sede);
-                    setGeriatrico(result.geriatrico);
-                } else {
-                    setError("No se encontraron datos de la sede.");
-                }
-            } catch (err) {
-                setError("Error al obtener los datos.");
-            } finally {
-                setLoading(false);
+
+    // Mueve esta función arriba del useEffect
+    const fetchSede = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const result = await obtenerSedesHome();
+            if (result.success && result.sede && result.geriatrico) {
+                setSede(result.sede);
+                setGeriatrico(result.geriatrico);
+
+                localStorage.setItem("sede", JSON.stringify(result.sede));
+                localStorage.setItem("geriatrico", JSON.stringify(result.geriatrico));
+            } else {
+                setError("No se encontraron datos de la sede.");
             }
-        };
-    
-        fetchSede();
+        } catch (err) {
+            setError("Error al obtener los datos.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    useEffect(() => {
+        const sedeGuardada = localStorage.getItem("sede");
+        const geriatricoGuardado = localStorage.getItem("geriatrico");
+
+        if (sedeGuardada && geriatricoGuardado) {
+            setSede(JSON.parse(sedeGuardada));
+            setGeriatrico(JSON.parse(geriatricoGuardado));
+            setLoading(false);
+        } else {
+            fetchSede();
+        }
     }, []);
-    
+
+
 
     if (loading) {
         return <LoadingComponet />;
@@ -54,14 +60,17 @@ export const SedeEspecificaPage = () => {
     if (error) {
         return <p>Error: {error}</p>;
     }
-
-    if (!sede) {
-        return <p>No se encontraron datos de la sede.</p>;
+    if (!sede || !geriatrico) {
+        return <LoadingComponet />; // o simplemente null
     }
+
 
     return (
         <SideBarLayout>
-            <div className="content-area" style={{ backgroundColor: geriatrico.colores.principal }}>
+            <div
+                className="content-area"
+                style={{ backgroundColor: geriatrico?.colores?.principal || "#ffffff" }}
+            >
                 <div className="gestionar">
                     <span className="sede-name">{sede.se_nombre}</span>
                     <img src={sede.se_foto} alt="" className="" style={{ width: "200px", height: "100px", padding: "10px" }} />

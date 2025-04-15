@@ -93,7 +93,6 @@ export const useSedesRol = () => {
     };
 
     const asignarRolesSede = async ({ per_id, rol_id, sp_fecha_inicio, sp_fecha_fin }) => {
-        console.log("📤 Enviando datos para asignar roles a la sede:", { per_id, rol_id, sp_fecha_inicio, sp_fecha_fin });
 
         // Obtener el token
         const token = getToken();
@@ -105,15 +104,6 @@ export const useSedesRol = () => {
         }
 
         const rol_id_final = Array.isArray(rol_id) ? rol_id[0] : rol_id;
-
-
-        // Validar datos obligatorios
-        if (!per_id || !rol_id || !sp_fecha_inicio) {
-            return {
-                success: false,
-                message: "❗ Faltan datos obligatorios para asignar el rol.",
-            };
-        }
 
         try {
             const { data } = await geriatricoApi.post("/sedepersonarol/asignarRolSede",

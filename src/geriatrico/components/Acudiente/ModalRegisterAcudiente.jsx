@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
-import { useAcudiente, useGeriatricoPersona, usePersona, useSedesRol } from '../../../hooks';
+import { useAcudiente, useForm, useGeriatricoPersona, usePersona, useSedesRol } from '../../../hooks';
 import { ModalRegistrarPersonas, SelectField } from '../../../components';
 import { SelectRolAcudiente } from '../../../components/SelectRolAcudiente';
 
-export const ModalRegisterAcudiente = ({ onClose, pacienteId, onRegisterSuccess }) => {
+export const ModalRegisterAcudiente = ({ onClose, pacienteId, onRegisterSuccess, setAcudiente }) => {
     const { asignarRolesSede } = useSedesRol();
     const { registrarAcudiente } = useAcudiente();
     const { obtenerPersonaRolesMiGeriatricoSede } = useGeriatricoPersona();
     const { buscarVincularPersona } = usePersona();
+    const { onResetForm } = useForm();
     // Estados del formulario
     const [acudienteDocumento, setAcudienteDocumento] = useState('');
     const [parentesco, setParentesco] = useState('');
@@ -94,38 +95,45 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId, onRegisterSuccess 
         event.preventDefault();
         setMensaje(null);
         setError(null);
-
+    
         if (!pacienteSeleccionado || !acudienteDocumento || !parentesco) {
             console.log("Todos los campos son obligatorios.");
             return;
         }
-
+    
         try {
-            // 1️⃣ Buscar a la persona por documento
             let result = personaEncontrada;
+    
+            // 1️⃣ Buscar persona si no está almacenada
             if (!personaEncontrada) {
                 const fetchedPersona = await buscarVincularPersona({ documento: acudienteDocumento });
                 if (!fetchedPersona) return;
-
-                if (fetchedPersona !== personaEncontrada) {
-                    setPersonaEncontrada(fetchedPersona);
-                    result = fetchedPersona;
-                }
+    
+                setPersonaEncontrada(fetchedPersona);
+                result = fetchedPersona;
             }
-            console.log(result);
+    
+            // 2️⃣ Si requiere asignar rol
             if (result?.action === "assign_role") {
                 setShowSelectRoles(true);
                 setDatosAcudiente(prev => ({ ...prev, per_id: result.per_id }));
-                await Swal.fire({ icon: 'info', text: result.message });
-
-                if (datosAcudiente.rol_id) {
+    
+                // Mostrar mensaje solo si el rol no está asignado
+                if (!result.message) {
+                    await Swal.fire({ icon: 'info', text: result.message });
+                }
+    
+                const tieneRol = await validarRol(result.per_id);
+                const rolInactivo = result.roles?.some(rol => rol.rol_id === 6 && !rol.activoSede);
+    
+                // 3️⃣ Reasignar si rol está inactivo
+                if (tieneRol && rolInactivo) {
                     const asignado = await handleAssignSedes(
                         result.per_id,
                         datosAcudiente.rol_id,
                         datosAcudiente.sp_fecha_inicio,
                         datosAcudiente.sp_fecha_fin
                     );
-
                     if (asignado) {
                         await registrarAcudiente({
                             per_id: result.per_id,
@@ -133,55 +141,85 @@ export const ModalRegisterAcudiente = ({ onClose, pacienteId, onRegisterSuccess 
                             pa_parentesco: parentesco,
                         });
                     }
+                    return;
                 }
-                onResetForm();
-                return;
-            }
-
-            if (result.message) {
-                setShowPersona(true);
-                return;
-            }
-
-            if (!await validarRol(result.per_id)) {
-                setShowSelectRoles(true);
-                if (!await handleAssignSedes(
+    
+                // 4️⃣ Asignar rol si no lo tiene o estaba inactivo
+                const asignado = await handleAssignSedes(
                     result.per_id,
                     datosAcudiente.rol_id,
                     datosAcudiente.sp_fecha_inicio,
                     datosAcudiente.sp_fecha_fin
-                )) return;
+                );
+                if (!asignado) return;
+    
+                await registrarAcudiente({
+                    per_id: result.per_id,
+                    pac_id: pacienteSeleccionado.pac_id,
+                    pa_parentesco: parentesco,
+                });
+    
+                // 5️⃣ Resetear formulario y actualizar lista
+                onResetForm();
+                onClose();
+                setAcudiente(prev =>
+                    prev.map(acu =>
+                        acu.per_id === result.per_id
+                            ? { ...acu, activoSede: false }
+                            : acu
+                    )
+                );
+                return;
+            }
+    
+            // 6️⃣ Mostrar info si existe mensaje sin necesidad de asignar rol
+            if (result.message) {
+                setShowPersona(true);
+                return;
+            }
+    
+            // 7️⃣ Si no tiene el rol de acudiente
+            if (!await validarRol(result.per_id)) {
+                setShowSelectRoles(true);
+                const asignado = await handleAssignSedes(
+                    result.per_id,
+                    datosAcudiente.rol_id,
+                    datosAcudiente.sp_fecha_inicio,
+                    datosAcudiente.sp_fecha_fin
+                );
+                if (!asignado) return;
             } else {
                 await Swal.fire({ icon: 'info', text: "La persona ya tiene el rol de acudiente asignado." });
             }
-
-
-
-            // 6️⃣ Registrar el acudiente después de la validación del rol
+    
+            // 8️⃣ Registrar acudiente
             const response = await registrarAcudiente({
                 pac_id: pacienteSeleccionado.pac_id,
                 per_id: result.per_id,
                 pa_parentesco: parentesco,
             });
-
+    
             await Swal.fire({
                 icon: response?.success ? 'success' : 'error',
                 text: response?.message || "Error al registrar acudiente."
             });
+    
             if (response?.success) {
                 onRegisterSuccess?.({
-                    ...response.data, // si el backend te devuelve el acudiente creado
+                    ...response.data,
                     per_id: result.per_id,
                     pac_id: pacienteSeleccionado.pac_id,
                     pa_parentesco: parentesco
                 });
                 onClose();
             }
+    
             onResetForm();
         } catch (error) {
-            console.error("❌ Error capturado en useSedesRol:", error);
+            console.error("❌ Error capturado en handleRegisterAcudiente:", error);
         }
     };
+    
 
 
     return (

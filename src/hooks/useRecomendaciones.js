@@ -3,7 +3,6 @@ import { getToken } from "../helpers/getToken";
 
 export const useRecomendaciones = () => {
     const registrarRecomendacion = async ({ pac_id, rec_fecha, rec_cubrir_piel_m, rec_cubrir_piel_t, rec_cubrir_piel_n, rec_asistir_alimentacion_m, rec_asistir_alimentacion_t, rec_asistir_alimentacion_n, rec_prevenir_caidas, rec_actividad_ocupacional, rec_actividad_fisica, rec_otras }) => {
-        console.log("✅ Registrando recomendación...", pac_id, rec_fecha);
         const token = getToken();
         if (!token) {
             return { success: false, message: "Token de autenticación no encontrado." };
@@ -61,7 +60,6 @@ export const useRecomendaciones = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            console.log("✅ Respuesta del servidor:", data);
 
             if (!data || !data.datos) {
                 console.warn("⚠️ No se encontraron datos en la respuesta del servidor.");

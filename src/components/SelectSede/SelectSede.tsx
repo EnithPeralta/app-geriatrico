@@ -31,8 +31,7 @@ export const SelectSede = ({ label, ...props }: SelectSedeProps) => {
     }, []);
 
     return (
-        <div className="">
-            <label>{label}</label>
+        <>
             <select
                 name={props.name}
                 value={props.value || ""}
@@ -49,6 +48,6 @@ export const SelectSede = ({ label, ...props }: SelectSedeProps) => {
                     ))
                 )}
             </select>
-        </div>
+        </>
     );
 };

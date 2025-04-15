@@ -3,7 +3,7 @@ import { getToken } from '../helpers/getToken';
 
 export const useDiagnostico = () => {
     const registrarDiagnostico = async ({ pac_id, diag_fecha, diag_descripcion }) => {
-        console.log("✅ Registrando diagnóstico...", pac_id, diag_fecha);
+
         const token = getToken();
         if (!token) {
             return { success: false, message: "Token de autenticación no encontrado." };
@@ -18,7 +18,6 @@ export const useDiagnostico = () => {
                     }
                 }
             );
-            console.log("✅ Respuesta del servidor:", data);
 
             return {
                 success: true,
@@ -37,7 +36,7 @@ export const useDiagnostico = () => {
     };
 
     const obtenerDiagnostico = async (pac_id) => {
-        console.log("✅ Obteniendo diagnóstico...", pac_id);
+
         const token = getToken();
         if (!token) {
             return { success: false, message: "Token de autenticación no encontrado." };
@@ -49,7 +48,6 @@ export const useDiagnostico = () => {
                     headers: { Authorization: `Bearer ${token}` }
                 }
             );
-            console.log("✅ Respuesta del servidor:", data);
 
             return {
                 success: true,
@@ -68,7 +66,7 @@ export const useDiagnostico = () => {
     };
 
     const actualizarDiagnostico = async ({ pac_id, diag_fecha, diag_descripcion }) => {
-        console.log("🔄 Actualizando diagnóstico...", pac_id);
+
         const token = getToken();
         if (!token) {
             return { success: false, message: "Token de autenticación no encontrado." };
@@ -81,7 +79,6 @@ export const useDiagnostico = () => {
                     headers: { Authorization: `Bearer ${token}` }
                 }
             );
-            console.log("✅ Respuesta del servidor:", data);
 
             return {
                 success: true,

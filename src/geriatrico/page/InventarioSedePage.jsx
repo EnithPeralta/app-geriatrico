@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { SideBarComponent } from "../../components";
 import "../../css/inventario.css";
 import { FaBriefcaseMedical, FaHistory, FaMedkit, FaMinus } from "react-icons/fa";
-import { useGeriatrico, useInventarioSede } from "../../hooks";
+import { useGeriatrico, useInventarioSede, useSession } from "../../hooks";
 import socket from "../../utils/Socket";
 import { ModalStockMedicamento, HistoryDisplay, ModalInventarioSede, ModalSalidaStock } from "../components/InventarioSed";
 export const InventarioSedePage = () => {
     const { obtenerMedicamentosSede } = useInventarioSede();
     const { homeMiGeriatrico } = useGeriatrico();
+    const { obtenerSesion, session } = useSession();
 
     const [isModalVincular, setIsModalVincular] = useState(false);
     const [isModalSalidaStock, setIsModalSalidaStock] = useState(false);
@@ -19,6 +20,7 @@ export const InventarioSedePage = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
+        obtenerSesion();
         const fetchData = async () => {
             try {
                 const [sedeResult, medicamentoResult] = await Promise.all([
@@ -81,9 +83,11 @@ export const InventarioSedePage = () => {
                 <div className="content-area" style={{ backgroundColor: geriatrico?.color_principal }}>
                     <div className="report-header">
                         <h2 className="h4">Inventario de Medicamentos</h2>
+                        {session.rol_id === 3 && (
                         <button className="save-button" onClick={() => setIsModalVincular(true)}>
                             <FaBriefcaseMedical /> Vincular
                         </button>
+                        )}
                     </div>
 
                     <input
@@ -104,9 +108,13 @@ export const InventarioSedePage = () => {
                                         <th>Unidades por presentación</th>
                                         <th>Descripción</th>
                                         <th>Unidades disponibles</th>
-                                        <th>Agregar Stock</th>
-                                        <th>Salida Stock</th>
-                                        <th>Historial</th>
+                                        {session.rol_id === 3 && (
+                                            <>
+                                                <th>Agregar Stock</th>
+                                                <th>Salida Stock</th>
+                                                <th>Historial</th>
+                                            </>
+                                        )}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -117,42 +125,46 @@ export const InventarioSedePage = () => {
                                             <td>{med.unidades_por_presentacion}</td>
                                             <td>{med.med_descripcion}</td>
                                             <td>{med.med_total_unidades_disponibles}</td>
-                                            <td>
-                                                <button
-                                                    className="asignar"
-                                                    title="Agregar stock"
-                                                    onClick={() => {
-                                                        setMedicamentoSeleccionado(med);
-                                                        setIsModalSalidaStock(false);
-                                                    }}
-                                                >
-                                                    <FaMedkit />
-                                                </button>
-                                            </td>
-                                            <td>
-                                                <button
-                                                    className="inactive"
-                                                    title="Salida de stock"
-                                                    onClick={() => {
-                                                        setMedicamentoSeleccionado(med);
-                                                        setIsModalSalidaStock(true);
-                                                    }}
-                                                >
-                                                    <FaMinus />
-                                                </button>
-                                            </td>
-                                            <td>
-                                                <button
-                                                    className="turnos"
-                                                    title="Historial"
-                                                    onClick={() => {
-                                                        setMedicamentoSeleccionado(med);
-                                                        setIsModalHistorial(true);
-                                                    }}
-                                                >
-                                                    <FaHistory />
-                                                </button>
-                                            </td>
+                                            {session.rol_id === 3 && (
+                                                <>
+                                                    <td>
+                                                        <button
+                                                            className="asignar"
+                                                            title="Agregar stock"
+                                                            onClick={() => {
+                                                                setMedicamentoSeleccionado(med);
+                                                                setIsModalSalidaStock(false);
+                                                            }}
+                                                        >
+                                                            <FaMedkit />
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            className="inactive"
+                                                            title="Salida de stock"
+                                                            onClick={() => {
+                                                                setMedicamentoSeleccionado(med);
+                                                                setIsModalSalidaStock(true);
+                                                            }}
+                                                        >
+                                                            <FaMinus />
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            className="turnos"
+                                                            title="Historial"
+                                                            onClick={() => {
+                                                                setMedicamentoSeleccionado(med);
+                                                                setIsModalHistorial(true);
+                                                            }}
+                                                        >
+                                                            <FaHistory />
+                                                        </button>
+                                                    </td>
+                                                </>
+                                            )}
                                         </tr>
                                     ))}
                                 </tbody>

@@ -397,24 +397,17 @@ export const useGeriatrico = () => {
                 }
             });
 
-            dispatch(saveGeriatricoSuccess({
-                message: "Geriátrico obtenido",
-                geriatrico: data.geriatrico,
-                usuario: data.usuario,
-                rol: data.rol
-            }));
 
             return {
                 success: true,
                 message: data.message || "Geriátrico obtenido exitosamente",
                 geriatrico: data.geriatrico,
                 usuario: data.usuario,
-                rol: data.rol
+                rol: data.rol,
+                data
             };
         } catch (error) {
             console.error("Error al obtener geriátrico:", error);
-
-            dispatch(saveGeriatricoFailure("Error al obtener geriátrico"));
 
             return {
                 success: false,

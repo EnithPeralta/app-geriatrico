@@ -64,3 +64,5 @@ export * from './FormulacionMedicamentosPage';
 //FormulacionMedicamentosPage.jsx
 export * from './ColaboradoresPage';
 //ColaboradoresPage.jsx
+export * from './FormulacionDiariaPage';
+//FormulacionDiariaPage.jsx

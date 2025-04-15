@@ -55,10 +55,10 @@ export const ModalSalidaStockPac = ({ onClose, med_sede_id, med_pac_id, setMedic
         <div className="modal-overlay">
             <div className="modal">
                 <div className="modal-content">
-                    <h2>Retirar Unidades del Inventario</h2>
+                    <h2 className='h4'>Retirar unidades</h2>
                     <form onSubmit={handleSalidaStockPac}>
                         <div className="modal-field">
-                            <label>Cantidad:</label>
+                            <label>Cantidad a retirar:</label>
                             <input
                                 type="number"
                                 value={total}

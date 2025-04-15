@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { useTurnos } from '../../hooks'
-import { FaFileMedical } from 'react-icons/fa';
+import { useGeriatrico, useTurnos } from '../../hooks'
+import { FaFileMedical, FaHistory } from 'react-icons/fa';
 import { SideBarComponent } from '../../components';
 
 export const HistoryTurnosEnfermeraPage = () => {
   const { verMisTurnosEnfermeriaHistorial } = useTurnos();
+  const { homeMiGeriatrico } = useGeriatrico();
   const [turnosHistorial, setTurnosHistorial] = useState([]);
   const [fechaFiltro, setFechaFiltro] = useState("")
   const [sedeNombre, setSedeNombre] = useState("");
@@ -15,28 +16,43 @@ export const HistoryTurnosEnfermeraPage = () => {
 
 
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const [sedeResult, enfermerasResult] = await Promise.all([
+  //         homeMiGeriatrico(),
+  //         obtenerEnfermerasSede(),
+  //       ]);
+
+  //       if (sedeResult?.success) {
+  //         setGeriatrico(sedeResult.geriatrico);
+  //       }
+  //       if (enfermerasResult?.success && Array.isArray(enfermerasResult.data)) {
+  //         setEnfermeras(enfermerasResult.data);
+  //       } else {
+  //         setError(enfermerasResult.message || "No se encontraron enfermeras.");
+  //       }
+
+  //     } catch (err) {
+  //       setError("Error al obtener los datos.");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [sedeResult, enfermerasResult] = await Promise.all([
-          homeMiGeriatrico(),
-          obtenerEnfermerasSede(),
-        ]);
-
-        if (sedeResult?.success) {
-          setGeriatrico(sedeResult.geriatrico);
+        const result = await homeMiGeriatrico();
+        if (result.success) {
+          setGeriatrico(result.geriatrico);
         }
-
-        if (enfermerasResult?.success && Array.isArray(enfermerasResult.data)) {
-          setEnfermeras(enfermerasResult.data);
-        } else {
-          setError(enfermerasResult.message || "No se encontraron enfermeras.");
-        }
-
       } catch (err) {
-        setError("Error al obtener los datos.");
-      } finally {
-        setLoading(false);
+        console.error("Error al obtener los datos.", err);
       }
     };
 
@@ -73,9 +89,8 @@ export const HistoryTurnosEnfermeraPage = () => {
     <div>
       <div className="main-container">
         <SideBarComponent />
-        <div className="content">
-          <h2 className='h4'><FaFileMedical /> Historial De Mis Turnos</h2>
-
+        <div className="content-area" style={{ backgroundColor: geriatrico?.color_principal }}>
+          <h2 className='h4'><FaHistory /> Historial Mis Turnos</h2>
           <div className="filters">
             <input
               type="date"

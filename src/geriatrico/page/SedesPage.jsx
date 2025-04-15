@@ -22,7 +22,7 @@ export const SedesPage = () => {
     const dispatch = useDispatch();
     const rolSeleccionado = useSelector(state => state.roles?.rolSeleccionado ?? null);
     const [loaded, setLoaded] = useState(false);
-
+    // Este useEffect asegura que solo se ejecute cuando el rol ya esté cargado desde el localStorage
     useEffect(() => {
         const storedRolId = localStorage.getItem("rol_id");
         const storedGeId = localStorage.getItem("ge_id");
@@ -31,6 +31,29 @@ export const SedesPage = () => {
             dispatch(setRolSeleccionado({ rol_id: Number(storedRolId), ge_id: storedGeId ? Number(storedGeId) : null }));
         }
     }, [dispatch, rolSeleccionado]);
+
+    useEffect(() => {
+        const fetchSedes = async () => {
+            if (rolSeleccionado?.rol_id) {
+                try {
+                    setLoaded(true);
+                    const response = await obtenerSedesGeriatrico(Number(rolSeleccionado.rol_id));
+                    if (response.success) {
+                        setSedes(response.sedes);
+                    } else {
+                        setError(response.message);
+                    }
+                } catch {
+                    setError("Error obteniendo sedes");
+                } finally {
+                    setLoaded(false);
+                }
+            }
+        };
+
+        fetchSedes();
+    }, [rolSeleccionado]);
+
 
 
     useEffect(() => {
@@ -54,20 +77,20 @@ export const SedesPage = () => {
     }, [geriatrico]);
 
 
-    useEffect(() => {
-        if (rolSeleccionado && !loaded) {
-            setLoaded(true);
-            obtenerSedesGeriatrico(Number(rolSeleccionado.rol_id))
-                .then(response => {
-                    if (response.success) {
-                        setSedes(response.sedes);
-                    } else {
-                        setError(response.message);
-                    }
-                })
-                .catch(() => setError("Error obteniendo sedes"));
-        }
-    }, [rolSeleccionado]);
+    // useEffect(() => {
+    //     if (rolSeleccionado && !loaded) {
+    //         setLoaded(true);
+    //         obtenerSedesGeriatrico(Number(rolSeleccionado.rol_id))
+    //             .then(response => {
+    //                 if (response.success) {
+    //                     setSedes(response.sedes);
+    //                 } else {
+    //                     setError(response.message);
+    //                 }
+    //             })
+    //             .catch(() => setError("Error obteniendo sedes"));
+    //     }
+    // }, [rolSeleccionado]);
 
     const handleOpenModal = (sede = null) => {
         setSedeToEdit(sede ?? null);
@@ -79,21 +102,21 @@ export const SedesPage = () => {
         setSedeToEdit(null);
     };
 
-   
-const handleSaveSede = (newSede) => {
-    setSedes((prevSedes) => {
-        const index = prevSedes.findIndex((s) => s.se_id === newSede.se_id);
-        if (index !== -1) {
-            // Actualiza la sede existente
-            const updatedSedes = [...prevSedes];
-            updatedSedes[index] = newSede;
-            return updatedSedes;
-        } else {
-            // Agrega una nueva sede
-            return [...prevSedes, newSede];
-        }
-    });
-};
+
+    const handleSaveSede = (newSede) => {
+        setSedes((prevSedes) => {
+            const index = prevSedes.findIndex((s) => s.se_id === newSede.se_id);
+            if (index !== -1) {
+                // Actualiza la sede existente
+                const updatedSedes = [...prevSedes];
+                updatedSedes[index] = newSede;
+                return updatedSedes;
+            } else {
+                // Agrega una nueva sede
+                return [...prevSedes, newSede];
+            }
+        });
+    };
     const handleInactivarSedes = async (se_id) => {
         const confirm = await Swal.fire({
             text: "¿Estás seguro de que deseas inactivar la sede?",
@@ -102,7 +125,7 @@ const handleSaveSede = (newSede) => {
             confirmButtonText: "Sí, Inactivar",
             cancelButtonText: "Cancelar"
         });
-    
+
         if (confirm.isConfirmed) {
             try {
                 const result = await inactivarSedes(se_id);
@@ -132,7 +155,7 @@ const handleSaveSede = (newSede) => {
             confirmButtonText: "Sí, reactivar",
             cancelButtonText: "Cancelar"
         });
-    
+
         if (confirm.isConfirmed) {
             try {
                 const result = await reactivarSedes(se_id);

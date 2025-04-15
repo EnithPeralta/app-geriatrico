@@ -56,7 +56,7 @@ export const HistoryFormulacion = ({ pac_id, onClose }) => {
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-geriatrico" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
-                    <h1>Historial de Formulación</h1>
+                    <h4 className="h4">Historial de Formulación</h4>
                     <button className="close-btn" onClick={onClose}>
                         <i className="fa-solid fa-xmark" />
                     </button>

@@ -53,7 +53,7 @@ export const ModalStockMedicamentoPac = ({ med_sede_id, med_pac_id, onClose, set
         <div className="modal-overlay">
             <div className="modal">
                 <div className="modal-content">
-                    <h2>Agregar Unidades Disponibles</h2>
+                    <h2 className='h4'>Agregar unidades</h2>
                     <form onSubmit={handleAgregarStockPac}>
                         <div className="modal-field">
                             <label>Cantidad:</label>

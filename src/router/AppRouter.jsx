@@ -27,7 +27,7 @@ export const AppRouter = () => {
         <>
           <Route path="/geriatrico/*" element={<GeriatricoRoutes />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/*" element={<Navigate to="/" />} />
+          <Route path="/*" element={<Navigate to="/" />} replace />
         </>
       ) : (
         <>

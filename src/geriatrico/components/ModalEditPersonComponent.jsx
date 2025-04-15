@@ -25,12 +25,12 @@ export const ModalEditPersonComponent = ({ editedPersona, onClose, setPersonas }
                 documento: editedPersona.documento || "",
                 correo: editedPersona.correo || "",
                 telefono: editedPersona.telefono || "",
-                genero: editedPersona.genero || "",
+                genero: editedPersona.genero || "", // Valor predeterminado
                 foto: editedPersona.foto || "",
                 previewFoto: editedPersona.foto || ""
             });
         }
-    }, [editedPersona]);
+    }, []);
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -55,27 +55,22 @@ export const ModalEditPersonComponent = ({ editedPersona, onClose, setPersonas }
         }));
     };
 
-    console.log("Datos enviados:", editedPersona.documento);
-
-
     const handleEditSubmit = async (event) => {
         event.preventDefault();
 
         if (!personaEditada) return;
-        console.log("Datos enviados corregidos:", personaEditada);
         const result = await updatePerson(personaEditada.id, personaEditada);
-
-        console.log("Respuesta del servidor:", result);
 
         if (result.success) {
             setPersonas(prev =>
                 prev.map(p => (p.id === personaEditada.id ? { ...p, ...personaEditada } : p))
             );
-            onClose();
             Swal.fire({
                 icon: "success",
                 text: result.message,
             });
+            onClose();
+
         } else {
             console.error(result.message);
             Swal.fire({
@@ -164,16 +159,20 @@ export const ModalEditPersonComponent = ({ editedPersona, onClose, setPersonas }
                             />
                         </div>
 
-                        <div className="modal-field">
-                            <label>Género:</label>
-                            <input
+                        <div className='modal-field'>
+                            <label>Género</label>
+                            <select
                                 className="modal-input"
-                                type="text"
                                 name="genero"
                                 value={personaEditada.genero}
                                 onChange={handleEditChange}
                                 required
-                            />
+                            >
+                                <option hidden>Seleccione una opción</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                                <option value="O">Otro</option>
+                            </select>
                         </div>
 
                         {/* Botones */}

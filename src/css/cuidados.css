@@ -31,12 +31,14 @@ label input[type="text"] {
   border-bottom: 1.5px solid #0090bc; /* Bottom stroke */
 }
 
-label input[type="checkbox"] {
+label input[type="checkbox"],
+input[type="radio"] {
   margin-right: 5px;
 }
 
 /* Estilos del checkbox */
-  input[type="checkbox"] {
+  input[type="checkbox"],
+  input[type="radio"] {
     width: 20px;
     height: 20px;
     cursor: pointer;

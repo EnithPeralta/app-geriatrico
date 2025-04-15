@@ -1,22 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useInventarioPaciente, usePaciente, useSession } from '../../hooks';
-import { HistoryDisplayPac, ModalInventarioPaciente, ModalSalidaStockPac, ModalStockMedicamentoPac } from '../components/InventarioPaciente';
+import {
+    HistoryDisplayPac,
+    ModalInventarioPaciente,
+    ModalSalidaStockPac,
+    ModalStockMedicamentoPac
+} from '../components/InventarioPaciente';
 import { FaMedkit, FaMinus, FaBriefcaseMedical, FaHistory } from 'react-icons/fa';
+import socket from '../../utils/Socket';
 
 export const InventarioPacientePage = () => {
     const { obtenerSesion, session } = useSession();
     const { obtenerDetallePacienteSede } = usePaciente();
     const { obtenerMedicamentosInvPaciente } = useInventarioPaciente();
+
     const [medicamentos, setMedicamentos] = useState([]);
     const [paciente, setPaciente] = useState(null);
-    const { id } = useParams();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isModal, setIsModal] = useState(false);
-    const [isModalHistory, setIsModalHistory] = useState(false);
-    const [medicamentoSeleccionado, setMedicamentoSeleccionado] = useState(null);
-    const [searchTerm, setSearchTerm] = useState('');
     const [inventarioPaciente, setInventarioPaciente] = useState([]);
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [medicamentoSeleccionado, setMedicamentoSeleccionado] = useState(null);
+
+    const [isModalOpen, setIsModalOpen] = useState(false); // Modal de vincular medicamento
+    const [isModal, setIsModal] = useState(false); // Modal de salida de stock
+    const [isModalHistory, setIsModalHistory] = useState(false); // Modal historial
+
+    const { id } = useParams();
 
     useEffect(() => {
         obtenerSesion();
@@ -24,7 +34,6 @@ export const InventarioPacientePage = () => {
         const fetchPaciente = async () => {
             try {
                 const response = await obtenerDetallePacienteSede(id);
-                console.log("📡 Respuesta de la API (Paciente):", response);
                 if (response.success) {
                     setPaciente(response.paciente);
                 } else {
@@ -41,10 +50,9 @@ export const InventarioPacientePage = () => {
     useEffect(() => {
         if (!paciente?.pac_id) return;
 
-        const fetchMedicamentoPaciente = async () => {
+        const fetchMedicamentos = async () => {
             try {
                 const response = await obtenerMedicamentosInvPaciente(paciente.pac_id);
-                console.log("📡 Respuesta de la API (Medicamentos):", response);
                 if (response.success) {
                     setMedicamentos(response.data);
                 } else {
@@ -55,19 +63,35 @@ export const InventarioPacientePage = () => {
             }
         };
 
-        fetchMedicamentoPaciente();
+        fetchMedicamentos();
 
+        const handleStockActualizado = ({ med_id, nuevoStock }) => {
+            setMedicamentos(prev =>
+                prev.map(med =>
+                    med.med_id === med_id
+                        ? { ...med, med_total_unidades_disponibles: nuevoStock }
+                        : med
+                )
+            );
+        };
+
+        const handleMedicamentoAgregado = (nuevoMedicamento) => {
+            setMedicamentos(prev => [...prev, nuevoMedicamento]);
+        };
+
+        socket.on('stockActualizado', handleStockActualizado);
+        socket.on('stockPacienteActualizado', handleMedicamentoAgregado);
+
+        return () => {
+            socket.off('stockActualizado', handleStockActualizado);
+            socket.off('stockPacienteActualizado', handleMedicamentoAgregado);
+        };
     }, [paciente]);
 
-    const handleMedicamentoAgregado = (nuevoMedicamento) => {
-        setInventarioPaciente(prev => [...prev, nuevoMedicamento]);
-    };
+    const medicamentosFiltrados = medicamentos
+        .filter(med => med && med.med_nombre)
+        .filter(med => med.med_nombre.toLowerCase().includes(searchTerm.toLowerCase()));
 
-
-
-    const medicamentosFiltrados = medicamentos.filter(med =>
-        med.med_nombre.toLowerCase().includes(searchTerm.toLowerCase())
-    );
 
     return (
         <div className="animate__animated animate__fadeInUp">
@@ -76,7 +100,7 @@ export const InventarioPacientePage = () => {
                     <div className='report-header'>
                         <h2 className='h4'>Inventario del Paciente</h2>
                     </div>
-                    <div >
+                    <div>
                         <input
                             type="text"
                             placeholder="Buscar medicamento..."
@@ -98,9 +122,7 @@ export const InventarioPacientePage = () => {
                                         <th>Unidades disponibles</th>
                                         <th>Agregar Stock</th>
                                         <th>Salida Stock</th>
-                                        {session.rol_id === 3 && (
-                                            <th>Historial</th>)
-                                        }
+                                        {session.rol_id === 3 && <th>Historial</th>}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -135,20 +157,20 @@ export const InventarioPacientePage = () => {
                                                     <FaMinus />
                                                 </button>
                                             </td>
-                                            {session.rol_id === 3 && (<td>
-                                                <button
-                                                    className='turnos'
-                                                    title='Historial'
-                                                    onClick={() => {
-                                                        setMedicamentoSeleccionado(med);
-                                                        setIsModalHistory(true);
-                                                    }}
-                                                >
-                                                    <FaHistory />
-                                                </button>
-                                            </td>
+                                            {session.rol_id === 3 && (
+                                                <td>
+                                                    <button
+                                                        className='turnos'
+                                                        title='Historial'
+                                                        onClick={() => {
+                                                            setMedicamentoSeleccionado(med);
+                                                            setIsModalHistory(true);
+                                                        }}
+                                                    >
+                                                        <FaHistory />
+                                                    </button>
+                                                </td>
                                             )}
-
                                         </tr>
                                     ))}
                                 </tbody>
@@ -157,6 +179,7 @@ export const InventarioPacientePage = () => {
                             <p>No hay medicamentos disponibles.</p>
                         )}
                     </div>
+
                     <div className='button-container'>
                         <button className="save-button" onClick={() => setIsModalOpen(true)}>
                             <FaBriefcaseMedical /> Vincular
@@ -164,13 +187,11 @@ export const InventarioPacientePage = () => {
                     </div>
                 </div>
             </div>
-            {medicamentoSeleccionado && !isModalHistory && (
+
+            {medicamentoSeleccionado && !isModal && !isModalHistory && (
                 <ModalStockMedicamentoPac
                     med_pac_id={medicamentoSeleccionado.med_pac_id}
-                    onClose={() => {
-                        setMedicamentoSeleccionado(null);
-                        setIsModal(false);
-                    }}
+                    onClose={() => setMedicamentoSeleccionado(null)}
                     setMedicamento={setMedicamentos}
                 />
             )}
@@ -180,7 +201,10 @@ export const InventarioPacientePage = () => {
                     med_pac_id={medicamentoSeleccionado.med_pac_id}
                     medicamento={medicamentoSeleccionado}
                     setMedicamentos={setMedicamentos}
-                    onClose={() => setMedicamentoSeleccionado(null)}
+                    onClose={() => {
+                        setMedicamentoSeleccionado(null);
+                        setIsModal(false);
+                    }}
                 />
             )}
 
@@ -188,7 +212,6 @@ export const InventarioPacientePage = () => {
                 <ModalInventarioPaciente
                     pac_id={Number(paciente.pac_id)}
                     onClose={() => setIsModalOpen(false)}
-                    onMedicamentoAgregado={handleMedicamentoAgregado}
                 />
             )}
 
@@ -201,7 +224,6 @@ export const InventarioPacientePage = () => {
                     }}
                 />
             )}
-
         </div>
     );
 };

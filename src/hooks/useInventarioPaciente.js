@@ -28,7 +28,6 @@ export const useInventarioPaciente = () => {
                 }
             );
 
-            console.log("✅ Respuesta del servidor:", data);
             return {
                 success: true,
                 message: data.message || "Medicamento registrado correctamente.",
@@ -62,7 +61,6 @@ export const useInventarioPaciente = () => {
                     },
                 }
             );
-            console.log("✅ Respuesta del servidor:", data);
             return {
                 success: true,
                 message: data.message || "Medicamentos obtenidos correctamente.",
@@ -98,8 +96,6 @@ export const useInventarioPaciente = () => {
                 }
             );
             const { inventario, message } = data;
-
-            console.log("✅ Respuesta del servidor:", data);
 
             return {
                 success: true,
@@ -137,8 +133,6 @@ export const useInventarioPaciente = () => {
                 }
             );
             const { inventario, message } = data;
-
-            console.log("✅ Respuesta del servidor:", data);
 
             return {
                 success: true,

@@ -77,7 +77,9 @@ export const AcudientePage = () => {
                     )
                 );
             }
-            Swal.fire(result.success ? { icon: "success", text: result.message } : { icon: "error", text: result.message });
+            Swal.fire(result.success
+                ? { icon: "success", text: result.message }
+                : { icon: "error", text: result.message });
         }
     };
 
@@ -155,6 +157,7 @@ export const AcudientePage = () => {
                         onRegisterSuccess={(nuevoAcudiente) => {
                             setAcudientes(prev => [...prev, nuevoAcudiente]);
                         }}
+                        setAcudiente={setAcudientes}
                     />
                 )}
             </div>

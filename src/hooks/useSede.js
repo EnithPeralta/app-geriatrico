@@ -120,38 +120,6 @@ export const useSede = () => {
         }
     };
 
-    // const obtenerSedesInactive = async () => {
-    //     const token = getToken();
-
-    //     if (!token) {
-    //         const errorMessage = "Token de autenticación no encontrado";
-    //         dispatch(setSedeError(errorMessage)); // ✅ Ahora dispatch viene como argumento
-    //         return { success: false, message: errorMessage, sedes: [] };
-    //     }
-
-    //     try {
-    //         const { data } = await geriatricoApi.get("/sedes/inactivas", {
-    //             headers: { Authorization: `Bearer ${token}` },
-    //         });
-
-    //         console.log("✅ Respuesta del servidor:", data);
-
-    //         if (!data.sedes || !Array.isArray(data.sedes)) {
-    //             throw new Error("Formato de respuesta inválido");
-    //         }
-
-    //         dispatch(setSede(data.sedes)); // ✅ Guardamos en el estado global
-
-    //         return { success: true, message: data.message || "Sedes obtenidas exitosamente", sedes: data.sedes };
-    //     } catch (error) {
-    //         console.error("❌ Error al obtener sedes:", error);
-    //         const errorMessage = error.response?.data?.error || "Error al obtener las sedes";
-    //         dispatch(setSedeError(errorMessage));
-
-    //         return { success: false, message: errorMessage, sedes: [] };
-    //     }
-    // };
-
     const actualizarSede = async (se_id, datosSede) => {
         dispatch(startSede());
         console.log("Intentando actualizar sede con ID:", se_id, "Datos:", datosSede);

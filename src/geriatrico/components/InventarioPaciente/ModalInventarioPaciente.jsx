@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import Select from 'react-select';
 
 
-export const ModalInventarioPaciente = ({ onClose, pac_id,onMedicamentoAgregado}) => {
+export const ModalInventarioPaciente = ({ onClose, pac_id }) => {
     const { vincularMedicamentoInvPac } = useInventarioPaciente();
     const { obtenerMedicamentosSede } = useInventarioSede();
 
@@ -32,11 +32,11 @@ export const ModalInventarioPaciente = ({ onClose, pac_id,onMedicamentoAgregado}
     const opciones = medicamentosGenerales.map((med) => ({
         value: med.med_id,
         label: med.med_nombre,
-        presentacion: med.med_presentacion,
+        presentacion: med.med_presentacion?.charAt(0).toUpperCase() + med.med_presentacion?.slice(1).toLowerCase(),
         nombre: med.med_nombre,
         unidad: med.unidades_por_presentacion,
+        // tipo: med.med_tipo_contenido?.charAt(0).toUpperCase() + med.med_tipo_contenido?.slice(1).toLowerCase()
     }));
-
 
     const handleChange = (opcion) => {
         setMedicamentoSeleccionado(opcion.value);
@@ -44,6 +44,7 @@ export const ModalInventarioPaciente = ({ onClose, pac_id,onMedicamentoAgregado}
             presentacion: opcion.presentacion,
             nombre: opcion.nombre,
             unidad: opcion.unidad,
+            // tipo: opcion.tipo
         });
     };
 
@@ -64,12 +65,11 @@ export const ModalInventarioPaciente = ({ onClose, pac_id,onMedicamentoAgregado}
             });
 
             if (response.success) {
-                setMedicamentos(prev => [...prev, response.data?.inventario]);
+                setMedicamentos(prev => [...prev, response.inventario]);
                 Swal.fire({
                     icon: 'success',
                     text: response.message
                 });
-                onMedicamentoAgregado(response.data?.inventario); 
                 onClose();
             } else {
                 Swal.fire('Error', response.message || 'Ocurrió un error al guardar', 'error');
@@ -96,33 +96,37 @@ export const ModalInventarioPaciente = ({ onClose, pac_id,onMedicamentoAgregado}
 
                             {detalleMedicamento && (
                                 <>
-                                    <div className='modal-fiel'>
-                                        <label>Presentación</label>
-                                        <input
-                                            type="text"
-                                            name="med_nombre"
-                                            value={detalleMedicamento.presentacion}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className='modal-field'>
-                                        <label>Nombre del medicamento:</label>
-                                        <input
-                                            type="text"
-                                            name="med_nombre"
-                                            value={detalleMedicamento.nombre}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className='modal-field'>
-                                        <label>Unidad de presentación:</label>
-                                        <input
-                                            type="text"
-                                            name="med_nombre"
-                                            value={detalleMedicamento.unidad}
-                                            readOnly
-                                        />
-                                    </div>
+                                    <label>Presentación</label>
+                                    <input
+                                        type="text"
+                                        name="med_nombre"
+                                        value={detalleMedicamento.presentacion}
+                                        readOnly
+                                    />
+                                    <label>Nombre del medicamento:</label>
+                                    <input
+                                        type="text"
+                                        name="med_nombre"
+                                        value={detalleMedicamento.nombre}
+                                        readOnly
+                                    />
+                                    <label>Unidad de presentación:</label>
+                                    <input
+                                        type="text"
+                                        name="med_nombre"
+                                        value={detalleMedicamento.unidad}
+                                        readOnly
+                                    />
+                                    {/* 
+                                    <label>Tipo de contenido:</label>
+                                    <input
+                                        type="text"
+                                        name="med_nombre"
+                                        value={detalleMedicamento.tipo}
+                                        readOnly
+                                    />
+                                    */}
+
                                 </>
                             )}
                         </div>

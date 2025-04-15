@@ -35,7 +35,7 @@ export const FormulacionMedicamentosPage = () => {
     const [formulaciones, setFormulaciones] = useState({ en_curso: [], pendientes: [] });
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedForm, setSelectedForm] = useState(null);
-    const [activeTab, setActiveTab] = useState('en_curso');
+    const [activeTab, setActiveTab] = useState('pendientes');
 
     useEffect(() => {
         obtenerSesion();
@@ -49,6 +49,7 @@ export const FormulacionMedicamentosPage = () => {
     useEffect(() => {
         const fetchFormulacion = async () => {
             const response = await formulacionMedicamentoVigente(paciente?.pac_id);
+            console.log(response);
             if (response.success) {
                 setFormulaciones({
                     en_curso: response.en_curso,
@@ -105,7 +106,10 @@ export const FormulacionMedicamentosPage = () => {
                     ...prev,
                     en_curso: prev.en_curso.filter(f => f.admin_id !== formulacion.admin_id)
                 }));
-                Swal.fire('Suspendida', response.message, 'success');
+                Swal.fire({
+                    icon: 'success',
+                    text: response.message
+                });
             }
         });
     };
@@ -125,7 +129,7 @@ export const FormulacionMedicamentosPage = () => {
         if (date) {
             const result = await extenderFechaFinFormulacion(formulacion.admin_id, date);
             if (result.success) {
-                Swal.fire( result.message, "success");
+                Swal.fire(result.message, "success");
                 setFormulaciones(prev => ({
                     ...prev,
                     en_curso: prev.en_curso.map(f =>
@@ -133,7 +137,10 @@ export const FormulacionMedicamentosPage = () => {
                     )
                 }));
             } else {
-                Swal.fire("Error", result.message, "error");
+                Swal.fire({
+                    icon: 'error',
+                    text: result.message
+                });
             }
         }
     };
@@ -152,12 +159,20 @@ export const FormulacionMedicamentosPage = () => {
             <td>{formulacion.admin_metodo}</td>
             <td>{formulacion.admin_estado}</td>
             <td>{formulacion.admin_total_dosis_periodo}</td>
+            {activeTab === 'en_curso' && (
+                <td>{formulacion.dosis_efectivamente_administradas?.detalle_numero_dosis ?? 'N/A'}</td>
+            )}
+
+
+
             <td>
                 {formulacion.admin_estado === "En Curso" && (
-                    <div className='buttons-asignar'>
-                        <button className='suspender' onClick={() => handleSuspenderClick(formulacion)}><FaStop /></button>
-                        <button className='expandir' onClick={() => handleExpandirClick(formulacion)}><FaCalendarAlt /></button>
-                    </div>
+                    <>
+                        <div className='buttons-asignar'>
+                            <button className='suspender' onClick={() => handleSuspenderClick(formulacion)}><FaStop /></button>
+                            <button className='expandir' onClick={() => handleExpandirClick(formulacion)}><FaCalendarAlt /></button>
+                        </div>
+                    </>
                 )}
                 {formulacion.admin_estado === "Pendiente" && (
                     <div className='buttons-asignar'>
@@ -188,8 +203,8 @@ export const FormulacionMedicamentosPage = () => {
 
                     <div className="tabs-container">
                         <div className="geriatrico-tabs">
-                            <button className={`geriatrico-tab ${activeTab === 'en_curso' ? 'active' : ''}`} onClick={() => setActiveTab('en_curso')}>En Curso</button>
                             <button className={`geriatrico-tab ${activeTab === 'pendientes' ? 'active' : ''}`} onClick={() => setActiveTab('pendientes')}>Pendientes</button>
+                            <button className={`geriatrico-tab ${activeTab === 'en_curso' ? 'active' : ''}`} onClick={() => setActiveTab('en_curso')}>En Curso</button>
                         </div>
                     </div>
 
@@ -207,6 +222,7 @@ export const FormulacionMedicamentosPage = () => {
                                     <th>Via Administracion</th>
                                     <th>Estado</th>
                                     <th>Total Dosis</th>
+                                    {activeTab === 'en_curso' && <th>Dosis Administradas</th>}
                                     <th>Acciones</th>
                                 </tr>
                             </thead>

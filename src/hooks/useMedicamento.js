@@ -2,7 +2,7 @@ import geriatricoApi from "../api/geriatricoApi";
 import { getToken } from "../helpers"
 
 export const useMedicamento = () => {
-    const registrarMedicamento = async ({ med_nombre, med_presentacion, unidades_por_presentacion, med_descripcion }) => {
+    const registrarMedicamento = async ({ med_nombre, med_presentacion, unidades_por_presentacion, med_descripcion, med_tipo_contenido }) => {
         const token = getToken();
         if (!token) {
             return {
@@ -17,7 +17,8 @@ export const useMedicamento = () => {
                     med_nombre,
                     med_presentacion,
                     unidades_por_presentacion,
-                    med_descripcion: med_descripcion || null
+                    med_descripcion: med_descripcion || null,
+                    med_tipo_contenido
                 },
                 {
                     headers: {
@@ -57,7 +58,6 @@ export const useMedicamento = () => {
                     },
                 }
             )
-            console.log("�� Respuesta del servidor:", data)
             return {
                 success: true,
                 message: data.message || "Medicamentos obtenidos correctamente.",
@@ -72,7 +72,7 @@ export const useMedicamento = () => {
         }
     }
 
-    const actualizarMedicamento = async (med_sede_id, { med_nombre, med_presentacion, unidades_por_presentacion, med_descripcion }) => {
+    const actualizarMedicamento = async (med_sede_id, { med_nombre, med_presentacion, unidades_por_presentacion, med_descripcion,med_tipo_contenido}) => {
         const token = getToken();
         if (!token) {
             return {
@@ -87,7 +87,8 @@ export const useMedicamento = () => {
                     med_nombre,
                     med_presentacion,
                     unidades_por_presentacion,
-                    med_descripcion
+                    med_descripcion,
+                    med_tipo_contenido
                 },
                 {
                     headers: {
@@ -95,7 +96,6 @@ export const useMedicamento = () => {
                     },
                 }
             )
-            console.log("�� Respuesta del servidor:", data)
             return {
                 success: true,
                 message: data.message || "Medicamento actualizado correctamente.",

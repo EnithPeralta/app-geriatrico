@@ -119,12 +119,15 @@
   }
   
   .modal-field input[type="text"],
+  .modal-field input[readonly],
   .modal-field input[type="email"],
   .modal-field input[type="password"],
   .modal-field input[type="file"],
   .modal-field input[type="select"],
+  .modal-field input[type="number"],
   .modal-field textarea,
-  .modal-field input[type="number"]{
+  .modal-field select
+ {
     width: 100%;
     padding: 8px;
     border: 1px solid #cbd5e0;

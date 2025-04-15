@@ -34,10 +34,8 @@ export const CuadroTurnosEnfermeraPage = () => {
     const fetchTurnos = async () => {
       try {
         const response = await verMisTurnosEnfermeria();
-        console.log("Respuesta API:", response);
 
         if (response.success) {
-          // Acceder al array correcto dentro del objeto anidado
           const turnosData = response.turnos?.turnos || [];
           setTurnos(turnosData);
         } else {

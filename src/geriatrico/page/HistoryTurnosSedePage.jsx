@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useEnfermera, useGeriatrico, useTurnos } from '../../hooks';
 import { useParams } from 'react-router-dom';
-import { FaFileMedical } from 'react-icons/fa';
+import { FaFileMedical, FaHistory } from 'react-icons/fa';
 
 export const HistoryTurnosSedePage = () => {
     const { id } = useParams();
@@ -95,7 +95,7 @@ export const HistoryTurnosSedePage = () => {
     return (
         <div className="main-container">
             <div className="content">
-                <h2 className='h1'><FaFileMedical /> Historial De Turnos</h2>
+                <h2 className='h1'><FaHistory /> Historial De Turnos</h2>
                 <div className="search-container">
                     <input
                         type="text"
@@ -124,8 +124,8 @@ export const HistoryTurnosSedePage = () => {
                                     <td>{e.per_documento}</td>
                                     <td>{e.enf_codigo}</td>
                                     <td>
-                                        <button title='Ver Historial' className="btn" onClick={() => handleVerTurnos(e)}>
-                                            <FaFileMedical />
+                                        <button title='Ver Historial' className="turnos" onClick={() => handleVerTurnos(e)}>
+                                            <FaHistory />
                                         </button>
                                     </td>
                                 </tr>

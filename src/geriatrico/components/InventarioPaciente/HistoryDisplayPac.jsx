@@ -104,7 +104,7 @@ export const HistoryDisplayPac = ({ med_pac_id, onClose }) => {
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-container" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
-                    <h1>Historial</h1>
+                    <h2 className='h4'>Historial de Movimientos</h2>
                     <button className="close-btn" onClick={onClose}>
                         <i className="fa-solid fa-xmark" />
                     </button>

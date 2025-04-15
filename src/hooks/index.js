@@ -24,3 +24,4 @@ export * from './useMovimientosStockSede';
 export * from './useMovimientosStockPaciente';
 export * from './useFormulacionMedicamentos';
 export * from './useColaboradores';
+export * from './useDetalleAdministracionMedicamento';

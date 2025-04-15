@@ -156,8 +156,6 @@ export const useTurnos = () => {
                 },
             });
 
-            console.log("✅ Respuesta del servidor:", response.data);
-
             return {
                 success: true,
                 message: response.data.message || "Turnos obtenidos exitosamente.",

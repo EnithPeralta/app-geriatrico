@@ -12,6 +12,8 @@ import { RecomendacionesPage } from "./RecomendacionesPage";
 import { DiagnosticoPage } from "./DiagnosticoPage";
 import { InventarioPacientePage } from "./InventarioPacientePage";
 import { FormulacionMedicamentosPage } from "./FormulacionMedicamentosPage";
+import { FaEdit } from "react-icons/fa";
+import { FormulacionDiariaPage } from "./FormulacionDiariaPage";
 
 export const PacienteEspecificoPage = () => {
     const { id } = useParams();
@@ -86,7 +88,7 @@ export const PacienteEspecificoPage = () => {
             navigate(`/geriatrico/diagnostico/${paciente?.pac_id}`);
         } else if (index === 6) {
             navigate(`/geriatrico/inventarioPaciente/${paciente?.pac_id}`);
-        }else if (index === 7) {
+        } else if (index === 7) {
             navigate(`/geriatrico/formulacionMedicamentos/${paciente?.pac_id}`);
         }
     };
@@ -109,18 +111,19 @@ export const PacienteEspecificoPage = () => {
     // 📌 Configuración de Tabs SOLO para Enfermeros
     const tabs = [
         {
+
             title: "Información Paciente",
             content: (
                 <>
-                    <div className="button-container">
-
-                        <button className="gestionar-btn" onClick={() => setShowEditarPersona(true)}>
-                            Editar
-                        </button>
-
-                    </div>
                     <div className='report-header'>
                         <h2 className="h4">Información del Paciente</h2>
+                        <button
+                            className="gestionar-btn"
+                            onClick={() => setShowEditarPersona(true)}
+                            title="Editar Información del Paciente"
+                        >
+                            <FaEdit />
+                        </button>
                     </div>
                     <div className="grid-4-columns">
                         {[
@@ -180,6 +183,10 @@ export const PacienteEspecificoPage = () => {
         {
             title: "Formulación Medicamentos",
             content: <FormulacionMedicamentosPage />
+        },
+        {
+            title: "Formulación Diaria",
+            content: <FormulacionDiariaPage />
         }
 
     ];

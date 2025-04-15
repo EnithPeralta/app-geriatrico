@@ -116,7 +116,8 @@ export const MedicamentosPage = () => {
                                             <span className="item-name">{med.med_nombre}</span>
                                             <span className="item-description">{med.med_descripcion}</span>
                                             <span className="item-presentation">Presentación: {med.med_presentacion?.charAt(0).toUpperCase() + med.med_presentacion?.slice(1).toLowerCase()}</span>
-                                            <span className="item-units-per-presentation">Unidades por presentación: {med.unidades_por_presentacion}</span>
+                                            <span className="item-presentation">Tipo de contenido: {med.med_tipo_contenido?.charAt(0).toUpperCase() + med.med_tipo_contenido?.slice(1).toLowerCase()}</span>
+                                            <span className="item-presentation">Unidades por presentación: {med.unidades_por_presentacion}</span>
                                         </div>
                                         <div className="inventory-info">
                                             <div className="button-container">

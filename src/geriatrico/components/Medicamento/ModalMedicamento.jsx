@@ -7,7 +7,8 @@ export const ModalMedicamento = ({ onClose }) => {
         med_nombre: '',
         med_presentacion: '',
         unidades_por_presentacion: '',
-        med_descripcion: ''
+        med_descripcion: '',
+        med_tipo_contenido: ''
     });
     const { registrarMedicamento } = useMedicamento();
 
@@ -26,7 +27,7 @@ export const ModalMedicamento = ({ onClose }) => {
                     icon: 'success',
                     text: response.message
                 })
-                onClose();              
+                onClose();
                 console.log("Medicamento registrado correctamente.", response);
             } else {
                 Swal.fire({
@@ -52,7 +53,7 @@ export const ModalMedicamento = ({ onClose }) => {
                         </div>
                         <div className="modal-field">
                             <label>Presentación:</label>
-                            <select  name="med_presentacion" value={medicamento.med_presentacion} onChange={handleChange} >
+                            <select name="med_presentacion" value={medicamento.med_presentacion} onChange={handleChange} >
                                 <option value="" hidden>Seleccione una presentación</option>
                                 <option value="sachet">Sachet</option>
                                 <option value="unidad">Unidad</option>
@@ -72,6 +73,23 @@ export const ModalMedicamento = ({ onClose }) => {
                         <div className="modal-field">
                             <label>Unidades por presentación:</label>
                             <input type="number" name="unidades_por_presentacion" value={medicamento.unidades_por_presentacion} onChange={handleChange} />
+                        </div>
+                        <div className="modal-field">
+                            <label>Tipo de contenido:</label>
+                            <select name="med_tipo_contenido" value={medicamento.med_tipo_contenido} onChange={handleChange}>
+                                <option value="" hidden>Seleccione...</option>
+                                <option value="mililitros">Mililitros</option>
+                                <option value="gramos">Gramos</option>
+                                <option value="unidades">Unidades</option>
+                                <option value="miligramos">Miligramos</option>
+                                <option value="tabletas">Tabletas</option>
+                                <option value="cápsulas">Cápsulas</option>
+                                <option value="disparos">Disparos</option>
+                                <option value="parches">Parches</option>
+                                <option value="gotas">Gotas</option>
+                                <option value="supositorios">Supositorios</option>
+                                <option value="otros">Otros</option>
+                            </select>
                         </div>
                         <div className="modal-field">
                             <label>Descripción:</label>

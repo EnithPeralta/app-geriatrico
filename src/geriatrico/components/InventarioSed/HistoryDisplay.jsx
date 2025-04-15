@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useMovimientosStockSede } from '../../../hooks';
+import { FaHistory } from 'react-icons/fa';
 
 export const HistoryDisplay = ({ med_sede_id, onClose }) => {
     const { historialMovimientosMedicamento } = useMovimientosStockSede();
@@ -17,7 +18,6 @@ export const HistoryDisplay = ({ med_sede_id, onClose }) => {
                         entradas: response.entrada || [],
                         salidas: response.salida || [],
                     });
-                    console.log("✔️ Historial cargado:", response);
                 } else {
                     console.error("⚠️ Error al obtener historial:", response.message);
                 }
@@ -103,7 +103,7 @@ export const HistoryDisplay = ({ med_sede_id, onClose }) => {
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-container" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
-                    <h1>Historial</h1>
+                    <h1 className='h4'>Historial de Movimientos</h1>
                     <button className="close-btn" onClick={onClose}>
                         <i className="fa-solid fa-xmark" />
                     </button>

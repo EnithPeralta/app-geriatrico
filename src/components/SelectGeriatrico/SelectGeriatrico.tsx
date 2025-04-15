@@ -30,13 +30,13 @@ export const SelectGeriatrico = ({ label, ...props }: SelectGeriatricoProps) => 
     }, [obtenerGeriatricos]);
 
     return (
-        <div>
+        <div className="">
             <label>{label}</label>
             <select
                 name={props.name}
                 value={typeof props.value === "string" || typeof props.value === "number" ? props.value : ""}
                 onChange={props.onChange}
-            >
+            >   
                 <option hidden>Seleccione Geriátrico</option>
                 {error ? (
                     <option value="" disabled>{`Error: ${error}`}</option>

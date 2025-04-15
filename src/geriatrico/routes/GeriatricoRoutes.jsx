@@ -9,6 +9,7 @@ import {
     CuidadosEnfermeriaPage,
     DiagnosticoPage,
     EnfermerasPage,
+    FormulacionDiariaPage,
     FormulacionMedicamentosPage,
     GeriatricosPage,
     GestionarPersonasPage,
@@ -72,6 +73,7 @@ export const GeriatricoRoutes = () => {
             <Route path="diagnostico/:id" element={<DiagnosticoPage />} />
             <Route path="inventarioPaciente/:id" element={<InventarioPacientePage />} />
             <Route path="formulacionMedicamentos/:id" element={<FormulacionMedicamentosPage />} />
+            <Route path="formulacionDiaria/:id" element={<FormulacionDiariaPage />} />
         </Routes>
     )
 }
