@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import Select from 'react-select';
 
 
-export const ModalInventarioPaciente = ({ onClose, pac_id }) => {
+export const ModalInventarioPaciente = ({ onClose, pac_id, setMedi }) => {
     const { vincularMedicamentoInvPac } = useInventarioPaciente();
     const { obtenerMedicamentosSede } = useInventarioSede();
 
@@ -65,11 +65,20 @@ export const ModalInventarioPaciente = ({ onClose, pac_id }) => {
             });
 
             if (response.success) {
-                setMedicamentos(prev => [...prev, response.inventario]);
                 Swal.fire({
                     icon: 'success',
                     text: response.message
                 });
+                const nuevo = {
+                    med_sede_id: response.data?.med_sede_id || Date.now(),
+                    med_id: Number(medicamentoSeleccionado),
+                    med_nombre: detalleMedicamento.nombre,
+                    med_presentacion: detalleMedicamento.presentacion,
+                    unidades_por_presentacion: detalleMedicamento.unidad,
+                    med_descripcion: '', // Puedes agregarlo si lo tienes
+                    med_total_unidades_disponibles: parseInt(totalUnidades)
+                };
+                setMedi(prev => [...prev, nuevo]);
                 onClose();
             } else {
                 Swal.fire('Error', response.message || 'Ocurrió un error al guardar', 'error');

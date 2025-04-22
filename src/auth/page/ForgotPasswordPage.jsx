@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import '../../css/forge.css';
-import { usePassword } from '../../hooks';
+import { useAuthStore, usePassword } from '../../hooks';
 import Swal from "sweetalert2";
 
 export const ForgotPasswordPage = () => {
-    const [email, setEmail] = useState("");  // Para almacenar el correo ingresado por el usuario
-    const { forgotPassword, loading, message, error } = usePassword();  // Usamos el hook personalizado
+    const [email, setEmail] = useState("");
+    const [loginEnabled, setLoginEnabled] = useState(false); // Nuevo estado
+    const { forgotPassword, loading, message, error } = usePassword();
+    const { startLogout } = useAuthStore();
 
-    // Función que maneja el envío del formulario
+    const [hasSubmitted, setHasSubmitted] = useState(false);
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (email) {
-            forgotPassword({ per_correo: email });  // Llamamos a la función de recuperación de contraseña
+            forgotPassword({ per_correo: email });
+            setHasSubmitted(true); // <- Marcar que ya envió
         } else {
             Swal.fire({
                 icon: 'warning',
@@ -19,14 +23,17 @@ export const ForgotPasswordPage = () => {
             });
         }
     };
+
     useEffect(() => {
-        if (message) {
+        if (message && hasSubmitted) {
             Swal.fire({
                 icon: 'success',
                 text: message
+            }).then(() => {
+                setLoginEnabled(true);
             });
         }
-    }, [message]);
+    }, [message, hasSubmitted]);
 
     useEffect(() => {
         if (error) {
@@ -43,25 +50,37 @@ export const ForgotPasswordPage = () => {
                 <div className="left-forget">
                     <h2>¿Olvidaste tu contraseña?</h2>
                     <p>Escribe el correo asociado a tu cuenta; ahí te llegarán las instrucciones para cambiar tu contraseña.</p>
+
                     <div className="input-container-forget">
                         <input
                             type="email"
                             placeholder="Escribe tu E-mail"
-                            value={email}  // Vinculamos el estado del email al valor del input
-                            onChange={(e) => setEmail(e.target.value)}  // Actualizamos el estado cuando el usuario escribe
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                         <i className="fas fa-envelope" />
                     </div>
+
                     <button
                         className="btn-forget"
-                        onClick={handleSubmit}  // Llamamos a la función handleSubmit cuando se hace click
-                        disabled={loading}  // Deshabilitamos el botón mientras se procesa la solicitud
+                        onClick={handleSubmit}
+                        disabled={loading}
                     >
-                        {loading ? "Enviando..." : "Enviar"}  {/* Cambiamos el texto del botón si está en proceso */}
+                        {loading ? "Enviando..." : "Enviar"}
                     </button>
+
+                    {loginEnabled && (
+                        <button
+                            className="btn-forget"
+                            onClick={startLogout}
+                            style={{ marginTop: '15px' }}
+                        >
+                            Ir a Iniciar sesión
+                        </button>
+                    )}
                 </div>
-                <div className="right-forget">
-                </div>
+
+                <div className="right-forget"></div>
             </div>
         </div>
     );

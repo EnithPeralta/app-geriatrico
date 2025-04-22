@@ -108,7 +108,7 @@ export const TurnoSedePage = () => {
                             type="date"
                             value={fechaFiltro}
                             onChange={(e) => setFechaFiltro(e.target.value)}
-                            className="search-input"
+                            className=""
                         />
                     </div>
                     <div className="turnos-container-sede">

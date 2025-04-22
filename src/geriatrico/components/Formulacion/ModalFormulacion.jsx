@@ -12,7 +12,7 @@ const FormulacionFields = {
     admin_metodo: ''
 };
 
-export const ModalFormulacion = ({ pac_id, onClose }) => {
+export const ModalFormulacion = ({ pac_id, onClose, setFormulaciones }) => {
     const { obtenerMedicamentos } = useMedicamento();
     const { registrarFormulacionMedicamento } = useFormulacionMedicamentos();
 
@@ -38,7 +38,6 @@ export const ModalFormulacion = ({ pac_id, onClose }) => {
     useEffect(() => {
         const fetchMedicamentos = async () => {
             const response = await obtenerMedicamentos();
-            console.log(response);
             if (response.success) {
                 setMedicamentosGenerales(response.data);
             } else {
@@ -95,11 +94,11 @@ export const ModalFormulacion = ({ pac_id, onClose }) => {
             onResetForm();
             setMedicamentoSeleccionado(null);
             setDetalleMedicamento(null);
+            setFormulaciones(prev => Array.isArray(prev) ? [...prev, result.data] : [result.data]);
             onClose();
         } else {
             Swal.fire({
                 icon: 'error',
-                title: 'Error',
                 text: result.message
             });
         }

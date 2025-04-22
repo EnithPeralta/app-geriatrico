@@ -7,7 +7,7 @@ const FormulacionFields = {
     detalle_observaciones: ''
 };
 
-export const ModalRegisterFormula = ({ admin_id, onClose }) => {
+export const ModalRegisterFormula = ({ admin_id, onClose, setFormulaciones }) => {
     const { registrarAdministracionDosis } = useDetalleAdministracionMedicamento();
 
     const {
@@ -45,6 +45,7 @@ export const ModalRegisterFormula = ({ admin_id, onClose }) => {
                 icon: 'success',
                 text: result.message || "Administración registrada con éxito"
             });
+            setFormulaciones(prev => Array.isArray(prev) ? [...prev, result.data] : [result.data]);
             onResetForm();
             onClose();
         } else {

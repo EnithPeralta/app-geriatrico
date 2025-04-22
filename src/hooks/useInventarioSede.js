@@ -31,6 +31,7 @@ export const useInventarioSede = () => {
             return {
                 success: true,
                 message: data.message || "Medicamento registrado exitosamente.",
+                data: data || null,
                 inventario: data.inventario || null,
                 movimiento: data.movimiento || null,
             };

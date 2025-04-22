@@ -72,7 +72,7 @@ export const ModalUpdateProfile = ({ persona, updatePersona, setPersona, showMod
                 <div className="modal-content">
                     <form onSubmit={handleSubmit}>
                         <h2 className="h4">Editar Perfil</h2>
-                        <div className="profile-img">
+                        <div className="modal-image">
                             {editedPersona.foto ? (
                                 <img src={editedPersona.foto} alt="Foto de perfil" height="100px" width="100px" />
                             ) : (

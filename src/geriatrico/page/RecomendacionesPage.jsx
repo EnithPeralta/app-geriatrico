@@ -161,148 +161,143 @@ export const RecomendacionesPage = () => {
                                 </div>
                             </div>
 
-                            {recomendacionRegistrada && (
-                                <div className="cuidado-item">
-                                    <span>Cubrir Piel</span>
-                                    <div className="options">
-                                        {["m", "t", "n"].map((momento) => {
-                                            const name = `rec_cubrir_piel_${momento}`;
-                                            return (
-                                                <div key={name} className="checkbox-group" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                                    <input
-                                                        type="checkbox"
-                                                        name={name}
-                                                        checked={recomendacion[name] === "S"}
-                                                        onChange={handleCheckboxChange}
-                                                        id={name}
-                                                    />
-                                                    <label htmlFor={name} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                                                        {` ${momento === "m" ? "Mañana" : momento === "t" ? "Tarde" : "Noche"}`}
-                                                    </label>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            )}
-
-                            {recomendacionRegistrada && (
-                                <div className="cuidado-item">
-                                    <span>Asistencia Alimentación</span>
-                                    <div className="options">
-                                        {["m", "t", "n"].map((momento) => {
-                                            const name = `rec_asistir_alimentacion_${momento}`;
-                                            return (
-                                                <div key={name} className="checkbox-group" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                                    <input
-                                                        type="checkbox"
-                                                        name={name}
-                                                        checked={recomendacion[name] === "S"}
-                                                        onChange={handleCheckboxChange}
-                                                        id={name}
-                                                    />
-                                                    <label htmlFor={name} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                                                        {` ${momento === "m" ? "Mañana" : momento === "t" ? "Tarde" : "Noche"}`}
-                                                    </label>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            )}
-
-
-                            {recomendacionRegistrada && (
-                                <div className="cuidado-item">
-                                    <span>Prevenir Caidas</span>
-                                    <div className="options">
-                                        {[
-                                            { label: "Sí", value: "S" },
-                                            { label: "No", value: "N" }
-                                        ].map((opcion) => (
-                                            <div
-                                                key={opcion.value}
-                                                className="checkbox-group"
-                                                style={{ display: "flex", alignItems: "center", gap: "8px", marginRight: "16px" }}
-                                            >
+                            <div className="cuidado-item">
+                                <span>Cubrir Piel</span>
+                                <div className="options">
+                                    {["m", "t", "n"].map((momento) => {
+                                        const name = `rec_cubrir_piel_${momento}`;
+                                        return (
+                                            <div key={name} className="checkbox-group" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                                                 <input
                                                     type="checkbox"
-                                                    name="rec_prevenir_caidas"
-                                                    value={opcion.value}
-                                                    checked={recomendacion.rec_prevenir_caidas === opcion.value}
+                                                    name={name}
+                                                    checked={recomendacion[name] === "S"}
                                                     onChange={handleCheckboxChange}
-                                                    id={`caidas_${opcion.value}`}
+                                                    id={name}
                                                 />
-                                                <label htmlFor={`caidas_${opcion.value}`} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                                                    {opcion.label}
+                                                <label htmlFor={name} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                                    {` ${momento === "m" ? "Mañana" : momento === "t" ? "Tarde" : "Noche"}`}
                                                 </label>
                                             </div>
-                                        ))}
-                                    </div>
+                                        );
+                                    })}
                                 </div>
-                            )}
+                            </div>
 
 
-                            {recomendacionRegistrada && (
-                                <div className="cuidado-item">
-                                    <span>Activida Ocupacional</span>
-                                    <div className="options">
-                                        {[
-                                            { label: "Sí", value: "S" },
-                                            { label: "No", value: "N" }
-                                        ].map((opcion) => (
-                                            <div
-                                                key={opcion.value}
-                                                className="checkbox-group"
-                                                style={{ display: "flex", alignItems: "center", gap: "8px", marginRight: "16px" }}
-                                            >
+                            <div className="cuidado-item">
+                                <span>Asistencia Alimentación</span>
+                                <div className="options">
+                                    {["m", "t", "n"].map((momento) => {
+                                        const name = `rec_asistir_alimentacion_${momento}`;
+                                        return (
+                                            <div key={name} className="checkbox-group" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                                                 <input
                                                     type="checkbox"
-                                                    name="rec_actividad_ocupacional"
-                                                    value={opcion.value}
-                                                    checked={recomendacion.rec_actividad_ocupacional === opcion.value}
+                                                    name={name}
+                                                    checked={recomendacion[name] === "S"}
                                                     onChange={handleCheckboxChange}
-                                                    id={`actividad_${opcion.value}`}
+                                                    id={name}
                                                 />
-                                                <label htmlFor={`actividad_${opcion.value}`} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                                                    {opcion.label}
+                                                <label htmlFor={name} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                                    {` ${momento === "m" ? "Mañana" : momento === "t" ? "Tarde" : "Noche"}`}
                                                 </label>
                                             </div>
-                                        ))}
-                                    </div>
+                                        );
+                                    })}
                                 </div>
-                            )}
+                            </div>
 
 
-                            {recomendacionRegistrada && (
-                                <div className="cuidado-item">
-                                    <span>Actividad Fisica</span>
-                                    <div className="options">
-                                        {[
-                                            { label: "Sí", value: "S" },
-                                            { label: "No", value: "N" }
-                                        ].map((opcion) => (
-                                            <div
-                                                key={opcion.value}
-                                                className="checkbox-group"
-                                                style={{ display: "flex", alignItems: "center", gap: "8px", marginRight: "16px" }}
-                                            >
-                                                <input
-                                                    type="checkbox"
-                                                    name="rec_actividad_fisica"
-                                                    value={opcion.value}
-                                                    checked={recomendacion.rec_actividad_fisica === opcion.value}
-                                                    onChange={handleCheckboxChange}
-                                                    id={`fisica_${opcion.value}`}
-                                                />
-                                                <label htmlFor={`fisica_${opcion.value}`} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                                                    {opcion.label}
-                                                </label>
-                                            </div>
-                                        ))}
-                                    </div>
+
+                            <div className="cuidado-item">
+                                <span>Prevenir Caidas</span>
+                                <div className="options">
+                                    {[
+                                        { label: "Sí", value: "S" },
+                                        { label: "No", value: "N" }
+                                    ].map((opcion) => (
+                                        <div
+                                            key={opcion.value}
+                                            className="checkbox-group"
+                                            style={{ display: "flex", alignItems: "center", gap: "8px", marginRight: "16px" }}
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                name="rec_prevenir_caidas"
+                                                value={opcion.value}
+                                                checked={recomendacion.rec_prevenir_caidas === opcion.value}
+                                                onChange={handleCheckboxChange}
+                                                id={`caidas_${opcion.value}`}
+                                            />
+                                            <label htmlFor={`caidas_${opcion.value}`} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                                {opcion.label}
+                                            </label>
+                                        </div>
+                                    ))}
                                 </div>
-                            )}
+                            </div>
+
+
+
+                            <div className="cuidado-item">
+                                <span>Activida Ocupacional</span>
+                                <div className="options">
+                                    {[
+                                        { label: "Sí", value: "S" },
+                                        { label: "No", value: "N" }
+                                    ].map((opcion) => (
+                                        <div
+                                            key={opcion.value}
+                                            className="checkbox-group"
+                                            style={{ display: "flex", alignItems: "center", gap: "8px", marginRight: "16px" }}
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                name="rec_actividad_ocupacional"
+                                                value={opcion.value}
+                                                checked={recomendacion.rec_actividad_ocupacional === opcion.value}
+                                                onChange={handleCheckboxChange}
+                                                id={`actividad_${opcion.value}`}
+                                            />
+                                            <label htmlFor={`actividad_${opcion.value}`} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                                {opcion.label}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+
+
+                            <div className="cuidado-item">
+                                <span>Actividad Fisica</span>
+                                <div className="options">
+                                    {[
+                                        { label: "Sí", value: "S" },
+                                        { label: "No", value: "N" }
+                                    ].map((opcion) => (
+                                        <div
+                                            key={opcion.value}
+                                            className="checkbox-group"
+                                            style={{ display: "flex", alignItems: "center", gap: "8px", marginRight: "16px" }}
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                name="rec_actividad_fisica"
+                                                value={opcion.value}
+                                                checked={recomendacion.rec_actividad_fisica === opcion.value}
+                                                onChange={handleCheckboxChange}
+                                                id={`fisica_${opcion.value}`}
+                                            />
+                                            <label htmlFor={`fisica_${opcion.value}`} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                                {opcion.label}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
 
                             <div className='cuidado-item'>
                                 <span>Otras</span>

@@ -90,13 +90,13 @@ export const HistoryTurnosEnfermeraPage = () => {
       <div className="main-container">
         <SideBarComponent />
         <div className="content-area" style={{ backgroundColor: geriatrico?.color_principal }}>
-          <h2 className='h4'><FaHistory /> Historial Mis Turnos</h2>
+          <h2 className='gestionar-title'><FaHistory /> Historial Mis Turnos</h2>
           <div className="filters">
             <input
               type="date"
               value={fechaFiltro}
               onChange={(e) => setFechaFiltro(e.target.value)}
-              className="search-input"
+              className="date"
             />
           </div>
           <div className="turnos-container-sede">

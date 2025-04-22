@@ -75,16 +75,13 @@ export const InventarioPacientePage = () => {
             );
         };
 
-        const handleMedicamentoAgregado = (nuevoMedicamento) => {
-            setMedicamentos(prev => [...prev, nuevoMedicamento]);
-        };
+        socket.on('nuevo-medicamento-inventario-paciente', handleStockActualizado);
 
         socket.on('stockActualizado', handleStockActualizado);
-        socket.on('stockPacienteActualizado', handleMedicamentoAgregado);
 
         return () => {
+            socket.off('nuevo-medicamento-inventario-paciente', handleStockActualizado);
             socket.off('stockActualizado', handleStockActualizado);
-            socket.off('stockPacienteActualizado', handleMedicamentoAgregado);
         };
     }, [paciente]);
 
@@ -212,6 +209,7 @@ export const InventarioPacientePage = () => {
                 <ModalInventarioPaciente
                     pac_id={Number(paciente.pac_id)}
                     onClose={() => setIsModalOpen(false)}
+                    setMedi={setMedicamentos}
                 />
             )}
 

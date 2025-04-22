@@ -114,7 +114,7 @@ export const ModalRegisterEnfermera = ({ onClose, setEnfermeras }) => {
                         if (asignado) {
                             await startRegisterEnfermera({ per_id: result.per_id, enf_codigo: enfCodigo });
                         }
-                        return; // Salir después de la reasignación
+                        return;
                     }
                 }
 

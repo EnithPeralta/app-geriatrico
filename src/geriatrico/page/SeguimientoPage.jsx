@@ -35,11 +35,8 @@ export const SeguimientoPage = () => {
 
     useEffect(() => {
         const fetchPaciente = async () => {
-            console.log("ID del paciente:", id); // Verifica el id
-
             try {
                 const response = await obtenerDetallePacienteSede(id);
-                console.log(response);
                 if (response.success) {
                     setPaciente(response.paciente);
                 } else {
@@ -49,7 +46,6 @@ export const SeguimientoPage = () => {
                 setError("Error al obtener los datos del paciente.");
             }
         };
-
         fetchPaciente();
     }, [id]);
 
@@ -64,10 +60,7 @@ export const SeguimientoPage = () => {
         if (!webcamRef.current) return;
 
         const imageSrc = webcamRef.current.getScreenshot();
-        if (!imageSrc) {
-            console.error("❌ No se pudo capturar la imagen.");
-            return;
-        }
+        if (!imageSrc) return;
 
         setPreview(imageSrc);
         setFotoTomada(true);
@@ -75,9 +68,7 @@ export const SeguimientoPage = () => {
         try {
             const response = await fetch(imageSrc);
             const blob = await response.blob();
-
-            // Redimensionar la imagen antes de enviarla
-            const resizedBlob = await resizeImage(blob, 800, 600, 0.7); // 800x600px, calidad 70%
+            const resizedBlob = await resizeImage(blob, 800, 600, 0.7);
 
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -88,11 +79,10 @@ export const SeguimientoPage = () => {
             };
             reader.readAsDataURL(resizedBlob);
         } catch (error) {
-            console.error("❌ Error al convertir la imagen en archivo:", error);
+            console.error("Error al capturar la imagen:", error);
         }
     };
 
-    // Función para redimensionar imagen
     const resizeImage = (blob, maxWidth, maxHeight, quality) => {
         return new Promise((resolve, reject) => {
             const img = new Image();
@@ -104,23 +94,20 @@ export const SeguimientoPage = () => {
                 let width = img.width;
                 let height = img.height;
 
-                // Ajustar tamaño proporcionalmente
                 if (width > maxWidth || height > maxHeight) {
                     const ratio = Math.min(maxWidth / width, maxHeight / height);
-                    width = width * ratio;
-                    height = height * ratio;
+                    width *= ratio;
+                    height *= ratio;
                 }
 
                 canvas.width = width;
                 canvas.height = height;
                 ctx.drawImage(img, 0, 0, width, height);
-
                 canvas.toBlob(blob => resolve(blob), "image/jpeg", quality);
             };
             img.onerror = error => reject(error);
         });
     };
-
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -138,51 +125,78 @@ export const SeguimientoPage = () => {
         }
     };
 
-
     const resetSelection = () => {
         setPreview(null);
         setFotoTomada(false);
-        setDatosSeguimiento(prev => ({ ...prev, seg_foto: null }));
+        setDatosSeguimiento(prev => ({ ...prev, seg_foto: "" }));
     };
+
+  
+      
 
     const handleRegistrarSeguimientoPaciente = async (event) => {
         event.preventDefault();
 
-
         try {
-            // Convertir pac_id a número si el backend lo requiere
             const datosAEnviar = {
-                ...datosSeguimiento,
                 pac_id: paciente?.pac_id,
-                seg_fecha: formatFecha()
+                seg_fecha: formatFecha(),
+                seg_pa: datosSeguimiento.seg_pa || null,
+                seg_talla: datosSeguimiento.seg_talla || null,
+                seg_fr: datosSeguimiento.seg_fr || null,
+                seg_peso: datosSeguimiento.seg_peso || null,
+                seg_temp: datosSeguimiento.seg_temp || null,
+                seg_fc: datosSeguimiento.seg_fc || null,
+                seg_glicemia: datosSeguimiento.seg_glicemia || null,
+                seg_foto: datosSeguimiento.seg_foto || null,
+                otro: datosSeguimiento.otro || null,
             };
 
-            // Eliminar `seg_foto` si no hay imagen
-            if (!datosAEnviar.seg_foto) delete datosAEnviar.seg_foto;
-
-            console.log("📡 Datos a enviar:", datosAEnviar);
+            // Eliminar campos vacíos (opcional)
+            Object.keys(datosAEnviar).forEach(key => {
+                if (
+                    datosAEnviar[key] === null ||
+                    datosAEnviar[key] === "" ||
+                    datosAEnviar[key] === undefined ||
+                    datosAEnviar[key] === "undefined"
+                ) {
+                    delete datosAEnviar[key];
+                }
+            });
+            
 
             const result = await registrarSeguimientoPaciente(datosAEnviar);
 
-            console.log("📡 Respuesta del servidor:", result);
-
             if (result.success) {
                 Swal.fire({ icon: "success", text: result.message });
-                setDatosSeguimiento({});
+                setDatosSeguimiento({
+                    pac_id: paciente?.pac_id,
+                    seg_fecha: "",
+                    seg_pa: "",
+                    seg_talla: "",
+                    seg_fr: "",
+                    seg_peso: "",
+                    seg_temp: "",
+                    seg_fc: "",
+                    seg_glicemia: "",
+                    seg_foto: "",
+                    otro: ""
+                });
+                setPreview(null);
+                setFotoTomada(false);
+                setCamaraActiva(false);
             } else {
                 Swal.fire({ icon: "error", text: result.message });
             }
         } catch (error) {
-            console.error("Error al registrar el seguimiento del paciente:", error);
+            console.error("Error al registrar el seguimiento:", error);
             Swal.fire({ icon: "error", text: "Hubo un error al registrar el seguimiento." });
         }
     };
 
-
     const handleHistory = () => {
         navigate(`/geriatrico/historial/${paciente?.pac_id}`);
     };
-
 
     return (
         <div className='animate__animated animate__fadeInUp'>
@@ -225,44 +239,14 @@ export const SeguimientoPage = () => {
                             </div>
                         )}
 
-                        <div className="seguimiento-item">
-                            <label>Presión Arterial:</label>
-                            <input type="text" name="seg_pa" value={datosSeguimiento.seg_pa} onChange={handleChange} />
-                        </div>
-
-                        <div className="seguimiento-item">
-                            <label>Frecuencia Cardiaca:</label>
-                            <input type="text" name="seg_fc" value={datosSeguimiento.seg_fc} onChange={handleChange} />
-                        </div>
-                        <div className="seguimiento-item">
-                            <label>Frecuencia Respiratoria:</label>
-                            <input type="text" name="seg_fr" value={datosSeguimiento.seg_fr} onChange={handleChange} />
-                        </div>
-
-                        <div className="seguimiento-item">
-                            <label>Temperatura:</label>
-                            <input type="text" name="seg_temp" value={datosSeguimiento.seg_temp} onChange={handleChange} />
-                        </div>
-
-                        <div className="seguimiento-item">
-                            <label>Peso:</label>
-                            <input type="text" name="seg_peso" value={datosSeguimiento.seg_peso} onChange={handleChange} />
-                        </div>
-
-                        <div className="seguimiento-item">
-                            <label>Talla:</label>
-                            <input type="text" name="seg_talla" value={datosSeguimiento.seg_talla} onChange={handleChange} />
-                        </div>
-
-                        <div className="seguimiento-item">
-                            <label>Glicemia:</label>
-                            <input type="text" name="seg_glicemia" value={datosSeguimiento.seg_glicemia} onChange={handleChange} />
-                        </div>
-
-                        <div className="seguimiento-item">
-                            <label>Otro:</label>
-                            <input type="text" name="otro" value={datosSeguimiento.otro} onChange={handleChange} />
-                        </div>
+                        <div className="seguimiento-item"><label>Presión Arterial:</label><input type="text" name="seg_pa" value={datosSeguimiento.seg_pa} onChange={handleChange} /></div>
+                        <div className="seguimiento-item"><label>Frecuencia Cardiaca:</label><input type="text" name="seg_fc" value={datosSeguimiento.seg_fc} onChange={handleChange} /></div>
+                        <div className="seguimiento-item"><label>Frecuencia Respiratoria:</label><input type="text" name="seg_fr" value={datosSeguimiento.seg_fr} onChange={handleChange} /></div>
+                        <div className="seguimiento-item"><label>Temperatura:</label><input type="text" name="seg_temp" value={datosSeguimiento.seg_temp} onChange={handleChange} /></div>
+                        <div className="seguimiento-item"><label>Peso:</label><input type="text" name="seg_peso" value={datosSeguimiento.seg_peso} onChange={handleChange} /></div>
+                        <div className="seguimiento-item"><label>Talla:</label><input type="text" name="seg_talla" value={datosSeguimiento.seg_talla} onChange={handleChange} /></div>
+                        <div className="seguimiento-item"><label>Glicemia:</label><input type="text" name="seg_glicemia" value={datosSeguimiento.seg_glicemia} onChange={handleChange} /></div>
+                        <div className="seguimiento-item"><label>Otro:</label><input type="text" name="otro" value={datosSeguimiento.otro} onChange={handleChange} /></div>
 
                         <button type="submit" className='save-button'>Registrar Seguimiento</button>
                     </form>

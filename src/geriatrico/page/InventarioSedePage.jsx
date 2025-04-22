@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { SideBarComponent } from "../../components";
 import "../../css/inventario.css";
 import { FaBriefcaseMedical, FaHistory, FaMedkit, FaMinus } from "react-icons/fa";
 import { useGeriatrico, useInventarioSede, useSession } from "../../hooks";
 import socket from "../../utils/Socket";
 import { ModalStockMedicamento, HistoryDisplay, ModalInventarioSede, ModalSalidaStock } from "../components/InventarioSed";
+
 export const InventarioSedePage = () => {
     const { obtenerMedicamentosSede } = useInventarioSede();
     const { homeMiGeriatrico } = useGeriatrico();
@@ -21,12 +22,10 @@ export const InventarioSedePage = () => {
 
     useEffect(() => {
         obtenerSesion();
+
         const fetchData = async () => {
             try {
-                const [sedeResult, medicamentoResult] = await Promise.all([
-                    homeMiGeriatrico(),
-                    obtenerMedicamentosSede()
-                ]);
+                const [sedeResult, medicamentoResult] = await Promise.all([homeMiGeriatrico(), obtenerMedicamentosSede()]);
 
                 if (sedeResult.success) {
                     setGeriatrico(sedeResult.geriatrico);
@@ -46,6 +45,7 @@ export const InventarioSedePage = () => {
 
         fetchData();
 
+        // WebSocket: Escucha los eventos de actualización de stock
         const handleStockActualizado = ({ med_sede_id, nuevoStock }) => {
             setMedicamentos(prev =>
                 prev.map(med =>
@@ -56,25 +56,45 @@ export const InventarioSedePage = () => {
             );
         };
 
-        const handleMedicamentoNuevo = (nuevoMed) => {
-            setMedicamentos(prev => [...prev, nuevoMed]);
+        const handleStockAgregado = ({ med_sede_id, med_id, nombre, presentacion, unidades_por_presentacion, descripcion, unidades_disponibles }) => {
+            setMedicamentos(prev =>
+                [...prev, {
+                    med_sede_id,
+                    med_id,
+                    med_nombre: nombre,
+                    med_presentacion: presentacion,
+                    unidades_por_presentacion,
+                    med_descripcion: descripcion,
+                    med_total_unidades_disponibles: unidades_disponibles
+                }]
+            );
         };
+        
+        
 
-        socket.off("stockActualizado", handleStockActualizado);
-        socket.on("stockActualizado", handleStockActualizado);
+        socket.on('nuevo-medicamento-inventario', handleStockAgregado);
+        console.log('Escuchando eventos de nuevo-medicamento-inventario', handleStockAgregado);
+
+        socket.on('stockActualizado', handleStockActualizado);
 
         return () => {
-            socket.off("stockActualizado", handleStockActualizado);
+            socket.off('nuevo-medicamento-inventario', handleStockAgregado);
+            socket.off('stockActualizado', handleStockActualizado);
         };
     }, []);
 
-    const handleMedicamentoAgregado = (nuevoMedicamento) => {
-        setMedicamentos(prev => [...prev, nuevoMedicamento]);
-    };
+    useEffect(() => {
+        if (medicamentos.length) {
+            console.log('Medicamentos actualizados:', medicamentos);
+        }
+    }, [medicamentos]);
 
-    const medicamentosFiltrados = medicamentos.filter(med =>
-        med.med_nombre?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Filtrar medicamentos de acuerdo al término de búsqueda
+    const medicamentosFiltrados = useMemo(() =>
+        medicamentos.filter(med =>
+            med.med_nombre?.toLowerCase().includes(searchTerm.toLowerCase())
+        ), [medicamentos, searchTerm]);
+
 
     return (
         <>
@@ -84,9 +104,9 @@ export const InventarioSedePage = () => {
                     <div className="report-header">
                         <h2 className="h4">Inventario de Medicamentos</h2>
                         {session.rol_id === 3 && (
-                        <button className="save-button" onClick={() => setIsModalVincular(true)}>
-                            <FaBriefcaseMedical /> Vincular
-                        </button>
+                            <button className="save-button" onClick={() => setIsModalVincular(true)}>
+                                <FaBriefcaseMedical /> Vincular
+                            </button>
                         )}
                     </div>
 
@@ -204,15 +224,16 @@ export const InventarioSedePage = () => {
             {isModalVincular && (
                 <ModalInventarioSede
                     onClose={() => setIsModalVincular(false)}
-                    setMedicamentos={handleMedicamentoAgregado}
+                    setMedicamentos={setMedicamentos}
                 />
+
             )}
 
             {isModalHistorial && medicamentoSeleccionado && (
                 <HistoryDisplay
                     med_sede_id={medicamentoSeleccionado.med_sede_id}
                     onClose={() => {
-                        setIsModalHistorial(false)
+                        setIsModalHistorial(false);
                         setMedicamentoSeleccionado(null);
                     }}
                 />

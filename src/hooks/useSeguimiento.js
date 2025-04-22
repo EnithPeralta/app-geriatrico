@@ -3,39 +3,70 @@ import geriatricoApi from "../api/geriatricoApi";
 import { formatFecha } from "../utils";
 
 export const useSeguimiento = () => {
+    const limpiarDatosSeguimiento = (datos) => {
+        const datosLimpios = {};
+
+        Object.keys(datos).forEach((key) => {
+            const valor = datos[key];
+
+            if (
+                valor !== null &&
+                valor !== "" &&
+                valor !== undefined &&
+                valor !== "undefined"
+            ) {
+                datosLimpios[key] = valor;
+            }
+        });
+
+        return datosLimpios;
+    };
+
 
     const registrarSeguimientoPaciente = async ({ pac_id, seg_fecha, seg_pa, seg_talla, seg_fr, seg_peso, seg_temp, seg_fc, seg_glicemia, seg_foto, otro }) => {
-        console.log("📌 Datos a enviar:", { pac_id, seg_fecha, seg_pa, seg_talla, seg_fr, seg_peso, seg_temp, seg_fc, seg_glicemia, seg_foto, otro });
-
         const token = getToken();
         if (!token) {
             return { success: false, message: "Token de autenticación no encontrado." };
         }
 
+        // Limpiar los datos
+        const datosLimpios = limpiarDatosSeguimiento({
+            seg_fecha,
+            seg_pa,
+            seg_talla,
+            seg_fr,
+            seg_peso,
+            seg_temp,
+            seg_fc,
+            seg_glicemia,
+            otro,
+        });
+
         try {
             const formData = new FormData();
             formData.append("pac_id", Number(pac_id));
-            formData.append("seg_fecha", formatFecha(seg_fecha));
-            formData.append("seg_pa", seg_pa);
-            formData.append("seg_talla", seg_talla);
-            formData.append("seg_fr", seg_fr);
-            formData.append("seg_peso", seg_peso);
-            formData.append("seg_temp", seg_temp);
-            formData.append("seg_fc", seg_fc);
-            formData.append("seg_glicemia", seg_glicemia);
-            formData.append("otro", otro);
 
+            // Asegurar fecha con formato si está presente
+            if (datosLimpios.seg_fecha) {
+                formData.append("seg_fecha", formatFecha(datosLimpios.seg_fecha));
+            }
+
+            // Agregar solo los datos que existen en datosLimpios
+            Object.entries(datosLimpios).forEach(([key, value]) => {
+                if (key !== "seg_fecha") { // ya lo agregamos arriba con formato
+                    formData.append(key, value);
+                }
+            });
+
+            // Manejo de la foto (si está presente)
             if (seg_foto) {
                 if (typeof seg_foto === "string" && seg_foto.startsWith("data:image")) {
                     const blob = await fetch(seg_foto).then(res => res.blob());
-                    formData.append("seg_foto", blob, "seguimiento.jpg");  // 🔹 Nombre corregido
+                    formData.append("seg_foto", blob, "seguimiento.jpg");
                 } else {
                     formData.append("seg_foto", seg_foto);
                 }
             }
-            // if (seg_foto) {
-            //     formData.append("seg_foto", seg_foto, seg_foto.name);
-            // }
 
             const response = await geriatricoApi.post(`/seguimientos/paciente/${pac_id}`, formData, {
                 headers: {

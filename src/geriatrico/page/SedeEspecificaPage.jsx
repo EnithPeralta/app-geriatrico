@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSede } from "../../hooks";
-import { LoadingComponet } from "../../components";
+import { LoadingComponet, SideBarComponent } from "../../components";
 import '../../css/sede.css';
-import { FaMedkit, FaUser, FaUserNurse, FaUsers } from "react-icons/fa";
+import { FaCapsules, FaMedkit, FaUser, FaUserNurse, FaUsers } from "react-icons/fa";
 import { SideBarLayout } from "../layout";
 
 export const SedeEspecificaPage = () => {
@@ -14,43 +14,37 @@ export const SedeEspecificaPage = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-
-    // Mueve esta función arriba del useEffect
-    const fetchSede = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            const result = await obtenerSedesHome();
-            if (result.success && result.sede && result.geriatrico) {
-                setSede(result.sede);
-                setGeriatrico(result.geriatrico);
-
-                localStorage.setItem("sede", JSON.stringify(result.sede));
-                localStorage.setItem("geriatrico", JSON.stringify(result.geriatrico));
-            } else {
-                setError("No se encontraron datos de la sede.");
-            }
-        } catch (err) {
-            setError("Error al obtener los datos.");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-
     useEffect(() => {
-        const sedeGuardada = localStorage.getItem("sede");
-        const geriatricoGuardado = localStorage.getItem("geriatrico");
+        const fetchSede = async () => {
+            try {
+                setLoading(true);
+                setError(null);
 
-        if (sedeGuardada && geriatricoGuardado) {
-            setSede(JSON.parse(sedeGuardada));
-            setGeriatrico(JSON.parse(geriatricoGuardado));
-            setLoading(false);
-        } else {
-            fetchSede();
-        }
+                const cachedSede = localStorage.getItem("sedeData");
+                if (cachedSede) {
+                    const { sede, geriatrico } = JSON.parse(cachedSede);
+                    setSede(sede);
+                    setGeriatrico(geriatrico);
+                    setLoading(false);
+                    return;
+                }
+
+                const result = await obtenerSedesHome();
+                if (result.success && result.sede && result.geriatrico) {
+                    setSede(result.sede);
+                    setGeriatrico(result.geriatrico);
+                } else {
+                    setError("No se encontraron datos de la sede.");
+                }
+            } catch (err) {
+                setError("Error al obtener los datos.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSede();
     }, []);
-
 
 
     if (loading) {
@@ -60,17 +54,14 @@ export const SedeEspecificaPage = () => {
     if (error) {
         return <p>Error: {error}</p>;
     }
-    if (!sede || !geriatrico) {
-        return <LoadingComponet />; // o simplemente null
-    }
 
+    if (!sede) {
+        return <p>No se encontraron datos de la sede.</p>;
+    }
 
     return (
         <SideBarLayout>
-            <div
-                className="content-area"
-                style={{ backgroundColor: geriatrico?.colores?.principal || "#ffffff" }}
-            >
+            <div className="content-area" style={{ backgroundColor: geriatrico.colores.principal }}>
                 <div className="gestionar">
                     <span className="sede-name">{sede.se_nombre}</span>
                     <img src={sede.se_foto} alt="" className="" style={{ width: "200px", height: "100px", padding: "10px" }} />
@@ -105,6 +96,21 @@ export const SedeEspecificaPage = () => {
                         <div className="sede-title">Medicamento</div>
                         <p className="role-description">Administracion de medicamentos.</p>
                     </div>
+                    <div className="grid-item-sede" onClick={() => navigate("/geriatrico/inventarioSede")}>
+                        <div className="icon-container">
+                            <FaCapsules /> {/* Icono de medicamentos */}
+                        </div>
+                        <div className="sede-title">Inventario</div>
+                        <p className="role-description">Administracion del inventario.</p>
+                    </div>
+                    <div className="grid-item-sede" onClick={() => navigate("/geriatrico/medicamentos")}>
+                        <div className="icon-container">
+                            <FaMedkit /> {/* Icono de medicamentos */}
+                        </div>
+                        <div className="sede-title">Medicamento</div>
+                        <p className="role-description">Administracion de medicamentos.</p>
+                    </div>
+
                 </div>
             </div>
         </SideBarLayout>

@@ -201,38 +201,6 @@ export const PacienteEspecificoPage = () => {
                     <PInformation persona={paciente} onEdit={handleAcudiente} />
                     <div className="animate__animated animate__fadeInUp">
                         <div className="info-card">
-
-                            {/* 📌 Si es ADMIN SEDE (rol_id === 3), mostramos los datos sin Tabs */}
-                            {/* {session?.rol_id === 3 ? (
-                            <>
-                                <div className='animate__animated animate__fadeInUp '>
-                                    <h2 className="gestionar-title">Información del Paciente</h2>
-                                    <div className="grid-4-columns">
-                                        {[
-                                            { label: "Nombre Completo", value: paciente?.nombre || "" },
-                                            { label: "Documento", value: paciente?.documento || "" },
-                                            { label: "Edad", value: paciente?.edad || "" },
-                                            { label: "Nombre EPS", value: paciente?.nombre_eps || "" },
-                                            { label: "Peso", value: paciente?.peso || "" },
-                                            { label: "Régimen EPS", value: paciente?.regimen_eps || "" },
-                                            { label: "Grupo Sanguíneo", value: paciente?.rh_grupo_sanguineo || "" },
-                                            { label: "Estatura", value: paciente?.talla || "" },
-                                            { label: "Talla de Camisa", value: paciente?.talla_camisa || "" },
-                                            { label: "Talla de Pantalón", value: paciente?.talla_pantalon || "" }
-                                        ].map((item, index) => (
-                                            <div key={index}>
-                                                <label>{item.label}</label>
-                                                <input className="input" type="text" value={item.value} readOnly />
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                            </>
-
-                        ) : (
-                            // 📌 Si es ENFERMERO (rol_id === 5), mostramos los Tabs
-                        )} */}
                             <Tabs tabs={tabs} activeTab={0} onClick={handleTabChange} />
                         </div>
                     </div>

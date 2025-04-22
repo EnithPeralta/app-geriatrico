@@ -81,7 +81,6 @@ export const ModalMedicamento = ({ onClose }) => {
                                 <option value="mililitros">Mililitros</option>
                                 <option value="gramos">Gramos</option>
                                 <option value="unidades">Unidades</option>
-                                <option value="miligramos">Miligramos</option>
                                 <option value="tabletas">Tabletas</option>
                                 <option value="cápsulas">Cápsulas</option>
                                 <option value="disparos">Disparos</option>

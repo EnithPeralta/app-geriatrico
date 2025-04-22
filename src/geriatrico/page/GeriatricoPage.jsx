@@ -44,7 +44,6 @@ export const GeriatricosPage = () => {
     };
 
     const handleEditGeriatrico = (geriatrico) => {
-        console.log("Editando geriátrico:", geriatrico); // Depuración
 
         if (!geriatrico || !geriatrico.ge_id) {
             console.error("No se encontró el ID del geriátrico al editar:", geriatrico);

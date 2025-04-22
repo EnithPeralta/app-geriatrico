@@ -32,27 +32,27 @@ export const SedesPage = () => {
         }
     }, [dispatch, rolSeleccionado]);
 
-    useEffect(() => {
-        const fetchSedes = async () => {
-            if (rolSeleccionado?.rol_id) {
-                try {
-                    setLoaded(true);
-                    const response = await obtenerSedesGeriatrico(Number(rolSeleccionado.rol_id));
-                    if (response.success) {
-                        setSedes(response.sedes);
-                    } else {
-                        setError(response.message);
-                    }
-                } catch {
-                    setError("Error obteniendo sedes");
-                } finally {
-                    setLoaded(false);
-                }
-            }
-        };
+    // useEffect(() => {
+    //     const fetchSedes = async () => {
+    //         if (rolSeleccionado?.rol_id) {
+    //             try {
+    //                 setLoaded(true);
+    //                 const response = await obtenerSedesGeriatrico(Number(rolSeleccionado.rol_id));
+    //                 if (response.success) {
+    //                     setSedes(response.sedes);
+    //                 } else {
+    //                     setError(response.message);
+    //                 }
+    //             } catch {
+    //                 setError("Error obteniendo sedes");
+    //             } finally {
+    //                 setLoaded(false);
+    //             }
+    //         }
+    //     };
 
-        fetchSedes();
-    }, [rolSeleccionado]);
+    //     fetchSedes();
+    // }, [rolSeleccionado]);
 
 
 
@@ -77,20 +77,20 @@ export const SedesPage = () => {
     }, [geriatrico]);
 
 
-    // useEffect(() => {
-    //     if (rolSeleccionado && !loaded) {
-    //         setLoaded(true);
-    //         obtenerSedesGeriatrico(Number(rolSeleccionado.rol_id))
-    //             .then(response => {
-    //                 if (response.success) {
-    //                     setSedes(response.sedes);
-    //                 } else {
-    //                     setError(response.message);
-    //                 }
-    //             })
-    //             .catch(() => setError("Error obteniendo sedes"));
-    //     }
-    // }, [rolSeleccionado]);
+    useEffect(() => {
+        if (rolSeleccionado && !loaded) {
+            setLoaded(true);
+            obtenerSedesGeriatrico(Number(rolSeleccionado.rol_id))
+                .then(response => {
+                    if (response.success) {
+                        setSedes(response.sedes);
+                    } else {
+                        setError(response.message);
+                    }
+                })
+                .catch(() => setError("Error obteniendo sedes"));
+        }
+    }, [rolSeleccionado]);
 
     const handleOpenModal = (sede = null) => {
         setSedeToEdit(sede ?? null);

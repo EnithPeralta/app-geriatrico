@@ -7,6 +7,7 @@ export const useDetalleAdministracionMedicamento = () => {
         { origen_inventario, detalle_hora, detalle_observaciones }
     ) => {
         const token = getToken();
+    
         if (!token) {
             return {
                 success: false,
@@ -15,7 +16,7 @@ export const useDetalleAdministracionMedicamento = () => {
         }
     
         try {
-            const { data } = await geriatricoApi.post(
+            const response = await geriatricoApi.post(
                 `/detalleadministracionmedicamento/${admin_id}`,
                 {
                     origen_inventario,
@@ -28,26 +29,30 @@ export const useDetalleAdministracionMedicamento = () => {
                     },
                 }
             );
-            console.log("✅ Respuesta del servidor:", data);
+    
+            const { message, detalle, descuento } = response.data;
     
             return {
                 success: true,
-                message: data.message || "Administración registrada con éxito",
-                detalle: data.detalle || null,
-                descuento: data.descuento || null,
+                message: message || "Administración registrada con éxito",
+                detalle: detalle || null,
+                descuento: descuento || null,
             };
         } catch (error) {
             console.error("❌ Error al registrar administración:", error);
+    
+            const errMessage = error.response?.data?.message || "Ocurrió un error inesperado. Inténtalo nuevamente.";
+            const errDetail = error.response?.data?.error || null;
+    
             return {
                 success: false,
-                message:
-                    error.response?.data?.message ||
-                    "Ocurrió un error inesperado. Inténtalo nuevamente.",
-                error: error.response?.data?.error || null,
+                message: errMessage,
+                error: errDetail,
             };
         }
     };
     
+
 
 
     const obtenerDetallesDeAdministracionPorFormula = async (admin_id) => {

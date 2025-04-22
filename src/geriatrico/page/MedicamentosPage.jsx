@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useGeriatrico, useMedicamento } from '../../hooks';
 import { SideBarComponent } from '../../components';
-import { FaEdit, FaPrescriptionBottleAlt } from 'react-icons/fa';
+import { FaBriefcaseMedical, FaEdit, FaPrescriptionBottleAlt } from 'react-icons/fa';
 import { ModalActualizar, ModalMedicamento } from '../components/Medicamento';
 import socket from '../../utils/Socket';
 
@@ -88,7 +88,7 @@ export const MedicamentosPage = () => {
                     <div className="report-header">
                         <h2 className="h4">Medicamentos</h2>
                         <button className="save-button" onClick={() => setIsModalOpen(true)}>
-                            <FaPrescriptionBottleAlt /> Agregar
+                            <FaBriefcaseMedical /> Agregar
                         </button>
                     </div>
                     <div>

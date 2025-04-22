@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import "../css/side.css";
-import { FaAngleDoubleLeft, FaArrowCircleRight, FaHome, FaHotel, FaUser, FaUsersCog, FaUsers, FaHandshake, FaHospitalUser, FaUserNurse, FaBuilding, FaFileMedicalAlt, FaFileContract, FaUserPlus, FaUserCog, FaCapsules, FaMedkit, FaHistory } from 'react-icons/fa';
+import { FaAngleDoubleLeft, FaArrowCircleRight, FaHome, FaHotel, FaUser, FaUsersCog, FaUsers, FaHandshake, FaHospitalUser, FaUserNurse, FaBuilding, FaFileMedicalAlt, FaFileContract, FaUserPlus, FaUserCog, FaCapsules, FaMedkit, FaHistory, FaCogs, FaUserEdit, FaUserTie } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useAuthStore, useGeriatrico, useSede, useSession } from '../hooks';
 import { useNavigate } from "react-router-dom";
@@ -123,7 +123,7 @@ export const SideBarComponent = () => {
                             </li>
                             <li>
                                 <Link to={'/geriatrico/roles'} title='Roles'>
-                                    <FaUserCog className='icon' />
+                                    <FaCogs className='icon' />
                                     <span>Roles</span>
                                 </Link>
                             </li>
@@ -192,21 +192,23 @@ export const SideBarComponent = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link to={'/geriatrico/profile'} title='Perfil'>
-                                    <FaUser />
-                                    <span>Perfil</span>
+                                <Link to={'/geriatrico/gestionarPersonas'} title='Personas'>
+                                    <FaUsers />
+                                    <span>Personas</span>
                                 </Link>
                             </li>
+
                             <li>
                                 <Link to={'/register'} title='Registrar'>
                                     <FaUserPlus />
                                     <span>Registrar</span>
                                 </Link>
                             </li>
+
                             <li>
-                                <Link to={'/geriatrico/gestionarPersonas'} title='Personas'>
-                                    <FaUsersCog />
-                                    <span>Personas</span>
+                                <Link to={'/geriatrico/profile'} title='Perfil'>
+                                    <FaUser />
+                                    <span>Perfil</span>
                                 </Link>
                             </li>
                             <li>
@@ -255,7 +257,7 @@ export const SideBarComponent = () => {
                         </li>
                         <li>
                             <Link to={'/geriatrico/gestionarPersonas'}>
-                                <FaUsersCog className='icon' title='Gestionar Personas' />
+                                <FaUserCog className='icon' title='Gestionar Personas' />
                                 <span>Ver Persona</span>
                             </Link>
                         </li>
@@ -267,7 +269,7 @@ export const SideBarComponent = () => {
                         </li>
                         <li>
                             <Link to={'/geriatrico/pacientes'}>
-                                <FaHospitalUser className='icon' title='Pacientes' />
+                                <FaUser className='icon' title='Pacientes' />                                
                                 <span>Pacientes</span>
                             </Link>
                         </li><li>
@@ -278,7 +280,7 @@ export const SideBarComponent = () => {
                         </li>
                         <li>
                             <Link to={'/geriatrico/colaboradores'}>
-                                <FaHandshake className='icon' title='Colaboradores' />
+                                <FaUserTie className='icon' title='Colaboradores' />
                                 <span>Colaborador</span>
                             </Link>
                         </li>
@@ -302,7 +304,7 @@ export const SideBarComponent = () => {
                         </li>
                         <li>
                             <Link to={'/geriatrico/profile'}>
-                                <FaUser className='icon' title='Perfil' />
+                                <FaUserEdit className='icon' title='Perfil' />
                                 <span>Perfil</span>
                             </Link>
                         </li>

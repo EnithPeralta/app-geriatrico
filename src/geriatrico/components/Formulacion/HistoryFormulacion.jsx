@@ -12,6 +12,7 @@ export const HistoryFormulacion = ({ pac_id, onClose }) => {
         const fetchHistory = async () => {
             try {
                 const response = await formulacionMedicamentoHistorial(pac_id);
+                console.log(response);
                 if (response.success) {
                     setHistory({
                         suspendidas: response.suspendidas || [],

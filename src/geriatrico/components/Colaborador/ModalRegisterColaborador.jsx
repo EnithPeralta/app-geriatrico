@@ -10,7 +10,7 @@ const RolesForm = {
     sp_fecha_fin: ''
 };
 
-export const ModalRegisterColaborador = ({ onClose }) => {
+export const ModalRegisterColaborador = ({ onClose, setColaboradores }) => {
     const { asignarRolesSede } = useSedesRol();
     const { obtenerPersonaRolesMiGeriatricoSede } = useGeriatricoPersona();
     const { buscarVincularPersona } = usePersona();
@@ -60,7 +60,6 @@ export const ModalRegisterColaborador = ({ onClose }) => {
         console.log("👀 Roles obtenidos:", rolesPersona);
         return rolesPersona?.persona?.rolesSede?.some(rol => rol.rol_nombre === "Enfermera(O)") || false;
     };
-
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -70,9 +69,10 @@ export const ModalRegisterColaborador = ({ onClose }) => {
         }
 
         try {
-            let result = personaEncontrada; // Mantiene el resultado en memoria
-            if (!personaEncontrada) {
-                // Solo busca si `personaEncontrada` es null o undefined
+            let result = personaEncontrada;
+
+            // Buscar persona si aún no se ha encontrado
+            if (!result) {
                 const fetchedPersona = await buscarVincularPersona({ documento: colaboradorDocumento });
                 if (!fetchedPersona) return;
 
@@ -80,62 +80,71 @@ export const ModalRegisterColaborador = ({ onClose }) => {
                 result = fetchedPersona;
             }
 
-            // Si la acción es asignar un rol, mostramos opciones
-            if (result?.action === "assign_role") {
+            const { per_id, action, message, roles } = result;
+
+            // Asignación de rol
+            if (action === "assign_role") {
                 setShowSelectRoles(true);
-                setDatoColaborador(prev => ({ ...prev, per_id: result.per_id }));
+                setDatoColaborador(prev => ({ ...prev, per_id }));
 
-                await Swal.fire({ icon: 'info', text: result.message });
-
-                if (datoColaborador.rol_id) {
-                    const asignado = await handleAssignSedes(
-                        result.per_id,
-                        datoColaborador.rol_id,
-                        datoColaborador.sp_fecha_inicio,
-                        datoColaborador.sp_fecha_fin
-                    );
-                    if (!asignado) return;
-                    await Swal.fire({ icon: 'success', text: result.message });
-                    onResetForm();
+                if (!message) {
+                    await Swal.fire({ icon: 'info', text: message });
                 }
+
+                const tieneRol = await validarRol(per_id);
+                if (tieneRol) {
+
+                    const rolInactivo = roles?.some(rol => rol.rol_id === 7 && !rol.activoSede);
+
+                    if (rolInactivo) {
+                        if (rolInactivo) {
+                            console.log("📢 La persona tiene el rol pero está inactivo. Se procederá a reasignar.");
+                        }
+
+                        const asignado = await handleAssignSedes(
+                            per_id,
+                            datoColaborador.rol_id,
+                            datoColaborador.sp_fecha_inicio,
+                            datoColaborador.sp_fecha_fin
+                        );
+                        if (asignado) {
+                            await Swal.fire({ icon: 'success', text: asignado?.message || "Rol asignado con exito" });
+                        }
+                        return;
+                    }
+                }
+                const asignado = await handleAssignSedes(
+                    per_id,
+                    datoColaborador.rol_id,
+                    datoColaborador.sp_fecha_inicio,
+                    datoColaborador.sp_fecha_fin
+                );
+                if (!asignado) return;
+
+                await Swal.fire({ icon: 'success', text: asignado?.message || "Rol asignado con exito" });
+                onResetForm();
+                onClose();
+                setColaboradores(prev => {
+                    const updatedColaboradores = prev.map(colaboradores =>
+                        colaboradores.per_id === per_id
+                            ? { ...colaboradores, activoSede: true }
+                            : colaboradores
+                    );
+                    return updatedColaboradores
+                });
                 return;
             }
-
-            // Si hay un mensaje en el resultado, mostramos modal
-            if (result.message) {
+            if (message) {
                 setShowModalColaborador(true);
                 return;
             }
+        }
 
-            // Validar si la persona ya tiene el rol de enfermera
-            const tieneRol = await validarRol(result.per_id);
-            if (tieneRol) {
-                // Si tiene el rol pero está inactivo, permitir que se le asigne de nuevo
-                const rolInactivo = result.roles?.some(rol => rol.rol_id === 7 && !rol.activoSede);
-                if (rolInactivo) {
-                    console.log("📢 La persona tiene el rol pero está inactivo. Se procederá a reasignar.");
-                } else {
-                    await Swal.fire({ icon: 'info', text: "La persona ya tiene el rol de enfermera asignado." });
-                    return;
-                }
-            }
-
-            // Asignar el rol si no lo tiene o si estaba inactivo
-            setShowSelectRoles(true);
-            const asignado = await handleAssignSedes(
-                result.per_id,
-                datoColaborador.rol_id,
-                datoColaborador.sp_fecha_inicio,
-                datoColaborador.sp_fecha_fin
-            );
-            if (!asignado) return;
-
-            await Swal.fire({ icon: 'success', text: result.message });
-            onResetForm(); // Limpia el formulario después del registro exitoso
-        } catch (error) {
+        catch (error) {
             console.error("❌ Error capturado en useSedesRol:", error);
         }
     };
+
 
     return (
         <div className='modal-overlay'>
@@ -167,13 +176,14 @@ export const ModalRegisterColaborador = ({ onClose }) => {
                             <button type="button" className='cancel-button' onClick={onClose}>Cancelar</button>
                         </div>
                     </form>
-                    {showModalColaborador && <ModalColaboradorPersona
-                        colaboradorDocumento={colaboradorDocumento}
-                        handleAssignSedes={handleAssignSedes}
-                        handleRoleChange={handleRoleChange}
-                        onClose={onClose}
-                        selectedRoles={selectedRoles}
-                    />
+                    {showModalColaborador &&
+                        <ModalColaboradorPersona
+                            colaboradorDocumento={colaboradorDocumento}
+                            handleAssignSedes={handleAssignSedes}
+                            handleRoleChange={handleRoleChange}
+                            onClose={onClose}
+                            selectedRoles={selectedRoles}
+                        />
                     }
                 </div>
             </div>

@@ -9,7 +9,7 @@ export const FormulacionDiariaPage = () => {
     const { id } = useParams();
     const { obtenerDetallePacienteSede } = usePaciente();
     const { obtenerFormulacionesDelDia } = useFormulacionMedicamentos();
-    const { obtenerSesion } = useSession();
+    const { obtenerSesion, session } = useSession();
 
     const [paciente, setPaciente] = useState(null);
     const [formulaciones, setFormulaciones] = useState([]);
@@ -31,6 +31,7 @@ export const FormulacionDiariaPage = () => {
         const fetchFormulaciones = async () => {
             if (!paciente?.pac_id) return;
             const response = await obtenerFormulacionesDelDia(paciente.pac_id);
+            console.log("Formulaciones obtenidas:", response);
             if (response.success) {
                 setFormulaciones(response.data || []);
             }
@@ -40,9 +41,11 @@ export const FormulacionDiariaPage = () => {
 
     const renderRows = () => {
         return (formulaciones || [])
-            .filter(f =>
-                f.medicamentos_formulados?.med_nombre?.toLowerCase().includes(searchTerm.toLowerCase())
-            )
+            .filter(f => {
+                const nombre = f?.medicamentos_formulados?.med_nombre;
+                return nombre && nombre.toLowerCase().includes(searchTerm.toLowerCase());
+            })
+
             .map((formulacion, index) => (
                 <tr key={index}>
                     <td>{formulacion.medicamentos_formulados.med_nombre}</td>
@@ -59,16 +62,19 @@ export const FormulacionDiariaPage = () => {
                     <td>
                         <div className='button-container'>
 
-                            <button
-                                className="turnos"
-                                title='Agregar dosis'
-                                onClick={() => {
-                                    setSelectedForm(formulacion);
-                                    setIsModalOpen(true);
-                                }}
-                            >
-                                <FaMortarPestle />
-                            </button>
+                            {session.rol_id !== 3 && (
+                                <button
+                                    className="turnos"
+                                    title='Agregar dosis'
+                                    onClick={() => {
+                                        setSelectedForm(formulacion);
+                                        setIsModalOpen(true);
+                                    }}
+                                >
+                                    <FaMortarPestle />
+                                </button>
+                            )
+                            }
 
                             <button
                                 className="edit-button-asignar"
@@ -128,6 +134,8 @@ export const FormulacionDiariaPage = () => {
                     <ModalRegisterFormula
                         onClose={() => setIsModalOpen(false)}
                         admin_id={selectedForm?.admin_id}
+                        setFormulaciones={setFormulaciones}
+
                     />
                 )}
                 {isModalHistory && (

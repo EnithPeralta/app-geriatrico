@@ -4,6 +4,8 @@ import { useAuthStore, useEnfermera, useForm, useGeriatricoPersonaRol, usePacien
 import { CheckboxField, InputField, ModalEnfermera, ModalRegistrarPaciente, SelectField, SelectSede } from '../../components';
 import { SelectGeriatrico } from '../../components/SelectGeriatrico/SelectGeriatrico';
 import { ModalAdminSede } from '../../components/AsignarSede/ModalAdminSede';
+import { ModalRegisterColaborador } from '../../geriatrico/components/Colaborador/ModalRegisterColaborador';
+import { ModalColaborador } from '../../components/ModalColaborador/ModalColaborador';
 
 const registerFormFields = {
     per_password: '',
@@ -39,6 +41,7 @@ export const RegisterComponent = () => {
     const [showModalEnfermera, setShowModalEnfermera] = useState(false);
     const [showExtraAdminGeriaFields, setShowExtraAdminGeriaFields] = useState(false);
     const [showExtraAdminSedeFields, setShowExtraAdminSedeFields] = useState(false);
+    const [showModalColaborador, setShowModalColaborador] = useState(false);
     const [fechaInicio, setFechaInicio] = useState("");
     const [assigning, setAssigning] = useState(false);
     const [fechaFin, setFechaFin] = useState("");
@@ -147,7 +150,7 @@ export const RegisterComponent = () => {
 
     const handleAssignSedes = async (per_id, rol_id, sp_fecha_inicio, sp_fecha_fin,) => {
         try {
-            
+
             const response = await asignarRolesSede({
                 per_id, rol_id, sp_fecha_inicio, sp_fecha_fin
             });
@@ -255,7 +258,7 @@ export const RegisterComponent = () => {
     };
 
     const handleAssignAdminSedeModal = async () => {
-        
+
         setAssigning(true);
         try {
             for (let rol_id of selectedRoles) {
@@ -303,6 +306,7 @@ export const RegisterComponent = () => {
         setShowExtraAdminSedeFields(value === 3);
         setShowExtraFields(value === 4);
         setShowModalEnfermera(value === 5);
+        setShowModalColaborador(value === 7);
     };
 
     const handleGeriatricoChange = (event) => {
@@ -477,7 +481,6 @@ export const RegisterComponent = () => {
                     });
                     return;
                 }
-
             } else if (![2, 3].includes(rolId)) {
                 Swal.fire({ icon: 'error', text: 'El rol seleccionado no es válido' });
                 return;
@@ -584,6 +587,12 @@ export const RegisterComponent = () => {
                                 <InputField label="Codigo" type="cc" name="enf_codigo" value={enf_codigo} onChange={onInputChange} placeholder="1234567890" required />
                             </>
                         )}
+                        {showModalColaborador && (
+                            <>
+                                <InputField label="Fecha inicio" type="date" name="sp_fecha_inicio" value={sp_fecha_inicio} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
+                                <InputField label="Fecha fin" type="date" name="sp_fecha_fin" value={sp_fecha_fin} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
+                            </>
+                        )}
                     </>
                 )}
 
@@ -604,13 +613,17 @@ export const RegisterComponent = () => {
 
                         if (rolSeleccionado === 3) {
                             setShowModalSede(true);
-                            console.log(showModalSede);
                             setShowModal(false);
                             setShowModalEnfermera(false);
                         } else if (rolSeleccionado === 5) {
                             setShowModalEnfermera(true);
                             setShowModal(false);
-                        } else {
+                        } else if (rolSeleccionado === 7) {
+                            setShowModalColaborador(true);
+                            setShowModal(false);
+                            setShowModalEnfermera(false);
+                        }
+                        else {
                             setShowModal(true);
                             setShowModalEnfermera(false);
                         }
@@ -653,7 +666,16 @@ export const RegisterComponent = () => {
                     setSelectedRoles={setSelectedRoles}
                 />
             )}
-
+            {
+                showModalColaborador && selectedPersona && (
+                    <ModalColaborador
+                        datosInicial={selectedPersona}
+                        selectedRoles={selectedRoles}
+                        setSelectedRoles={setSelectedRoles}
+                        onClose={() => setShowModalColaborador(false)}
+                    />
+                )
+            }
         </form>
     );
 };

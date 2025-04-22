@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { usePersona } from "../../hooks";
 import Swal from "sweetalert2";
+import { FaHistory, FaMortarPestle, FaUserEdit } from 'react-icons/fa';
+
 
 export const ModalEditPersonComponent = ({ editedPersona, onClose, setPersonas }) => {
     const { updatePerson } = usePersona();
@@ -86,7 +88,7 @@ export const ModalEditPersonComponent = ({ editedPersona, onClose, setPersonas }
                 <div className="modal-content">
                     <form onSubmit={handleEditSubmit}>
                         <h4 className="h4">Editar Perfil</h4>
-                        <div className="modal-img">
+                        <div className="preview-image">
                             {personaEditada.previewFoto ? (
                                 <img
                                     src={personaEditada.previewFoto}
@@ -95,7 +97,7 @@ export const ModalEditPersonComponent = ({ editedPersona, onClose, setPersonas }
                                     width={100}
                                 />
                             ) : (
-                                <i className="fas fa-user-circle icon-edit-user"></i>
+                               <FaUserEdit size={50}/>
                             )}
                         </div>
 

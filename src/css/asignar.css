@@ -44,7 +44,7 @@
   
   .gestionar-title {
     font-size: 24px;
-    color: #0090BC;
+    color: #3d3d3d;
     font-weight: 800;
     margin-bottom: 20px;
   }
@@ -338,3 +338,17 @@ input[type="checkbox"] {
     font-size: 14px;
 }
 
+.date {
+    width: 99%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+.filters{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}

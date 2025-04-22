@@ -46,7 +46,7 @@ export const RolPacienteSedePage = () => {
           type="date"
           value={searchDate}
           onChange={(e) => setSearchDate(e.target.value)}
-          className="search-input"
+          className=" "
           placeholder="Buscar por fecha"
         />
       </div>

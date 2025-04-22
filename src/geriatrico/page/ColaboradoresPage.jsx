@@ -113,7 +113,7 @@ export const ColaboradoresPage = () => {
                 if (colab.per_id === persona.per_id) {
                     return {
                         ...colab,
-                        rolActivo: false // O lo que uses para mostrar su estado
+                        activoSede: false // O lo que uses para mostrar su estado
                     };
                 }
                 return colab;
@@ -204,6 +204,7 @@ export const ColaboradoresPage = () => {
             {showRegisterColaborador && (
                 <ModalRegisterColaborador
                     onClose={() => setShowRegisterColaborador(false)}
+                    setColaboradores={setColaboradores}
                 />
             )}
         </div>

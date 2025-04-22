@@ -65,12 +65,24 @@ export const ModalInventarioSede = ({ onClose, setMedicamentos }) => {
             console.log(response);
 
             if (response.success) {
-                Swal.fire({
-                    icon: 'success',
-                    text: response.message
-                });
-                setMedicamentos(prev => [...prev, response.inventario]);
-                onClose();
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        text: response.message
+                    });
+                    const nuevo = {
+                        med_sede_id: response.data?.med_sede_id || Date.now(), 
+                        med_id: Number(medicamentoSeleccionado),
+                        med_nombre: detalleMedicamento.nombre,
+                        med_presentacion: detalleMedicamento.presentacion,
+                        unidades_por_presentacion: detalleMedicamento.unidad,
+                        med_descripcion: '', // Puedes agregarlo si lo tienes
+                        med_total_unidades_disponibles: parseInt(totalUnidades)
+                    };
+
+                    setMedicamentos(prev => [...prev, nuevo]);
+                    onClose();
+                }
             } else {
                 Swal.fire('Error', response.message || 'Ocurrió un error al guardar', 'error');
             }
@@ -112,15 +124,15 @@ export const ModalInventarioSede = ({ onClose, setMedicamentos }) => {
                                         value={detalleMedicamento.presentacion}
                                         readOnly
                                     />
-                                    
-                                        <label>Unidad de presentación:</label>
-                                        <input
-                                            type="text"
-                                            name="med_nombre"
-                                            value={detalleMedicamento.unidad}
-                                            readOnly
-                                        />
-                                    
+
+                                    <label>Unidad de presentación:</label>
+                                    <input
+                                        type="text"
+                                        name="med_nombre"
+                                        value={detalleMedicamento.unidad}
+                                        readOnly
+                                    />
+
                                     <label>Tipo de contenido:</label>
                                     <input
                                         type="text"

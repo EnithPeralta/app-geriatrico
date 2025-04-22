@@ -231,7 +231,7 @@ export const ModalRegistrarPaciente = ({ datosIniciales, onClose, selectedRoles 
                         <button type="button" className="save-button" onClick={handleSubmit}>
                             {esActualizacion ? "Actualizar Paciente" : "Registrar Paciente"}
                         </button>
-                        <button type="button" className="cancel" onClick={onClose}>Cancelar</button>
+                        <button type="button" className="cancel-button" onClick={onClose}>Cancelar</button>
                     </div>
                 </div>
             </div>

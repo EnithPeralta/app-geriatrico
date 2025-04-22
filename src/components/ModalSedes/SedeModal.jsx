@@ -100,7 +100,7 @@ export const SedeModal = ({ isOpen, onClose, onSave, sede }) => {
             <div className="modal">
                 <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                     <form onSubmit={handleSubmit}>
-                        <h2>{sede? "Editar Sede" : "Crear Sede"}</h2>
+                        <h3>{sede? "Editar Sede" : "Crear Sede"}</h3>
                         <div className="preview-image">
                             {previewImage && <img src={previewImage} alt="Vista previa" height={100} width={100} className="profile-img" />}
                         </div>
