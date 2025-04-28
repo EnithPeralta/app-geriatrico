@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSede } from "../../hooks";
 import { LoadingComponet, SideBarComponent } from "../../components";
 import '../../css/sede.css';
-import { FaCapsules, FaMedkit, FaUser, FaUserNurse, FaUsers } from "react-icons/fa";
+import { FaCapsules, FaMedkit, FaUser, FaUserCog, FaUserNurse, FaUsers } from "react-icons/fa";
 import { SideBarLayout } from "../layout";
 
 export const SedeEspecificaPage = () => {
@@ -89,6 +89,13 @@ export const SedeEspecificaPage = () => {
                         <div className="sede-title">Colaborador</div>
                         <p className="role-description">Administra roles y tareas internas.</p>
                     </div>
+                    <div className="grid-item-sede" onClick={() => navigate("/geriatrico/gestionarPersonas")}>
+                        <div className="icon-container">
+                            <FaUserCog /> {/* Icono de colaboradores */}
+                        </div>
+                        <div className="sede-title">Gestionar Personas</div>
+                        <p className="role-description">Accede a datos de las personas.</p>
+                    </div>
                     <div className="grid-item-sede" onClick={() => navigate("/geriatrico/medicamentos")}>
                         <div className="icon-container">
                             <FaMedkit /> {/* Icono de medicamentos */}
@@ -103,13 +110,7 @@ export const SedeEspecificaPage = () => {
                         <div className="sede-title">Inventario</div>
                         <p className="role-description">Administracion del inventario.</p>
                     </div>
-                    <div className="grid-item-sede" onClick={() => navigate("/geriatrico/medicamentos")}>
-                        <div className="icon-container">
-                            <FaMedkit /> {/* Icono de medicamentos */}
-                        </div>
-                        <div className="sede-title">Medicamento</div>
-                        <p className="role-description">Administracion de medicamentos.</p>
-                    </div>
+
 
                 </div>
             </div>

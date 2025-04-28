@@ -28,15 +28,49 @@ export const ColaboradoresPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null); // Agregado para manejar errores
 
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            setError(null);
+
+            try {
+                const [sedeResult, colaboradoresResult] = await Promise.all([
+                    homeMiGeriatrico(),
+                    obtenerColaboradoresSede()
+                ]);
+
+                if (sedeResult?.success) {
+                    setGeriatrico(sedeResult.geriatrico);
+                }
+
+                if (colaboradoresResult?.success && Array.isArray(colaboradoresResult.data?.data)) {
+                    setColaboradores(colaboradoresResult.data.data); // ← accede al array real aquí
+                } else {
+                    console.warn("❗ colaboradoresResult.data.data no es un array:", colaboradoresResult.data);
+                    setColaboradores([]);
+                }
+
+            } catch (err) {
+                console.error("❌ Error al cargar colaboradores:", err);
+                setError("Error al cargar los colaboradores.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+
+
+
     const handleCardClick = async (colaborador) => {
-        console.log("Persona seleccionada:", colaborador);
         const isActive = activeCard === colaborador.per_id ? null : colaborador.per_id;
         setActiveCard(isActive);
 
         if (isActive) {
             try {
                 const response = await obtenerRolesColaboradoresSede(colaborador.per_id);
-                console.log("✅ Respuesta de roles:", response);
 
                 if (response?.success) {
                     setRoles({ rolesSede: response.data || [] });
@@ -127,38 +161,6 @@ export const ColaboradoresPage = () => {
         }
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            setError(null);
-
-            try {
-                const [sedeResult, colaboradoresResult] = await Promise.all([
-                    homeMiGeriatrico(),
-                    obtenerColaboradoresSede()
-                ]);
-
-                if (sedeResult?.success) {
-                    setGeriatrico(sedeResult.geriatrico);
-                }
-
-                if (colaboradoresResult?.success && Array.isArray(colaboradoresResult.data?.data)) {
-                    setColaboradores(colaboradoresResult.data.data); // ← accede al array real aquí
-                } else {
-                    console.warn("❗ colaboradoresResult.data.data no es un array:", colaboradoresResult.data);
-                    setColaboradores([]);
-                }
-
-            } catch (err) {
-                console.error("❌ Error al cargar colaboradores:", err);
-                setError("Error al cargar los colaboradores.");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
 
     // Validar antes de usar filter
     const filteredColaboradores = Array.isArray(colaboradores)
@@ -204,7 +206,7 @@ export const ColaboradoresPage = () => {
             {showRegisterColaborador && (
                 <ModalRegisterColaborador
                     onClose={() => setShowRegisterColaborador(false)}
-                    setColaboradores={setColaboradores}
+                    setColaboradores={ setColaboradores }
                 />
             )}
         </div>

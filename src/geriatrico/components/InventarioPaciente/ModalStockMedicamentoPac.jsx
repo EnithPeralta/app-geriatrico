@@ -27,6 +27,7 @@ export const ModalStockMedicamentoPac = ({ med_sede_id, med_pac_id, onClose, set
             cantidad: totalInt,
             med_origen: medOrigen
         });
+        console.log(response);
         
 
         if (response.success) {

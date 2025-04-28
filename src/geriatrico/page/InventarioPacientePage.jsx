@@ -95,7 +95,7 @@ export const InventarioPacientePage = () => {
             <div className="main-container">
                 <div className="content">
                     <div className='report-header'>
-                        <h2 className='h4'>Inventario del Paciente</h2>
+                        <h2 className='gestionar-title'>Inventario del Paciente</h2>
                     </div>
                     <div>
                         <input

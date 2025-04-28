@@ -63,6 +63,17 @@ export const LoginPage = () => {
         return;
       }
 
+
+      if (rolAsignado.rol_id === 4) {
+        Swal.fire({
+          icon: "error",
+          text: "Los pacientes no pueden iniciar sesión.",
+        }).then(() => {
+          startLogout(); // Llama la función que limpia la sesión
+          navigate("/login");  // Redirige al login
+        });
+        return;
+      }
       // ✅ Guardamos el rol si hay uno solo
       seleccionarRol(rolAsignado);
       if (rolAsignado.rol_id === 2) {

@@ -89,7 +89,6 @@ export const GestionPersonaGeriatricoPage = () => {
         if (isActive) {
             try {
                 const response = await obtenerPersonaRolesMiGeriatricoSede(persona.per_id);
-                console.log("Respuesta de la API:", response);
 
                 // Verificar si la respuesta tiene los datos esperados
                 if (response && response.success && response.data && response.data.persona) {
@@ -97,7 +96,6 @@ export const GestionPersonaGeriatricoPage = () => {
                 } else {
                     console.error(response.message);
                 }
-                console.log(`Roles para ${persona.per_nombre}:`, response);
 
             } catch (error) {
                 console.error("Error al obtener roles:", error);
@@ -109,69 +107,7 @@ export const GestionPersonaGeriatricoPage = () => {
         setSelectedPersona(persona);
     };
 
-    // const handleInactivarRolAdminSede = async (persona) => {
-    //     console.log("Persona seleccionada para inactivar:", persona);
-
-    //     if (!persona || !persona.per_id) {
-    //         console.warn("⚠️ Información incompleta para inactivar el rol: falta per_id.");
-    //         return;
-    //     }
-
-    //     if (!persona.rolesSede?.length) {
-    //         Swal.fire({
-    //             icon: "warning",
-    //             text: " La persona no tiene roles en una sede.",
-    //         });
-    //         console.warn("⚠️ La persona no tiene roles en una sede.");
-    //         return;
-    //     }
-
-    //     const rolSede = persona.rolesSede[0];
-    //     console.log("Rol de sede seleccionado:", rolSede);
-
-    //     if (!rolSede.sede?.id || !rolSede.rol_id) {
-    //         console.warn("⚠️ Información incompleta: falta sede ID o rol ID.");
-    //         return;
-    //     }
-
-    //     // Convertir valores a números válidos antes de enviarlos
-    //     const per_id = Number(persona.per_id);
-    //     const se_id = Number(rolSede.sede.id);
-    //     const rol_id = Number(rolSede.rol_id);
-
-    //     if (isNaN(per_id) || isNaN(se_id) || isNaN(rol_id) || per_id <= 0 || se_id <= 0 || rol_id <= 0) {
-    //         console.error("❌ Error: Uno o más valores no son números válidos:", { per_id, se_id, rol_id });
-    //         return;
-    //     }
-
-    //     const confirmacion = await Swal.fire({
-    //         text: "Esta acción inactivará el rol de la persona en la sede.",
-    //         icon: "warning",
-    //         showCancelButton: true,
-    //         confirmButtonText: "Sí, inactivar",
-    //         cancelButtonText: "Cancelar"
-    //     });
-
-    //     if (!confirmacion.isConfirmed) return;
-
-    //     const resultado = await inactivarRolAdminSede({ per_id, se_id, rol_id });
-
-    //     if (resultado.success) {
-    //         Swal.fire({
-    //             icon: "success",
-    //             text: resultado.message || "Rol inactivado exitosamente"
-    //         });
-    //     } else {
-    //         Swal.fire({
-    //             icon: "error",
-    //             text: resultado.message || "No se pudo inactivar el rol"
-    //         });
-    //     }
-    // };
-
-
     const handleInactivarVinculacion = async (persona) => {
-        console.log("Persona seleccionada para inactivar:", persona);
     
         if (!persona || !persona.per_id) {
             console.warn("⚠️ Información incompleta para inactivar el rol: falta per_id.");
@@ -214,7 +150,6 @@ export const GestionPersonaGeriatricoPage = () => {
     
 
     const handleReactivarVinculacion = async (persona) => {
-        console.log("Persona seleccionada para reactivar:", persona);
     
         if (!persona || !persona.per_id) {
             console.warn("⚠️ Información incompleta para reactivar el rol: falta per_id.");
@@ -266,8 +201,6 @@ export const GestionPersonaGeriatricoPage = () => {
             return;
         }
 
-        console.log("📤 Enviando datos del paciente:", datosPaciente);
-
         try {
             const response = await registrarPaciente(datosPaciente);
 
@@ -308,8 +241,6 @@ export const GestionPersonaGeriatricoPage = () => {
             });
             return;
         }
-
-        console.log("📤 Enviando datos de la enfermera:", datosEnfermera)
 
         try {
             const response = await startRegisterEnfermera(datosEnfermera);
@@ -362,7 +293,6 @@ export const GestionPersonaGeriatricoPage = () => {
             });
             onResetForm();
 
-            console.log(response)
             // Manejo de la respuesta del servidor
             if (response?.success) {
                 console.log("✅ Rol asignado con éxito:", response.message);
@@ -421,7 +351,6 @@ export const GestionPersonaGeriatricoPage = () => {
                     sp_fecha_fin: fechaFin || null,
                 });
 
-                console.log("Respuesta del servidor:", response);
 
                 if (!response.success) {
                     throw new Error(response.message);

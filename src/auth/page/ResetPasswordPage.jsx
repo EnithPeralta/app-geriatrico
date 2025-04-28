@@ -43,8 +43,9 @@ export const ResetPasswordPage = () => {
       <div className="container-forget">
         <div className="left-forget">
           <h2>¿Olvidaste tu contraseña?</h2>
-          <p>Recuerda que la contraseña debe tener al menos 8 caracteres,
-            2 números, 1 letra mayúscula y un carácter especial (!@#$).
+          <p>Recuerda que la contraseña 
+            debe tener una longitud mínima de 6
+             caracteres y contener al menos una letra y un número.
           </p>
 
           <form onSubmit={handleSubmit}>

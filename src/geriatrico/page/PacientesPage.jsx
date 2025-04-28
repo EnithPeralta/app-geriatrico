@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useGeriatrico, usePaciente } from "../../hooks";
 import { useNavigate } from "react-router-dom";
 import { LoadingComponet, SideBarComponent } from "../../components";
+import { ModalRegistrarPaciente } from "../components/Paciente/ModalRegistrarPaciente";
+import socket from "../../utils/Socket";
+
 
 export const PacientesPage = () => {
     const [pacientes, setPacientes] = useState([]);
@@ -12,6 +15,7 @@ export const PacientesPage = () => {
     const { homeMiGeriatrico } = useGeriatrico();
     const navigate = useNavigate();
     const [search, setSearch] = useState("");
+    const [showRegisterPaciente, setShowRegisterPaciente] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,8 +46,30 @@ export const PacientesPage = () => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        const handlePacienteRegistrado = ({ paciente }) => {
+            setPacientes(prev => {
+                const existe = prev.some(p => p.per_id === paciente.per_id);
+                if (!existe) {
+                    return [paciente, ...prev];
+                }
+                return prev.map(p =>
+                    p.per_id === paciente.per_id ? { ...p, ...paciente } : p
+                );
+            });
+        };
+
+        socket.on("pacienteRegistrado", handlePacienteRegistrado);
+
+        return () => {
+            socket.off("pacienteRegistrado", handlePacienteRegistrado);
+        };
+    }, []);
+
+
+
+
     const handleVerDetalle = async (per_id) => {
-        console.log("Paciente seleccionado:", per_id);
         try {
             const response = await obtenerDetallePacienteSede(per_id);
             console.log("📡 Respuesta de la API:", response);
@@ -62,7 +88,13 @@ export const PacientesPage = () => {
         <div className="main-container" >
             <SideBarComponent />
             <div className="content-area" style={{ backgroundColor: geriatrico?.color_principal }}>
-                <h2 className="gestionar-title">Pacientes</h2>
+                <div className="gestionar">
+
+                    <h2 className="gestionar-title">Pacientes</h2>
+                    <button className="gestionar-btn" onClick={() => setShowRegisterPaciente(true)}>
+                        Agregar Paciente
+                    </button>
+                </div>
                 <div className="search-container">
                     <input
                         type="text"
@@ -96,6 +128,12 @@ export const PacientesPage = () => {
                     <p className="error-message">No se encontraron pacientes.</p>
                 )}
             </div>
+            {showRegisterPaciente &&
+                <ModalRegistrarPaciente
+                    onClose={() => setShowRegisterPaciente(false)}
+                    setPaciente={setPacientes}
+                    datosIniciales={{}}
+                />}
         </div>
     );
 };

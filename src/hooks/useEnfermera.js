@@ -7,7 +7,6 @@ export const useEnfermera = () => {
     const { status, user, errorMessage } = useSelector(state => state.auth);
 
     const startRegisterEnfermera = async ({ per_id, enf_codigo }) => {
-        console.log("📌 Datos a enviar:", per_id, enf_codigo);
 
         const token = getToken();
         if (!token) {
@@ -21,8 +20,8 @@ export const useEnfermera = () => {
             const { data } = await geriatricoApi.post("enfermeras/registrar", { per_id, enf_codigo }, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-
             console.log("✅ Respuesta del servidor:", data);
+
             return {
                 success: true,
                 message: data.message || "Enfermera registrada con éxito.",
@@ -52,7 +51,6 @@ export const useEnfermera = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            console.log("✅ Respuesta del servidor:", data);
 
             return {
                 success: true,
@@ -94,7 +92,6 @@ export const useEnfermera = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
     
-            console.log("✅ Respuesta del servidor:", data);
     
             return {
                 success: true,

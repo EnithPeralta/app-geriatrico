@@ -288,8 +288,6 @@ export const useFormulacionMedicamentos = () => {
                 },
             })
 
-            console.log(data);
-
             return {
                 success: true,
                 message: data.message || "Formulación obtenida con éxito.",

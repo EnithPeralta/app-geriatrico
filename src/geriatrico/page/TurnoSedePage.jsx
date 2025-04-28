@@ -102,7 +102,7 @@ export const TurnoSedePage = () => {
             title: "Turnos Asignados",
             content: (
                 <>
-                    <h2 className="h1"><FaCalendarDay /> Turnos Asignados</h2>
+                    <h2 className="gestionar-title"><FaCalendarDay />Turnos Asignados </h2>
                     <div className="filters">
                         <input
                             type="date"

@@ -43,27 +43,6 @@ export const ModalEnfermeraPersona = ({
         sp_fecha_fin
     } = useForm(registerFormFields);
 
-    const handleEnfermera = async (idPersona) => {
-        try {
-            const response = await startRegisterEnfermera({
-                per_id: idPersona,
-                enf_codigo
-            });
-            if (response.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: response.message
-                });
-            }
-        } catch (error) {
-            console.error("❌ Error al registrar enfermera:", error.response?.data?.message || error.message);
-            Swal.fire({
-                icon: 'error',
-                text: error.response?.data?.message || 'Error al registrar enfermera.'
-            });
-        }
-    };
-
     const registerSubmit = async (e) => {
         e.preventDefault();
 
@@ -122,7 +101,16 @@ export const ModalEnfermeraPersona = ({
             }
 
             if (Number(selectedRoles) === 5) {
-                await handleEnfermera(idPersona);
+                const response = await startRegisterEnfermera({
+                    per_id: idPersona,
+                    enf_codigo
+                });
+                if (!response) {
+                    Swal.fire({
+                        icon: response?.success ? 'success' : 'error',
+                        text: response?.message || 'Error desconocido'
+                    }); return;
+                }
             }
 
             Swal.fire({

@@ -42,21 +42,7 @@ export const ModalColaboradorPersona = ({ colaboradorDocumento, handleAssignSede
             Swal.fire({ title: 'Error', icon: 'error', text: 'Las contraseñas no coinciden' });
             return;
         }
-        console.log('Datos del formulario:', {
-            per_nombre_completo,
-            per_documento,
-            per_correo,
-            per_usuario,
-            per_password,
-            confirm_password,
-            per_telefono,
-            per_genero,
-            per_foto,
-            selectedRoles,
-            sp_fecha_inicio,
-            sp_fecha_fin,
-        });
-
+        
         try {
             const response = await startRegister({
                 per_correo,
@@ -69,7 +55,6 @@ export const ModalColaboradorPersona = ({ colaboradorDocumento, handleAssignSede
                 per_foto,
                 rol_id: selectedRoles
             });
-            console.log("📤 Enviando datos de la persona:", response);
 
             if (!response || !response.data || !response.data.per_id) {
                 Swal.fire({ icon: 'error', text: 'No se pudo obtener el ID del usuario' });
@@ -78,7 +63,6 @@ export const ModalColaboradorPersona = ({ colaboradorDocumento, handleAssignSede
 
             const idPersona = response.data.per_id;
             const asignacionExitosa = await handleAssignSedes(idPersona, selectedRoles, sp_fecha_inicio, sp_fecha_fin);
-            console.log(asignacionExitosa);
             if (!asignacionExitosa) {
                 Swal.fire({ icon: 'error', text: 'No se pudo asignar el rol. Registro cancelado.' });
                 return;
@@ -198,7 +182,7 @@ export const ModalColaboradorPersona = ({ colaboradorDocumento, handleAssignSede
                                     className="modal-input"
                                     value={sp_fecha_fin}
                                     onChange={onInputChange}
-                                    required
+                                    
                                 />
                             </div>
                             <div className='modal-buttons'>

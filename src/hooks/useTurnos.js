@@ -33,7 +33,7 @@ export const useTurnos = () => {
             return {
                 success: true,
                 message: response.data.message || "Turno asignado exitosamente.",
-                data: response.data
+                data: response.data,
             };
         } catch (error) {
             console.error("❌ Error al asignar turno:", error);
@@ -41,7 +41,8 @@ export const useTurnos = () => {
             return {
                 success: false,
                 message: error.response?.data?.error || "Ocurrió un error inesperado.",
-                error: error.response?.data || error.message
+                error: error.response?.data || error.message,
+                conflictos: error.response?.data?.conflictos
             };
         }
     };

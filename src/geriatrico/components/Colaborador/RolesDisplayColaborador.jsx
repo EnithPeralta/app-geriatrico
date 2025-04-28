@@ -8,7 +8,6 @@ export const RolesDisplayColaborador = ({ roles }) => {
         return null; // No hay roles que mostrar o el modal está cerrado
     }
 
-    console.log("Roles:", roles);
 
     // Filtrar roles por fecha de inicio si se ha ingresado una fecha en el buscador
     const filteredRoles = searchDate
@@ -49,7 +48,6 @@ export const RolesDisplayColaborador = ({ roles }) => {
                                     <th>Rol</th>
                                     <th>Fecha Inicio</th>
                                     <th>Fecha Fin</th>
-                                    <th>Estado Sede</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,7 +64,6 @@ export const RolesDisplayColaborador = ({ roles }) => {
                                             <td>{rol.rol}</td>
                                             <td>{rol.fechaInicio}</td>
                                             <td>{rol.fechaFin || "Indefinido"}</td>
-                                            <td>{rol.activoSede ? "Activo" : "Inactivo"}</td>
                                         </tr>
                                     ))
                                 ) : (

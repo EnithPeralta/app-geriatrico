@@ -53,7 +53,7 @@ export const SelectRol = (props: SelectRolProps) => {
             >
                 <option hidden>Seleccione un rol</option>
                 {roles
-                .filter(rol => rol.activo !== false) // 🔹 Filtra los roles deshabilitados
+                .filter(rol => rol.activo !== false && rol.rol_id !== 4 && rol.rol_id !== 7) // 🔹 Filtra los roles deshabilitados
                 .map((rol, index) => (
                     <option 
                         key={`${index}-${rol.rol_id}`} 

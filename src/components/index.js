@@ -22,5 +22,5 @@ export * from './CheckboxField/CheckboxField';
 // CheckboxField.jsx
 export * from './SelectSede/SelectSede';
  // SelectSede.jsx
-export * from './Personas/ModalRegistrarPersonas';
+export * from './Colaborador/ModalRegistrarPersonas';
 // ModalRegistrarPersonas.jsx

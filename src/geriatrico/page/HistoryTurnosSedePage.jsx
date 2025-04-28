@@ -95,7 +95,7 @@ export const HistoryTurnosSedePage = () => {
     return (
         <div className="main-container">
             <div className="content">
-                <h2 className='h1'><FaHistory /> Historial De Turnos</h2>
+                <h2 className="gestionar-title"><FaHistory /> Historial De Turnos</h2>
                 <div className="search-container">
                     <input
                         type="text"

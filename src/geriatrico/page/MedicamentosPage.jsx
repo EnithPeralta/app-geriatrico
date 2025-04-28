@@ -86,7 +86,7 @@ export const MedicamentosPage = () => {
                 <SideBarComponent />
                 <div className="content" style={{ backgroundColor: geriatrico?.color_principal }}>
                     <div className="report-header">
-                        <h2 className="h4">Medicamentos</h2>
+                        <h2 className="gestionar-title">Medicamentos</h2>
                         <button className="save-button" onClick={() => setIsModalOpen(true)}>
                             <FaBriefcaseMedical /> Agregar
                         </button>

@@ -9,19 +9,21 @@ export const ModalInventarioSede = ({ onClose, setMedicamentos }) => {
     const [presentacion, setPresentacion] = useState('');
     const [totalUnidades, setTotalUnidades] = useState('');
     const [detalleMedicamento, setDetalleMedicamento] = useState(null);
-
+    const [loading, setLoading] = useState(false);
 
     const { obtenerMedicamentos } = useMedicamento();
     const { vincularMedicamentoInvSede } = useInventarioSede();
 
     useEffect(() => {
         const fetchMedicamentos = async () => {
+            setLoading(true);
             const response = await obtenerMedicamentos();
             if (response.success) {
                 setMedicamentosGenerales(response.data);
             } else {
                 Swal.fire('Error', 'No se pudieron cargar los medicamentos', 'error');
             }
+            setLoading(false);
         };
         fetchMedicamentos();
     }, []);
@@ -33,11 +35,10 @@ export const ModalInventarioSede = ({ onClose, setMedicamentos }) => {
         presentacion: med.med_presentacion?.charAt(0).toUpperCase() + med.med_presentacion?.slice(1).toLowerCase(),
         nombre: med.med_nombre,
         unidad: med.unidades_por_presentacion,
-        tipo: med.med_tipo_contenido?.charAt(0).toUpperCase() + med.med_tipo_contenido?.slice(1).toLowerCase()
-
+        tipo: med.med_tipo_contenido?.charAt(0).toUpperCase() + med.med_tipo_contenido?.slice(1).toLowerCase(),
+        descripcion: med.med_descripcion
     }));
 
-    console.log(opciones);
 
     const handleChange = (opcion) => {
         setMedicamentoSeleccionado(opcion.value);
@@ -45,7 +46,8 @@ export const ModalInventarioSede = ({ onClose, setMedicamentos }) => {
             presentacion: opcion.presentacion,
             nombre: opcion.nombre,
             unidad: opcion.unidad,
-            tipo: opcion.tipo
+            tipo: opcion.tipo,
+            descripcion: opcion.descripcion
         });
     };
 
@@ -55,6 +57,7 @@ export const ModalInventarioSede = ({ onClose, setMedicamentos }) => {
         if (!medicamentoSeleccionado || !presentacion || !totalUnidades) {
             return Swal.fire('Campos incompletos', 'Por favor completa todos los campos', 'warning');
         }
+        setLoading(true);
 
         try {
             const med_id = Number(medicamentoSeleccionado);
@@ -62,7 +65,7 @@ export const ModalInventarioSede = ({ onClose, setMedicamentos }) => {
             const med_origen = presentacion;
 
             const response = await vincularMedicamentoInvSede(med_id, cantidad, med_origen);
-            console.log(response);
+            setLoading(false);
 
             if (response.success) {
                 if (response.success) {
@@ -71,12 +74,12 @@ export const ModalInventarioSede = ({ onClose, setMedicamentos }) => {
                         text: response.message
                     });
                     const nuevo = {
-                        med_sede_id: response.data?.med_sede_id || Date.now(), 
+                        med_sede_id: response.data?.med_sede_id || Date.now(),
                         med_id: Number(medicamentoSeleccionado),
                         med_nombre: detalleMedicamento.nombre,
                         med_presentacion: detalleMedicamento.presentacion,
                         unidades_por_presentacion: detalleMedicamento.unidad,
-                        med_descripcion: '', // Puedes agregarlo si lo tienes
+                        med_descripcion: detalleMedicamento.descripcion, // Puedes agregarlo si lo tienes
                         med_total_unidades_disponibles: parseInt(totalUnidades)
                     };
 
@@ -88,6 +91,7 @@ export const ModalInventarioSede = ({ onClose, setMedicamentos }) => {
             }
         } catch (error) {
             console.error(error);
+            setLoading(false);
             Swal.fire('Error', 'Ocurrió un error inesperado', 'error');
         }
     };
@@ -163,7 +167,9 @@ export const ModalInventarioSede = ({ onClose, setMedicamentos }) => {
                             />
                         </div>
                         <div className="modal-buttons">
-                            <button type="submit" className="save-button">Guardar</button>
+                            <button type="submit" className="save-button" disabled={loading}>
+                                {loading ? 'Vinculando...' : 'Vinculado'}
+                            </button>
                             <button type="button" className="cancel-button" onClick={onClose}>Cancelar</button>
                         </div>
                     </form>

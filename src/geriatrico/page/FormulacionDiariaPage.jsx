@@ -4,6 +4,7 @@ import { useFormulacionMedicamentos, usePaciente, useSession } from '../../hooks
 import { FaHistory, FaMortarPestle } from 'react-icons/fa';
 import { ModalRegisterFormula } from '../components/Formulacion/Diaria/ModalRegisterFormula';
 import { ModalHistorialFormula } from '../components/Formulacion/Diaria/ModalHistorialFormula';
+import socket from '../../utils/Socket';
 
 export const FormulacionDiariaPage = () => {
     const { id } = useParams();
@@ -31,13 +32,24 @@ export const FormulacionDiariaPage = () => {
         const fetchFormulaciones = async () => {
             if (!paciente?.pac_id) return;
             const response = await obtenerFormulacionesDelDia(paciente.pac_id);
-            console.log("Formulaciones obtenidas:", response);
             if (response.success) {
                 setFormulaciones(response.data || []);
             }
         };
-        fetchFormulaciones();
-    }, [paciente]);
+
+        if (paciente) {
+            fetchFormulaciones();
+        }
+
+        const handleAgregarFormulacion = () => {
+            fetchFormulaciones();
+        };
+        socket.on('dosis-administrada', handleAgregarFormulacion);
+        
+        return () => {
+            socket.off('dosis-administrada', handleAgregarFormulacion);
+        };
+    }, [paciente, obtenerFormulacionesDelDia]);
 
     const renderRows = () => {
         return (formulaciones || [])
@@ -116,7 +128,7 @@ export const FormulacionDiariaPage = () => {
                                     <th>Fecha Fin</th>
                                     <th>Hora</th>
                                     <th>Dosis</th>
-                                    <th>Unidad</th>
+                                    <th>Tipo de contenido</th>
                                     <th>Via Administracion</th>
                                     <th>Estado</th>
                                     <th>Total Dosis</th>

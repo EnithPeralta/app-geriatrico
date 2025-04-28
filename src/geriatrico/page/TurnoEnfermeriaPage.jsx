@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { SideBarComponent } from '../../components';
 import { FaCalendarDay, FaClock } from 'react-icons/fa';
-import { useForm, useTurnos } from '../../hooks';
+import { useForm, useGeriatrico, useTurnos } from '../../hooks';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
@@ -17,6 +17,21 @@ export const TurnoEnfermeriaPage = () => {
     const { id } = useParams(); // Renombramos id para evitar conflicto
     const enf_id = parseInt(id);
     const { asignarTurnoEnfermeria } = useTurnos();
+    const { homeMiGeriatrico } = useGeriatrico();
+    const [geriatrico, setGeriatrico] = useState();
+
+    useEffect(() => {
+        const fetchGeriatrico = async () => {
+            try {
+                const result = await homeMiGeriatrico();
+                setGeriatrico(result.geriatrico);
+            } catch (error) {
+                console.error('Error al obtener el geriatrico:', error);
+            }
+        }
+        fetchGeriatrico();
+    }, [])
+
 
     const {
         tur_fecha_inicio,
@@ -27,6 +42,7 @@ export const TurnoEnfermeriaPage = () => {
         onInputChange,
         onResetForm
     } = useForm(TurnosFormFields);
+
 
     const handleAsignarTurno = async (e) => {
         e.preventDefault();
@@ -40,11 +56,21 @@ export const TurnoEnfermeriaPage = () => {
             tur_tipo_turno
         };
 
-        console.log("Enviando datos:", turnoData);
 
         try {
             const result = await asignarTurnoEnfermeria(turnoData);
-            console.log("Respuesta del backend:", result);
+            const conflictos = result.error.conflictos;
+
+            const conflictosEstaSede = conflictos.enEstaSede.map((c) => `<div>${c.sede} - ${c.fecha_inicio}</div>`).join('');
+            const conflictosOtraSede = conflictos.enOtraSede.map((c) => `<div>${c.sede} - ${c.fecha_inicio}</div>`).join('');
+            let htmlConflictos = '';
+
+            if (conflictos.enEstaSede.length > 0) {
+                htmlConflictos += `<p><strong>En esta sede:</strong></p><ul>${conflictosEstaSede}</ul>`;
+            }
+            if (conflictos.enOtraSede.length > 0) {
+                htmlConflictos += `<p><strong>En otra sede:</strong></p><ul>${conflictosOtraSede}</ul>`;
+            }
 
             if (result.success) {
                 Swal.fire({
@@ -52,11 +78,12 @@ export const TurnoEnfermeriaPage = () => {
                     text: result.message
                 })
                 onResetForm();
-            }else{
+            } else {
                 Swal.fire({
                     icon: 'warning',
-                    text: result.error.message
-                })
+                    html: ` <p>${result.error.message}</p>
+                    ${htmlConflictos}`,
+                });
             }
         } catch (error) {
             console.error("Error al asignar turno:", error);
@@ -64,10 +91,10 @@ export const TurnoEnfermeriaPage = () => {
     };
 
     return (
-        <div className="main-container">
+        <div className="main-container" >
             <SideBarComponent />
-            <div className="content crear-turno-content">
-                <h2 className='h1'><FaCalendarDay /> Asignar Turno</h2>
+            <div className="content crear-turno-content" style={{ backgroundColor: geriatrico?.color_principal }}>
+                <h2 className="gestionar-title"><FaCalendarDay /> Asignar Turno</h2>
                 <div className="crear-turno-form-container">
                     <form className='crear-turno-form' onSubmit={handleAsignarTurno}>
                         <div className='form-group'>
@@ -113,10 +140,10 @@ export const TurnoEnfermeriaPage = () => {
                             />
                         </div>
                         <button type="submit" className="save-button">
-                        Asignar Turno
-                    </button>
+                            Asignar Turno
+                        </button>
                     </form>
-                    
+
                 </div>
             </div>
         </div>

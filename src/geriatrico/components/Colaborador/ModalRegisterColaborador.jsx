@@ -35,7 +35,7 @@ export const ModalRegisterColaborador = ({ onClose, setColaboradores }) => {
     };
 
     const handleAssignSedes = async (per_id, rol_id, sp_fecha_inicio, sp_fecha_fin) => {
-        if (!per_id || !rol_id || !sp_fecha_inicio || !sp_fecha_fin) {
+        if (!per_id || !rol_id || !sp_fecha_inicio) {
             await Swal.fire({ icon: "warning", text: "Por favor, complete todos los campos antes de asignar el rol." });
             return false;
         }
@@ -55,10 +55,8 @@ export const ModalRegisterColaborador = ({ onClose, setColaboradores }) => {
     };
 
     const validarRol = async (per_id) => {
-        console.log("🔍 Verificando roles para la persona con ID:", per_id);
         const rolesPersona = await obtenerPersonaRolesMiGeriatricoSede(per_id);
-        console.log("👀 Roles obtenidos:", rolesPersona);
-        return rolesPersona?.persona?.rolesSede?.some(rol => rol.rol_nombre === "Enfermera(O)") || false;
+        return rolesPersona?.persona?.rolesSede?.some(rol => rol.rol_nombre === "Colaborador") || false;
     };
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -124,14 +122,20 @@ export const ModalRegisterColaborador = ({ onClose, setColaboradores }) => {
                 await Swal.fire({ icon: 'success', text: asignado?.message || "Rol asignado con exito" });
                 onResetForm();
                 onClose();
-                setColaboradores(prev => {
-                    const updatedColaboradores = prev.map(colaboradores =>
-                        colaboradores.per_id === per_id
-                            ? { ...colaboradores, activoSede: true }
-                            : colaboradores
-                    );
-                    return updatedColaboradores
-                });
+                setColaboradores((prev) => {
+                    const newColaborador = {
+                        ...result,
+                        activoSede: true,
+                    };
+                    const existe = prev.find((col) => col.per_id === per_id);
+                    if (existe) {
+                        // Si ya existe, lo actualizo
+                        return prev.map((col) => (col.per_id === per_id ? newColaborador : col));
+                    } else {
+                        // Si no existe, lo agrego
+                        return [...prev, newColaborador];
+                    }
+                });                
                 return;
             }
             if (message) {

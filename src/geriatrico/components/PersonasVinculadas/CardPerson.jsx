@@ -41,10 +41,13 @@ export const CardPerson = ({ persona, onClick, onEdit, onAssign, onInactivate })
                 <button className="edit-button-asignar" onClick={onEdit} title='Editar'>
                     <FaUserEdit />
                 </button>
-                <button className="add-button-asignar" onClick={onAssign} title='Vincular'>
-                    <FaArrowUp />
-                </button>
-
+                {
+                    session.rol_id !== 3 && (
+                        <button className="add-button-asignar" onClick={onAssign} title='Vincular'>
+                            <FaArrowUp />
+                        </button>
+                    )
+                }
             </div>
         </div>
     );

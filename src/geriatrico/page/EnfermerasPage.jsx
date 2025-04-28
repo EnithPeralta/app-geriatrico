@@ -5,6 +5,7 @@ import { ModalRegisterEnfermera } from "../components/Enfermeras/ModalRegisterEn
 import Swal from "sweetalert2";
 import { PersonListEnfermera } from "../components/Enfermeras/PersonListEnfermera";
 import { useNavigate } from "react-router-dom";
+import socket from "../../utils/Socket";
 
 
 export const EnfermerasPage = () => {
@@ -53,6 +54,26 @@ export const EnfermerasPage = () => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        const handleEnfermeraRegistrado = ({ enfermera }) => {
+            setEnfermeras(prev => {
+                const existe = prev.some(p => p.per_id === enfermera.per_id);
+                if (!existe) {
+                    return [enfermera, ...prev];
+                }
+                return prev.map(p =>
+                    p.per_id === enfermera.per_id ? { ...p, ...enfermera } : p
+                );
+            });
+        };
+
+        socket.on("enfermeraRegistrada", handleEnfermeraRegistrado);
+
+        return () => {
+            socket.off("enfermeraRegistrada", handleEnfermeraRegistrado);
+        };
+    }, []);
+
     const handleCardClick = async (enfermera) => {
 
         const isActive = activeCard === enfermera.per_id ? null : enfermera.per_id;
@@ -63,7 +84,6 @@ export const EnfermerasPage = () => {
                 const response = await obtenerRolesEnfermerasSede(enfermera.per_id);
 
                 if (response.success) {
-                    console.log("Roles obtenidos correctamente.", response);
                     setRoles({
                         rolesSede: response.data || [],
                     });
@@ -111,16 +131,16 @@ export const EnfermerasPage = () => {
 
 
         // Buscar el rol correcto en las sedes
-        const rolesValidos = ["Paciente", "Enfermera(o)", "Colaborador"];
+        const rolesValidos = ["enfermera", "Enfermera(o)", "Colaborador"];
         const sedeConRol = response.data.persona.sedes.find(sede =>
             sede.roles.some(rol => rolesValidos.includes(rol.rol_nombre))
         );
 
         if (!sedeConRol) {
-            console.warn("⚠️ La persona no tiene el rol de Paciente, Enfermera(O) o Colaborador.");
+            console.warn("⚠️ La persona no tiene el rol de enfermera, Enfermera(O) o Colaborador.");
             Swal.fire({
                 icon: "warning",
-                text: "La persona no tiene el rol de Paciente, Enfermera(O) o Colaborador.",
+                text: "La persona no tiene el rol de enfermera, Enfermera(O) o Colaborador.",
             });
             return;
         }

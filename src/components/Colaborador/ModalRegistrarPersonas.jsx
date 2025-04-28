@@ -2,6 +2,7 @@ import React from 'react';
 import { useAcudiente, useAuthStore, useForm } from '../../hooks';
 import Swal from 'sweetalert2';
 import { SelectRolAcudiente } from '../SelectRolAcudiente';
+import socket from '../../utils/Socket';
 
 const registerFormFields = {
     per_password: '',
@@ -10,12 +11,22 @@ const registerFormFields = {
     per_genero: '',
     per_telefono: '',
     per_nombre_completo: '',
-    per_documento: '', // Asegurar que no sea undefined
+    per_documento: '',
     per_correo: '',
     per_foto: ''
 };
 
-export const ModalRegistrarPersonas = ({ handleAssignSedes, pacienteId, acudienteDocumento, setPacienteSeleccionado, handleRoleChange, parentesco, setParentesco, selectedRoles, onClose }) => {
+export const ModalRegistrarPersonas = ({ handleAssignSedes,
+    pacienteId,
+    acudienteDocumento,
+    setPacienteSeleccionado,
+    handleRoleChange,
+    parentesco,
+    setParentesco,
+    selectedRoles,
+    onClose,
+    setAcudiente
+}) => {
     const { startRegister } = useAuthStore();
     const { registrarAcudiente } = useAcudiente();
     const pacienteSeleccionado = { pac_id: Number(pacienteId) };
@@ -49,16 +60,32 @@ export const ModalRegistrarPersonas = ({ handleAssignSedes, pacienteId, acudient
         });
 
         if (response.success) {
-            console.log(response.message);
+            console.log('Acudiente registrado:', response.acudiente);  // Verifica la respuesta
             setPacienteSeleccionado(prev => ({
                 ...prev,
                 acudiente: response.acudiente,
             }));
-            setParentesco("");
+            setParentesco("");  // Limpia el campo parentesco
+
+            // Actualiza la lista de acudientes en el estado
+            setAcudiente(prev => {
+                console.log('Acudiente actualizado:', [...prev, {
+                    per_id: response.acudiente.per_id,
+                    pac_id: response.acudiente.pac_id,
+                    pa_parentesco: response.acudiente.pa_parentesco,
+                }]);
+                return [...prev, {
+                    per_id: response.acudiente.per_id,
+                    pac_id: response.acudiente.pac_id,
+                    pa_parentesco: response.acudiente.pa_parentesco,
+                }];
+            });
+            
         } else {
             console.error(response.message);
         }
     };
+
 
     const registerSubmit = async (e) => {
         e.preventDefault();
@@ -67,21 +94,6 @@ export const ModalRegistrarPersonas = ({ handleAssignSedes, pacienteId, acudient
             Swal.fire({ title: 'Error', icon: 'error', text: 'Las contraseñas no coinciden' });
             return;
         }
-        console.log('Datos del formulario:', {
-            per_nombre_completo,
-            per_documento,
-            per_correo,
-            per_usuario,
-            per_password,
-            confirm_password,
-            per_telefono,
-            per_genero,
-            per_foto,
-            selectedRoles,
-            sp_fecha_inicio,
-            sp_fecha_fin,
-            parentesco,
-        });
 
         try {
             const response = await startRegister({
@@ -95,7 +107,6 @@ export const ModalRegistrarPersonas = ({ handleAssignSedes, pacienteId, acudient
                 per_foto,
                 rol_id: selectedRoles
             });
-            console.log(response);
 
             if (!response || !response.data || !response.data.per_id) {
                 Swal.fire({ icon: 'error', text: 'No se pudo obtener el ID del usuario' });
@@ -103,16 +114,21 @@ export const ModalRegistrarPersonas = ({ handleAssignSedes, pacienteId, acudient
             }
 
             const idPersona = response.data.per_id;
-            const asignacionExitosa = await handleAssignSedes(idPersona, selectedRoles, sp_fecha_inicio, sp_fecha_fin);
 
+            // Primero asigna el rol
+            const asignacionExitosa = await handleAssignSedes(idPersona, selectedRoles, sp_fecha_inicio, sp_fecha_fin);
             if (!asignacionExitosa) {
                 Swal.fire({ icon: 'error', text: 'No se pudo asignar el rol. Registro cancelado.' });
                 return;
             }
-            if (Number(selectedRoles) === 6) {
+
+            // Luego, si el rol es "acudiente" (rol 6), registra como acudiente
+            if (selectedRoles === 6) {
                 await handleRegisterAcudiente(idPersona);
             }
 
+            Swal.fire({ icon: 'success', title: 'Registro exitoso', text: 'La persona fue registrada correctamente.' });
+            onClose();
         } catch (error) {
             console.error('❌ Error al registrar persona:', error);
             Swal.fire({ icon: 'error', text: 'Ocurrió un error al registrar la persona' });
@@ -228,7 +244,7 @@ export const ModalRegistrarPersonas = ({ handleAssignSedes, pacienteId, acudient
                                 className="modal-input"
                                 value={sp_fecha_fin}
                                 onChange={onInputChange}
-                                required
+
                             />
                         </div>
                         <div className='modal-field'>

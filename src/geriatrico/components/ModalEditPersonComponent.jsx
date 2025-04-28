@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { usePersona } from "../../hooks";
 import Swal from "sweetalert2";
-import { FaHistory, FaMortarPestle, FaUserEdit } from 'react-icons/fa';
+import { FaUserEdit } from 'react-icons/fa';
 
 
 export const ModalEditPersonComponent = ({ editedPersona, onClose, setPersonas }) => {
@@ -27,10 +27,17 @@ export const ModalEditPersonComponent = ({ editedPersona, onClose, setPersonas }
                 documento: editedPersona.documento || "",
                 correo: editedPersona.correo || "",
                 telefono: editedPersona.telefono || "",
-                genero: editedPersona.genero || "", // Valor predeterminado
+                genero: editedPersona.genero || "",
                 foto: editedPersona.foto || "",
                 previewFoto: editedPersona.foto || ""
             });
+        }
+    }, [editedPersona]);
+    
+
+    useEffect(() => {
+        if (editedPersona) {
+            setPersonaEditada({ ...editedPersona });
         }
     }, []);
 
@@ -97,7 +104,7 @@ export const ModalEditPersonComponent = ({ editedPersona, onClose, setPersonas }
                                     width={100}
                                 />
                             ) : (
-                               <FaUserEdit size={50}/>
+                                <FaUserEdit size={50} />
                             )}
                         </div>
 

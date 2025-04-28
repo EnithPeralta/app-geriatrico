@@ -73,7 +73,6 @@ export const InventarioSedePage = () => {
         
 
         socket.on('nuevo-medicamento-inventario', handleStockAgregado);
-        console.log('Escuchando eventos de nuevo-medicamento-inventario', handleStockAgregado);
 
         socket.on('stockActualizado', handleStockActualizado);
 
@@ -85,7 +84,6 @@ export const InventarioSedePage = () => {
 
     useEffect(() => {
         if (medicamentos.length) {
-            console.log('Medicamentos actualizados:', medicamentos);
         }
     }, [medicamentos]);
 
@@ -102,7 +100,7 @@ export const InventarioSedePage = () => {
                 <SideBarComponent />
                 <div className="content-area" style={{ backgroundColor: geriatrico?.color_principal }}>
                     <div className="report-header">
-                        <h2 className="h4">Inventario de Medicamentos</h2>
+                        <h2 className="gestionar-title">Inventario de Medicamentos</h2>
                         {session.rol_id === 3 && (
                             <button className="save-button" onClick={() => setIsModalVincular(true)}>
                                 <FaBriefcaseMedical /> Vincular

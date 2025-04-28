@@ -41,7 +41,6 @@ export const HomePage = () => {
             return;
         }
 
-        console.log("🎯 Verificando rol seleccionado:", rolSeleccionado);
 
         if (rolSeleccionado.rol_id === 3 && rolSeleccionado.se_id) {
             navigate(`/geriatrico/sedeEspecifica`);
@@ -66,7 +65,6 @@ export const HomePage = () => {
         const geId = selectedOption.getAttribute("data-ge_id");
         const seId = selectedOption.getAttribute("data-se_id"); // Agregar seId
 
-        console.log("Rol seleccionado:", rolId, "GeID:", geId, "SeID:", seId);
 
         if (rolId && rolId !== String(rolSeleccionado?.rol_id)) {
             await seleccionarRol({ rol_id: rolId, ge_id: geId, se_id: seId }); // Enviar se_id

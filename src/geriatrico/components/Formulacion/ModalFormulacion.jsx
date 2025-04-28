@@ -87,14 +87,25 @@ export const ModalFormulacion = ({ pac_id, onClose, setFormulaciones }) => {
         });
 
         if (result.success) {
+            const nuevaFormulacion = {
+                ...result.data, // Asegúrate de que `result.data` contenga la formulación registrada
+                detalleMedicamento
+            };
+
             Swal.fire({
                 icon: 'success',
                 text: result.message
             });
+
             onResetForm();
             setMedicamentoSeleccionado(null);
             setDetalleMedicamento(null);
-            setFormulaciones(prev => Array.isArray(prev) ? [...prev, result.data] : [result.data]);
+
+            setFormulaciones((prev) => ({
+                ...prev,
+                pendientes: [...prev.pendientes, nuevaFormulacion]
+            }));
+
             onClose();
         } else {
             Swal.fire({
@@ -117,6 +128,7 @@ export const ModalFormulacion = ({ pac_id, onClose, setFormulaciones }) => {
                                 options={opciones}
                                 onChange={handleChange}
                                 value={opciones.find(op => op.value === medicamentoSeleccionado) || null}
+                                placeholder="Selecciona un medicamento"
                             />
                         </div>
 

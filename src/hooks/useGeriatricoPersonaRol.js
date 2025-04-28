@@ -27,7 +27,6 @@ export const useGeriatricoPersonaRol = () => {
         }
       );
 
-      console.log("Respuesta de la API:", data);
 
       if (data?.data?.gp_id) {
         return {
@@ -71,7 +70,6 @@ export const useGeriatricoPersonaRol = () => {
         }
       );
 
-      console.log("Respuesta de la API:", data);
 
       return {
         success: true,
@@ -81,7 +79,6 @@ export const useGeriatricoPersonaRol = () => {
         geriatrico: data.geriatrico || {},
       };
     } catch (error) {
-      console.error("Error al inactivar el rol:", error);
 
       return {
         success: false,

@@ -10,6 +10,8 @@ import {
 import { useParams } from 'react-router-dom';
 import { useFormulacionMedicamentos, usePaciente, useSession } from '../../hooks';
 import Swal from 'sweetalert2';
+import socket from '../../utils/Socket';
+
 
 export const FormulacionMedicamentosPage = () => {
     const { id } = useParams();
@@ -28,12 +30,10 @@ export const FormulacionMedicamentosPage = () => {
     const [selectedForm, setSelectedForm] = useState(null);
     const [activeTab, setActiveTab] = useState('pendientes');
 
-    // Modales
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalUpdate, setIsModalUpdate] = useState(false);
     const [isModalHistory, setIsModalHistory] = useState(false);
 
-    // Obtener sesión y datos del paciente
     useEffect(() => {
         obtenerSesion();
         const fetchPaciente = async () => {
@@ -42,22 +42,37 @@ export const FormulacionMedicamentosPage = () => {
         };
         fetchPaciente();
     }, [id]);
-
-    // Obtener formulaciones del paciente
     useEffect(() => {
         const fetchFormulaciones = async () => {
-            const response = await formulacionMedicamentoVigente(paciente?.pac_id);
-            if (response.success) {
-                setFormulaciones({
-                    en_curso: Array.isArray(response.en_curso) ? response.en_curso : [],
-                    pendientes: Array.isArray(response.pendientes) ? response.pendientes : []
-                });
+            if (paciente?.pac_id) {
+                const response = await formulacionMedicamentoVigente(paciente.pac_id);
+                if (response.success) {
+                    setFormulaciones({
+                        en_curso: Array.isArray(response.en_curso) ? response.en_curso : [],
+                        pendientes: Array.isArray(response.pendientes) ? response.pendientes : []
+                    });
+                }
             }
         };
-        if (paciente?.pac_id) fetchFormulaciones();
+    
+        fetchFormulaciones();
+    
+        const handleFormulacionRegistrada = async (data) => {
+            // 🔥 Recargamos TODO, no solo agregamos a pendientes
+            await fetchFormulaciones();
+        };
+    
+        socket.on('formulacionRegistrada', handleFormulacionRegistrada);
+    
+        return () => {
+            socket.off('formulacionRegistrada', handleFormulacionRegistrada);
+        };
+    
     }, [paciente]);
+    
+    
 
-    // Actualiza una formulación pendiente
+
     const handleActualizarFormulacion = (actualizada) => {
         setFormulaciones(prev => ({
             ...prev,
@@ -67,7 +82,6 @@ export const FormulacionMedicamentosPage = () => {
         }));
     };
 
-    // Eliminar formulación pendiente
     const handleDeleteFormulacion = async (admin_id) => {
         const confirm = await Swal.fire({
             icon: 'question',
@@ -90,8 +104,7 @@ export const FormulacionMedicamentosPage = () => {
         }
     };
 
-    // Suspender formulación en curso
-    const handleSuspenderFormulacion = (formulacion) => {
+    const handleSuspenderClick = (formulacion) => {
         Swal.fire({
             title: '¿Deseas suspender esta formulación?',
             input: 'text',
@@ -114,8 +127,7 @@ export const FormulacionMedicamentosPage = () => {
         });
     };
 
-    // Extender fecha de finalización
-    const handleExtenderFecha = async (formulacion) => {
+    const handleExpandirClick = async (formulacion) => {
         const { value: date } = await Swal.fire({
             title: "Selecciona la nueva fecha de fin",
             input: "date",
@@ -141,7 +153,6 @@ export const FormulacionMedicamentosPage = () => {
         }
     };
 
-    // Renderizar tabla por tab
     const renderRows = (lista) => {
         if (!Array.isArray(lista)) return null;
 
@@ -179,7 +190,6 @@ export const FormulacionMedicamentosPage = () => {
             </tr>
         ));
     };
-
 
     return (
         <>
@@ -228,7 +238,7 @@ export const FormulacionMedicamentosPage = () => {
                                         <th>Fecha Fin</th>
                                         <th>Hora</th>
                                         <th>Dosis</th>
-                                        <th>Unidad</th>
+                                        <th>Tipo de Contenido</th>
                                         <th>Vía Administración</th>
                                         <th>Estado</th>
                                         <th>Total Dosis</th>
@@ -255,7 +265,12 @@ export const FormulacionMedicamentosPage = () => {
                 <ModalFormulacion
                     pac_id={paciente?.pac_id}
                     onClose={() => setIsModalOpen(false)}
-                    setFormulaciones={setFormulaciones}
+                    setFormulaciones={(nuevaFormulacion) =>
+                        setFormulaciones((prev) => ({
+                            ...prev,
+                            pendientes: [...prev.pendientes, nuevaFormulacion],
+                        }))
+                    }
                 />
             )}
 

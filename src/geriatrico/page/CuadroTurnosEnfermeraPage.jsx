@@ -69,7 +69,7 @@ export const CuadroTurnosEnfermeraPage = () => {
     <div className="main-container">
       <SideBarComponent />
       <div className="content turnos-content" style={{ backgroundColor: geriatrico?.color_principal }}>
-        <h2 className="h4">Cuadro de Turnos</h2>
+        <h2 className="gestionar-title">Cuadro de Turnos</h2>
         <div className="filters">
           <input
             type="text"

@@ -150,11 +150,6 @@ export const SideBarComponent = () => {
                             </li>
                         </ul>
                     </nav>
-
-                    {/* Contenedor del contenido principal */}
-                    <div className="content">
-                        {/* Aquí se carga el contenido principal para Super Admin */}
-                    </div>
                 </div>
             </div>
         );

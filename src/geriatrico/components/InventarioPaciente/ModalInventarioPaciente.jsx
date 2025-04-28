@@ -3,7 +3,6 @@ import { useInventarioPaciente, useInventarioSede } from '../../../hooks';
 import Swal from 'sweetalert2';
 import Select from 'react-select';
 
-
 export const ModalInventarioPaciente = ({ onClose, pac_id, setMedi }) => {
     const { vincularMedicamentoInvPac } = useInventarioPaciente();
     const { obtenerMedicamentosSede } = useInventarioSede();
@@ -14,20 +13,20 @@ export const ModalInventarioPaciente = ({ onClose, pac_id, setMedi }) => {
     const [totalUnidades, setTotalUnidades] = useState('');
     const [medicamentos, setMedicamentos] = useState([]);
     const [detalleMedicamento, setDetalleMedicamento] = useState(null);
-
-
+    const [loading, setLoading] = useState(false);  
     useEffect(() => {
         const fetchMedicamentos = async () => {
+            setLoading(true); 
             const response = await obtenerMedicamentosSede();
             if (response.success) {
                 setMedicamentosGenerales(response.data);
             } else {
                 Swal.fire('Error', 'No se pudieron cargar los medicamentos', 'error');
             }
+            setLoading(false); 
         };
         fetchMedicamentos();
     }, []);
-
 
     const opciones = medicamentosGenerales.map((med) => ({
         value: med.med_id,
@@ -35,7 +34,7 @@ export const ModalInventarioPaciente = ({ onClose, pac_id, setMedi }) => {
         presentacion: med.med_presentacion?.charAt(0).toUpperCase() + med.med_presentacion?.slice(1).toLowerCase(),
         nombre: med.med_nombre,
         unidad: med.unidades_por_presentacion,
-        // tipo: med.med_tipo_contenido?.charAt(0).toUpperCase() + med.med_tipo_contenido?.slice(1).toLowerCase()
+        descripcion: med.med_descripcion
     }));
 
     const handleChange = (opcion) => {
@@ -44,10 +43,9 @@ export const ModalInventarioPaciente = ({ onClose, pac_id, setMedi }) => {
             presentacion: opcion.presentacion,
             nombre: opcion.nombre,
             unidad: opcion.unidad,
-            // tipo: opcion.tipo
+            descripcion: opcion.descripcion
         });
     };
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -56,6 +54,8 @@ export const ModalInventarioPaciente = ({ onClose, pac_id, setMedi }) => {
             return Swal.fire('Campos incompletos', 'Por favor completa todos los campos', 'warning');
         }
 
+        setLoading(true); // Activar el estado de carga mientras se guarda
+
         try {
             const response = await vincularMedicamentoInvPac({
                 med_id: Number(medicamentoSeleccionado),
@@ -63,6 +63,8 @@ export const ModalInventarioPaciente = ({ onClose, pac_id, setMedi }) => {
                 cantidad: parseInt(totalUnidades),
                 med_origen: presentacion
             });
+
+            setLoading(false); // Desactivar el estado de carga después de guardar
 
             if (response.success) {
                 Swal.fire({
@@ -75,7 +77,7 @@ export const ModalInventarioPaciente = ({ onClose, pac_id, setMedi }) => {
                     med_nombre: detalleMedicamento.nombre,
                     med_presentacion: detalleMedicamento.presentacion,
                     unidades_por_presentacion: detalleMedicamento.unidad,
-                    med_descripcion: '', // Puedes agregarlo si lo tienes
+                    med_descripcion: detalleMedicamento.descripcion,
                     med_total_unidades_disponibles: parseInt(totalUnidades)
                 };
                 setMedi(prev => [...prev, nuevo]);
@@ -85,6 +87,7 @@ export const ModalInventarioPaciente = ({ onClose, pac_id, setMedi }) => {
             }
         } catch (error) {
             console.error(error);
+            setLoading(false); // Desactivar en caso de error
             Swal.fire('Error', 'Ocurrió un error inesperado', 'error');
         }
     };
@@ -94,6 +97,13 @@ export const ModalInventarioPaciente = ({ onClose, pac_id, setMedi }) => {
             <div className="modal">
                 <div className="modal-content">
                     <h3>Agregar medicamento al paciente</h3>
+
+                    {loading && (
+                        <div className="loading-overlay">
+                            <span>Cargando...</span>
+                        </div>
+                    )}
+
                     <form onSubmit={handleSubmit}>
                         <div className="modal-field">
                             <label>Medicamento:</label>
@@ -126,16 +136,6 @@ export const ModalInventarioPaciente = ({ onClose, pac_id, setMedi }) => {
                                         value={detalleMedicamento.unidad}
                                         readOnly
                                     />
-                                    {/* 
-                                    <label>Tipo de contenido:</label>
-                                    <input
-                                        type="text"
-                                        name="med_nombre"
-                                        value={detalleMedicamento.tipo}
-                                        readOnly
-                                    />
-                                    */}
-
                                 </>
                             )}
                         </div>
@@ -166,7 +166,9 @@ export const ModalInventarioPaciente = ({ onClose, pac_id, setMedi }) => {
                         </div>
 
                         <div className="modal-buttons">
-                            <button type="submit" className="save-button">Guardar</button>
+                            <button type="submit" className="save-button" disabled={loading}>
+                                {loading ? 'Guardando...' : 'Guardar'}
+                            </button>
                             <button type="button" className="cancel-button" onClick={onClose}>Cancelar</button>
                         </div>
                     </form>

@@ -53,7 +53,6 @@ export const RegisterComponent = () => {
         if (!fetchedRef.current) {
             const fetchSesion = async () => {
                 const sesion = await obtenerSesion();
-                console.log("Sesion obtenida:", sesion);
                 setEsSuperAdmin(sesion?.esSuperAdmin || false);
                 setAdminGeriátrico(sesion?.rol_id == 2);
             };
@@ -156,7 +155,10 @@ export const RegisterComponent = () => {
             });
 
             if (response?.success) {
-                console.log("✅ Rol asignado con éxito:", response.message);
+                Swal.fire({
+                    icon: "success",
+                    text: response?.message
+                })
                 return true;
             } else {
                 console.warn("⚠️ Error en la asignación del rol:", response?.message || "Error desconocido.");
@@ -228,7 +230,6 @@ export const RegisterComponent = () => {
             if (!response.success) {
                 throw new Error(response.message);
             } else {
-                console.log("✅ Rol asignado con éxito:", response.message);
                 await Swal.fire({
                     icon: "success",
                     text: response.message,
@@ -270,7 +271,6 @@ export const RegisterComponent = () => {
                     sp_fecha_fin: fechaFin || null,
                 });
 
-                console.log("Respuesta del servidor:", response);
                 onResetForm();
                 if (!response.success) {
                     throw new Error(response.message);
@@ -323,11 +323,9 @@ export const RegisterComponent = () => {
             return;
         }
 
-        console.log("📤 Enviando datos del paciente:", datosPaciente);
 
         try {
             const response = await registrarPaciente(datosPaciente);
-            console.log("✅ Respuesta del backend en handlePacientes:", response);
 
             Swal.fire({
                 icon: response?.success ? 'success' : 'error',
@@ -353,7 +351,6 @@ export const RegisterComponent = () => {
             return;
         }
 
-        console.log("📤 Enviando datos de la enfermera:", datosEnfermera)
 
         try {
             const response = await startRegisterEnfermera(datosEnfermera);
@@ -422,16 +419,13 @@ export const RegisterComponent = () => {
             if (rolId === 2) { // Admin Geriátrico
 
                 await handleAssignRole(idPersona, selectedGeriatrico, rolId, gp_fecha_inicio, gp_fecha_fin);
-                console.log("📤 Admin geriatrico registrado:", response);
 
             } else if (rolId === 3) { // Admin Sede
                 await handleAssignAdminSede(idPersona, selectedSedes, rolId, sp_fecha_inicio, sp_fecha_fin);
-                console.log("📤 Admin sede registrado:", response);
             }
 
             // 4️⃣ Asignar sedes generales
             const asignacionExitosa = await handleAssignSedes(idPersona, selectedRoles, sp_fecha_inicio, sp_fecha_fin);
-            console.log("📤 Sedes asignadas:", asignacionExitosa);
 
             if (asignacionExitosa) {
                 Swal.fire({
@@ -485,7 +479,6 @@ export const RegisterComponent = () => {
                 Swal.fire({ icon: 'error', text: 'El rol seleccionado no es válido' });
                 return;
             }
-
             // 6️⃣ Éxito
             Swal.fire({
                 icon: 'success',
@@ -495,7 +488,6 @@ export const RegisterComponent = () => {
             });
 
         } catch (error) {
-            console.error("🚨 Error en el registro:", error);
             Swal.fire({
                 title: 'Error',
                 icon: 'error',
@@ -552,7 +544,7 @@ export const RegisterComponent = () => {
                             <>
                                 <SelectGeriatrico label="Geriátrico" name="ge_id" value={selectedGeriatrico} onChange={handleGeriatricoChange} />
                                 <InputField label="Fecha inicio" type="date" name="gp_fecha_inicio" value={gp_fecha_inicio} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
-                                <InputField label="Fecha fin" type="date" name="gp_fecha_fin" value={gp_fecha_fin} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
+                                <InputField label="Fecha fin" type="date" name="gp_fecha_fin" value={gp_fecha_fin} onChange={onInputChange} placeholder="aaaa-mm-dd" />
                             </>
                         )}
 
@@ -577,20 +569,20 @@ export const RegisterComponent = () => {
                                 <InputField label="Talla de camisa" type="text" name="pac_talla_camisa" value={pac_talla_camisa} onChange={onInputChange} placeholder="Talla de camisa" required />
                                 <InputField label="Talla de pantalón" type="text" name="pac_talla_pantalon" value={pac_talla_pantalon} onChange={onInputChange} placeholder="Talla de pantalón" required />
                                 <InputField label="Fecha de inicio" type="date" name="sp_fecha_inicio" value={sp_fecha_inicio} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
-                                <InputField label="Fecha de fin" type="date" name="sp_fecha_fin" value={sp_fecha_fin} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
+                                <InputField label="Fecha de fin" type="date" name="sp_fecha_fin" value={sp_fecha_fin} onChange={onInputChange} placeholder="aaaa-mm-dd" />
                             </>
                         )}
                         {showModalEnfermera && (
                             <>
                                 <InputField label="Fecha inicio" type="date" name="sp_fecha_inicio" value={sp_fecha_inicio} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
-                                <InputField label="Fecha fin" type="date" name="sp_fecha_fin" value={sp_fecha_fin} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
+                                <InputField label="Fecha fin" type="date" name="sp_fecha_fin" value={sp_fecha_fin} onChange={onInputChange} placeholder="aaaa-mm-dd" />
                                 <InputField label="Codigo" type="cc" name="enf_codigo" value={enf_codigo} onChange={onInputChange} placeholder="1234567890" required />
                             </>
                         )}
                         {showModalColaborador && (
                             <>
                                 <InputField label="Fecha inicio" type="date" name="sp_fecha_inicio" value={sp_fecha_inicio} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
-                                <InputField label="Fecha fin" type="date" name="sp_fecha_fin" value={sp_fecha_fin} onChange={onInputChange} placeholder="aaaa-mm-dd" required />
+                                <InputField label="Fecha fin" type="date" name="sp_fecha_fin" value={sp_fecha_fin} onChange={onInputChange} placeholder="aaaa-mm-dd" />
                             </>
                         )}
                     </>
@@ -615,6 +607,7 @@ export const RegisterComponent = () => {
                             setShowModalSede(true);
                             setShowModal(false);
                             setShowModalEnfermera(false);
+                            
                         } else if (rolSeleccionado === 5) {
                             setShowModalEnfermera(true);
                             setShowModal(false);

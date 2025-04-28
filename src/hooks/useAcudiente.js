@@ -53,8 +53,9 @@ export const useAcudiente = () => {
             console.error("❌ Error al registrar acudiente:", error);
             return {
                 success: false,
-                message: error.response?.data?.message || "Error desconocido",
+                message: error.response?.data?.message || error.message || "Error desconocido",
             };
+            
         }
     };
 

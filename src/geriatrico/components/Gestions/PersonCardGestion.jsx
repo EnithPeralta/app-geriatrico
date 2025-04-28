@@ -2,6 +2,7 @@ import React from 'react';
 import { FaArrowUp, FaUserEdit } from 'react-icons/fa';
 
 export const PersonCardGestion = ({ persona, onClick, onEdit, onAssign }) => {
+    
     return (
         <div
             className={`user-card-container`}

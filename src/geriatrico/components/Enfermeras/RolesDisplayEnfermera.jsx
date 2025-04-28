@@ -49,7 +49,6 @@ export const RolesDisplayEnfermera = ({ roles }) => {
                                     <th>Rol</th>
                                     <th>Fecha Inicio</th>
                                     <th>Fecha Fin</th>
-                                    <th>Estado Sede</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,7 +65,6 @@ export const RolesDisplayEnfermera = ({ roles }) => {
                                             <td>{rol.rol}</td>
                                             <td>{rol.fechaInicio}</td>
                                             <td>{rol.fechaFin || "Indefinido"}</td>
-                                            <td>{rol.activoSede ? "Activo" : "Inactivo"}</td>
                                         </tr>
                                     ))
                                 ) : (
